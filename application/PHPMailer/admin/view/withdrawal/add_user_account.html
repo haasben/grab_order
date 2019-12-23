@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script type="text/javascript" src="__SADMIN__js/jQuery1.9.1.js" ></script>
+		<link rel="stylesheet" href="__SADMIN__css/bootstrap.min.css" />
+		<style>
+			.form{
+				width: 55%;
+				padding-left: 50px;
+
+				padding-top: 30px;
+				}
+			form{
+				margin: 0 auto;
+			}
+			input[type=text]
+			{
+				width: 320px;
+				height: 35px;
+				border: 1px solid gray;
+				outline: none;
+				padding-left:3px;
+				
+			}
+			.box2{
+			margin-bottom: 25px;	
+			}
+			.name{
+				width: 100px;
+				display: block;
+				float: left;	
+				line-height: 30px;	
+				text-align: left;	}
+				input[type=reset]
+				{
+					width: 80px;
+					height: 30px;
+					background: gray;
+					color: white;
+					line-height: 30px;
+					border: none;
+					outline: none;
+					border-radius: 10px;
+					margin-left: 100px;
+				}
+				input[type=submit],input[type=button]
+				{
+					width: 80px;
+					height: 30px;
+					background: red;
+					color: white;
+					line-height: 30px;
+					border: none;
+					outline: none;
+					border-radius: 10px;
+					margin-left: 80px;
+					margin-top: 30px;
+				}
+				textarea{
+					width: 320px;
+					height: 100px;
+					padding-left: 0px;
+				}
+				#nav_1_active{
+					background: white;
+					color: #097b9c;
+					margin-left: -10px;
+					width: 120%;
+				}
+		</style>
+		
+	</head>
+
+	<body>
+
+			<div class="form">
+<div style="padding-left: 150px;font-size: 130%;font-weight: 700;color: red;margin-bottom: 20px;">请填写正确的收款人信息</div>
+			<form action="/admin/Withdrawal/add_user_account.html" method="post">
+				
+
+				<div class="box2">
+					<span class="name">提现账户：</span>
+
+					<select name="user_account_id" style="width: 320px;height: 32px;">
+						<option value="0">新增</option>
+{volist name="user_account_data" id="vo"}
+						<option value ="{$vo.id}">{$vo.user_name}</option>
+{/volist}
+					</select>
+					<span><a href="add_withdrawal.html">开始提现</a></span>
+				</div>
+
+				<div class="box2">
+					<span class="name">姓名：</span><input name="name" type="text"> 
+				</div>
+
+				<!--<div class="box2">
+					<span class="name">身份证号：</span><input name="name_id" type="text"> 
+				</div>
+
+				<div class="box2">
+					<span class="name">绑定手机：</span><input name="phone_num" type="text"> 
+				</div>-->
+
+
+				<div class="box2">
+					<span class="name">所属银行：</span><input name="withdrawal_type" type="text"> 
+				</div>
+				<div class="box2">
+					<span class="name">银行卡号：</span><input name="id_num" type="text"> 
+				</div>
+
+				<div class="box2">
+					<span class="name">开户行：</span><input name="address" type="text"> 
+					<span>如：武汉市光谷支行</span>
+				</div>
+
+				<!--<div class="box2">
+					<span class="name">开户行号：</span><input name="bank_no" type="text"> 
+					<span>可在此查询：<a target="_blank" href="http://www.lianhanghao.com">http://www.lianhanghao.com</a></span>
+				</div>-->
+
+
+				<input type="reset"></input>
+				<input type="submit" value='添加/修改'></input>
+
+				<input type="button" id="delete_user_acc" style="background-color: #ccc;" value='删除'></input>
+			</form>
+			</div>
+	</body>
+<script type="text/javascript">
+$(function(){
+
+	$('select[name="user_account_id"]').change(function(){
+		var id = $(this).val();
+		if (id>0) {
+			$.ajax({
+	            url:'/admin/Withdrawal/get_user_account.html',
+	            data:{
+	                id:id
+	            },
+	            dataType:'json',
+	            success:function(data){
+
+	            	$('input[name="name"]').val(data.user_name);
+	            	$('input[name="withdrawal_type"]').val(data.withdrawal_type);
+	            	$('input[name="id_num"]').val(data.id_num);
+
+	            	$('input[name="phone_num"]').val(data.phone_num);
+	            	$('input[name="name_id"]').val(data.name_id);
+	            	$('input[name="address"]').val(data.address);
+
+	            	$('input[name="bank_no"]').val(data.bank_no);
+
+	            }
+	        })
+		}
+	})
+
+	$('form').submit(function(){
+		var msg = "确定提交吗？"; 
+		if (confirm(msg)!=true){
+			return false;
+		}
+	})
+
+	$('#delete_user_acc').click(function(){
+		var msg = "确定删除吗？"; 
+		if (confirm(msg)!=true){
+			return false;
+		}
+		var id = $('select[name="user_account_id"]').val();
+
+		$.ajax({
+			url:'/admin/Withdrawal/delete_user_acc.html',
+	            data:{
+	                id:id
+	            },
+	            dataType:'html',
+	            success:function(data){
+	            	if (data==0) {
+	            		alert('请选择账户');
+	            	}else{
+	            		alert('删除成功');
+	            		location.reload();
+	            	}
+
+	            }
+		})
+	})
+})
+</script>
+</html>

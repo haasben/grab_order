@@ -1,0 +1,99 @@
+{include file="common/head"}
+<form class="layui-form layui-form-pane">
+  <div style="width: 40%;margin-top:30px ">
+  <div class="layui-form-item">
+    <label class="layui-form-label">费率</label>
+    <div class="layui-input-block">
+      <input id="fee" type="text" name="fee" required  lay-verify="required" placeholder="输入费率，并确认(例0.005表示千分之5)" autocomplete="off" class="layui-input">
+
+    </div>
+    
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">支付通道</label>
+    <div class="layui-input-block" >
+      <select name="taid" id="taid" lay-verify="required">
+        <option value=""></option>
+        {volist name="$user_fee" id="v"}
+            <option value="{$v.taid}">{$v.show_name}->{$v.fee}</option>
+        {/volist}  
+
+
+      </select>
+    </div>
+  </div>
+</div>
+
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="submit">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<script type="text/javascript" src="/static/layui/layui.js"></script> 
+<script>
+//Demo
+layui.use(['form','layer'], function(){
+  var form = layui.form,layer=layui.layer;
+    //监听提交
+  form.on('submit(submit)', function (data) {
+                // 提交到方法 默认为本身
+                var uid = {$uid};
+                var fee= $('#fee').val();
+                var taid = $('#taid').val();
+
+                $.post('{:url("madmin/user/user_fee")}', {uid:uid,taid:taid,fee:fee} ,function (res) {
+
+                    if (res.code  == '0000') {
+                        layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+                            //location.href = '{:url("user/account")}';
+                        });
+                    } else {
+                        layer.msg(res.msg, {time: 1800, icon: 5});
+                    }
+                });
+                return false;
+            });
+//    $('.edit_fee').click(function(){
+//     var uid = $(this).val();
+//         layer.prompt({title: '输入费率，并确认(例0.005表示千分之5)', formType: 3}, function(pass, index){
+//             $.ajax({
+//                 url:'{:url("user/user_fee")}',
+//                 data:{uid:uid,fee:pass},
+//                 dataType:'json',
+//                 type:'post',
+//                 success:function(data){
+
+//                     if(data.code == '0000'){
+//                         layer.close(index);
+//                         layer.msg(data.msg, {icon: 1});
+
+
+//                     }else{
+
+//                         layer.msg(data.msg, {icon: 5});
+
+//                     }
+
+
+//                 }
+
+
+
+
+//             })
+
+
+
+      
+        
+
+//       });
+
+
+// })
+
+});
+</script>

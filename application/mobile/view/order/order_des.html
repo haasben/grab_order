@@ -1,0 +1,178 @@
+{include file="common/head"}
+<header class="bar bar-nav green_nav">
+    <a href="javascript:history.back(-1)">
+        <span class="icon icon-left"></span>
+    </a>
+    <h1 class="title" style="color: #fff">订单查询详情</h1>
+</header>
+<div class="content">
+    <div class="student_top">
+    </div>
+    <div class="resume_title">订单号</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>商户编号：</span>{$order_data.merchant_cname}_{$order_data.uid}</div>
+                <div class="col-50"><span>平台单号：</span>{$order_data.merchant_cname}_{$order_data.id}</div>
+            <!--     <div class="col-50"><span>下级编号：</span>jxyc</div> -->
+            </div>
+            <div class="row">
+                <div class="col-50"><span>商户单号：</span>{$order_data.order_num}</div>
+                <div class="col-50"><span>流水号：</span>{$order_data.trade_no}</div>
+                
+            </div>
+<!--             <div class="row">
+                <div class="col-100"><span>下级单号：</span>ceshi1542708989</div>
+            </div> -->
+        </div>
+    </div>
+
+
+    <div class="resume_title">时间</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>生成时间：</span>{:date('Y-m-d H:i:s',$order_data['accept_time'])}</div>
+                <div class="col-50"><span>支付时间：</span>{if condition="$order_data['pay_time'] != ''"}{:date('Y-m-d H:i:s',$order_data['pay_time'])}{/if}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">支付信息</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>付款金额：</span>￥{$order_data.pay_amount/100}</div>
+                <div class="col-50"><span>付款方式：</span>{$order_data.name}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">上级到账</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>到账金额：</span>￥{$order_data.pay_amount/100-$order_data.this_channel_fee/100}</div>
+                <div class="col-50"><span>账户余额：</span>￥{$order_data.this_received_money/100}</div>
+            </div>
+            <div class="row">
+                <div class="col-100"><span>手续费：</span>￥{$order_data.this_channel_fee/100}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">下级到账</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>到账金额：</span>￥{$order_data.pay_amount/100-$order_data.this_fee/100}</div>
+                <div class="col-50"><span>账户余额：</span>￥{$order_data.this_money/100}</div>
+            </div>
+            <div class="row">
+                <div class="col-100"><span>手续费：</span>￥{$order_data.this_fee/100}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">状态</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>订单状态：</span>{if condition="$order_data['pay_status'] == 1"}支付成功
+
+                                            {else /} 未支付
+                                            {/if}</div>
+                <div class="col-50"><span>回掉状态：</span>{switch name="$order_data.notify_url_info"}
+                                                            {case value="1"}success{/case}
+                                                            {case value="2"}fail{/case}
+                                                            {case value="3"}返回参数有误{/case}
+                                                            {default /}未触发
+                                                        {/switch}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">操作</div>
+    <div class="operation-box">
+        <div class="">
+            <div class="row">
+               
+              	 <?php
+                    if($order_data['order_type']==1){
+                ?>  
+                    <?php
+                    if($order_data['pay_status']==2){ ?>
+							 <div class="col-40"><a href="javascript:;"  onclick="repeat_no_adjusted({$order_data.id})" class="button button_success">补发调单订单</a></div>
+                           
+                        <?php
+                        }else{ ?>
+							
+                  				 <div class="col-40"><a href="javascript:;"  onclick="repeat_notify_url({$order_data.id})" class="button button_success">补发通知</a></div>
+
+						<?php };?>
+                   
+                <?php
+                };?>	
+              
+              
+              
+              
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+<script type="text/javascript">
+
+
+
+    function repeat_notify_url(id){
+
+        var msg = "确定补发通知？";
+        if (confirm(msg)==true){
+            
+            $.ajax({
+                url:'/api/Notify/repeat_notify_url.html',
+                data:{
+                    id:id
+                },
+                type:'get',
+                dataType:'html',
+                success:function(data){
+
+
+                    alert('补发成功，商户返回：'+data);
+
+                    location.reload();
+                }
+            })
+        }
+    } 
+  	function repeat_no_adjusted(id){
+    
+    	 var msg = "确定已收到款并给下级回调？";
+          if (confirm(msg)==true){
+        
+              $.ajax({
+                  url:'/api/Notify/edit_order.html',
+                  data:{
+                      id:id
+                  },
+                  type:'get',
+                  dataType:'html',
+                  success:function(data){
+
+                      alert('确认付款成功，商户返回：'+data);
+
+                      location.reload();
+                  }
+              })
+          }
+    
+    
+    }
+
+</script>
+</body>
+</html>

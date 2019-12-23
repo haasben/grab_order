@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>添加二维码</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <div class="weui_left float-left" onclick="javascript:history.go(-1);"><img src="/static/magent/img/left.png" /></div>
+    <div class="title">二维码</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <!-- 登录 -->
+    <form action="" method="post">
+        <div class="weui-form-preview m-t-20">
+            <div class="weui-form-preview__hd">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">添加二维码</label>
+            </div>
+            <div class="weui_border"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">收款码类型</div>
+                <div class="float-left">
+                    <select class="info-input" name="pay_type" id="pay_type" disabled="disabled">
+                        {volist name="$channel" id="v"}
+                        {if condition="$v.code == $account_assets.type"}
+                        <option value="{$v.code}" checked="checked">{$v.show_name}</option>
+                        {/if}
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">账 &nbsp;&nbsp;户 &nbsp;&nbsp;名</div>
+                <div class="float-left"><input type="text" class="info-input" placeholder="" name="name" disabled="disabled" value="{$account_assets.name}"/></div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">金&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;额</div>
+                <div class="float-left"><input type="text" name="amount"  class="info-input" placeholder="填数字1表示任意金额。"/></div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">上传图片</div>
+                <div class="weui-cells_form">
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <div class="weui-uploader">
+                                <div class="weui-uploader__bd">
+                                    <ul class="weui-uploader__files" id="uploaderFiles">
+                                    </ul>
+                                    <div class="weui-uploader__input-box">
+                                        <input id="uploaderInput" class="weui-uploader__input" type="file"  accept="image/jpg,image/jpeg,image/png,image/gif"  multiple="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui_border_info"></div>
+        </div>
+        <div class="preview m-t-20">
+            <div class=" clearfix">
+                <input type="hidden" name="img" value="">
+                <input type="hidden" name="id" value="{$account_assets.id}">
+                <button type="button" class="weui-btn btn weui-btn-reissue" id="submit">提 交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--底部导航-->
+{include file="public/footer" /}
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+<script>
+
+    $(function() {
+
+        // 允许上传的图片类型
+        var allowTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
+        var maxSize = 600*600; // 10240KB，也就是 10MB
+        var maxWidth = 1900;  // 图片最大宽度
+        var maxCount = 1;// 最大上传图片数量
+
+        //
+        var tmpl = '<li class="weui-uploader__file" id="#ImgID#" style="background-image:url(#url#)"><div class="weui_uploader_status_content">0%</div></li>',
+            $gallery = $("#gallery"),
+            $galleryImg = $("#galleryImg"),
+            $uploaderInput = $("#uploaderInput"),
+            $uploaderFiles = $("#uploaderFiles");
+
+        $uploaderInput.on("change", function (e) {
+            files = e.target.files;
+            // 如果没有选中文件，直接返回
+            if (files.length === 0) {
+                return;
+            }
+            for (var i = 0, len = files.length; i < len; ++i) {
+                var file = files[i];
+                var imgID = genGUID();
+                var reader = new FileReader();
+                var fileType = file.type;
+                // 如果类型不在允许的类型范围内
+                if (allowTypes.indexOf(file.type) === -1) {
+
+                    $.toast('该类型不允许上传' + fileType, "forbidden");
+                    continue;
+                }
+
+                if (file.size > maxSize) {
+                    $.toast("图片太大，不允许上传", "forbidden");
+                    continue;
+                }
+
+                if ($('.weui-uploader__file').length >= maxCount) {
+                    $.toast('最多只能上传' + maxCount + '张图片', "forbidden");
+                    return;
+                }
+
+
+                reader.onload = function (e) {
+                    var img = new Image();
+                    img.onload = function () {
+                        // 不要超出最大宽度
+                        var w = Math.min(maxWidth, img.width);
+                        // 高度按比例计算
+                        var h = img.height * (w / img.width);
+                        var canvas = document.createElement('canvas');
+                        var ctx = canvas.getContext('2d');
+                        // 设置 canvas 的宽度和高度
+                        canvas.width = w;
+                        canvas.height = h;
+                        ctx.drawImage(img, 0, 0, w, h);
+                        var base64 = canvas.toDataURL(fileType,0.6); //0.6指的是压缩60%
+
+                        // 插入到预览区
+                        $uploaderFiles.append($(tmpl.replace('#url#', base64).replace('#ImgID#', imgID)));
+
+                        var num = $('.weui-uploader__file').length;
+                        $('#uploadCount').text(num);
+
+                        // 模拟上传进度
+                        var progress = 0;
+                        function uploading() {
+                            $uploaderFiles.find('.weui_uploader_status_content').text(++progress + '%');
+                            if (progress < 100) {
+                                setTimeout(uploading, 30);
+                            } else {
+                                $uploaderFiles.removeClass('weui_uploader_status').find('.weui_uploader_status_content').remove();//清除上传进度图标
+                            }
+                        }
+                        setTimeout(uploading, 30);
+                    };
+
+                    img.src = e.target.result;
+                    $("input[name='img']").val(img.src);
+                    //这里实现上传
+                    // $.ajax({
+                    //
+                    // });
+
+                };
+                reader.readAsDataURL(file);
+
+            }
+        });
+
+
+
+        var index; //第几张图片
+        $uploaderFiles.on("click", "li", function () {
+            index = $(this).index();
+            $galleryImg.attr("style", this.getAttribute("style"));
+            $gallery.fadeIn(100);
+        });
+        $gallery.on("click", function () {
+            $gallery.fadeOut(100);
+        });
+
+        //删除图片
+        $(".weui-gallery__del").click(function () {
+            $uploaderFiles.find("li").eq(index).remove();
+            var num = $('.weui-uploader__file').length;
+            $('#uploadCount').text(num);
+        });
+
+
+
+        $("#submit").on('click',function () {
+            var id = $("input[name='id']").val();
+            var amount = $("input[name='amount']").val();
+            var img = $("input[name='img']").val();
+            var pay_type = $("select[name='pay_type']").val();
+            $.ajax({
+                url:'/magent/user/add_qrcode',
+                type:'post',
+                data:{id,amount,img,pay_type},
+                success:function (data) {
+                    $.toast(data.msg);
+                  setTimeout(function(){
+                    window.location.href="{:url('user/clerk_des',['id'=>$account_assets['id']])}";
+                },600)
+                 
+                }
+            })
+        });
+
+    });
+    //生成guid
+    function genGUID() {
+        var G1 = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        var G2 = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1) + (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        return (G1 + G2);
+    }
+
+</script>
+</body>
+</html>

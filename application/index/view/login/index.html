@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>聚合支付登陆页面</title>
+    <script type="text/javascript" src="/static/index/js/login_background.js"></script>
+    <script src="/static//jq/jQuery1.9.1.js"></script>
+    <script src="/static//jq/public_fun.js"></script>
+    <script type="text/javascript" src="/static/layer-v3.1.0/layer/layer.js"></script>
+    <script src="__INDEX__/js/page/login.js"></script>
+    <style type="text/css">
+        body{
+            margin: 0;
+        }
+        li{
+            margin-bottom: 10px;
+            position: relative;
+        }
+        li i{
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%)
+        }
+        li i img{
+            float: left
+        }
+        a{
+            text-decoration: none
+        }
+        #main_container{
+            background-image: url(img/bg.png);
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            height: 100vh;
+            position: relative;
+        }
+        .content{
+            width: 32.1875vw;
+            height: 24.8958vw;
+            background-image: url(img/bor.png);
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            position: fixed!important;
+            bottom: 250px!important;
+            right: 25.8%!important;
+            margin: 0!important;
+        }
+        li,input{
+            background-color: transparent!important;
+        }
+        input::-webkit-input-placeholder{
+            color:#8590a7;
+        }
+        input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+            color:#8590a7;
+        }
+        input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+            color:#8590a7;
+        }
+        input:-ms-input-placeholder{  /* Internet Explorer 10-11 */ 
+            color:#8590a7;
+        }
+        p{
+            margin-left: 40px;
+            width: 100%;
+            height: 4vw;
+            line-height: 4vw;
+            border-bottom: 1px solid #09a4e1;
+            font-size: 1.5vw;
+            text-align: center;
+            color: #09a4e1;
+            margin: 0 0 1vw 0;
+        }
+        p>span{
+            font-size: 2.5vw;
+        }
+        .index-content{
+            vertical-align: top;
+            display:inline-block;
+            width:25.75vw;
+            height:19.91664vw;
+            text-align:left;
+            z-index:999;
+            margin-top: 20px
+        }
+        form{
+            height: 14.94664vw;
+            width: 25.75vw;
+        }
+        ul{
+            width: 25.75vw;
+            height: 10.94664vw;
+            list-style-type: none;
+            margin-left: -40px;
+            font-size: 0;
+        }
+        ul li{
+            font-size: 1.5vw;
+            display: flex;
+            flex-direction: row;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+            background:#fff;
+            margin: 0;
+            width: 25.75vw;
+            height: 3.5vw; 
+        }
+        ul li>span:first-child{
+            width: 3.5vw;
+        }
+        ul li input{
+            border: none;
+            position: absolute;
+            left: 4.5vw;
+            top: 50%;
+            transform: translateY(-50%);
+            line-height:2.5vw;
+            width:21.25vw;
+            height:2.5vw;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            padding-left: 5px;
+        }
+        ul li:nth-child(3){
+            width: 18vw;
+            display: inline-block;
+            font-size: 0;
+        }
+        ul li:nth-child(3) input{
+            width: 13.5vw;
+        }
+        .login_code_icon{
+            background: #fff;
+            width:6.25vw;
+            margin-left: 1.5vw;
+            display: inline-block;
+            height: 2.5vw;
+            vertical-align:top;
+            margin-top: 0.5vw;
+            font-size: 14px;
+        }
+        ul li span{
+            font-size: 1vw;
+            color: #09a4e1;
+            display: inline-block;
+            height: 3.5vw;
+            line-height: 3.5vw;
+            text-align: justify;
+            text-align-last: justify;
+        }
+        .login_layout{
+            width: 21.25vw;
+            margin-left: 4.5vw;
+            height: 2.5vw;
+        }
+        .go-to-other{
+            color: #fff;
+            position: absolute;
+            right: 3vw;
+            bottom: 2.5vw;
+            color: #0aa4dd;
+            text-decoration: underline;
+        }
+        @media(max-width: 1440px){
+            .content{
+                width: 463.5px;
+                height: 358.5px;
+                background-image: url(img/bor.png);
+                background-repeat: no-repeat;
+                background-size: 100% 100%;
+                position: absolute!important;
+                bottom: 26%!important;
+                right: 25.8%!important;
+    /*            transform: translateY(50%)!important;*/
+                margin: 0!important;
+            }
+            #main_container{
+                height: 810px;
+            }
+            p{
+                height: 50px;
+                line-height: 50px;
+                margin-bottom: 20px;
+                font-size: 20px;
+            }
+            p>span{
+                font-size: 30px;
+            }
+            .index-content{
+                vertical-align: top;
+                display:inline-block;
+                width:370.8px;
+                height:286.8px;
+                text-align:left;
+                z-index:999;
+                margin-top: 20px
+            }
+            form{
+                height: 216.8px;
+                width: 370.8px;
+            }
+            ul{
+                width: 370.8px;
+                height: 156.8px;
+                list-style-type: none;
+                margin-left: -40px;
+                font-size: 0;
+            }
+            ul li{
+                font-size: 14px;
+                display: flex;
+                flex-direction: row;
+                border-bottom: 1px solid rgba(255,255,255,.1);
+                background:#fff;
+                margin: 0;
+                width: 370.8px;
+                height: 50px;
+                line-height: 50px;
+            }
+            ul li>span:first-child{
+                width: 50px;
+            }
+            ul li input{
+                border: none;
+                position: absolute;
+                left: 70px;
+                top: 50%;
+                transform: translateY(-50%);
+                line-height:40px;
+                width:300.8px;
+                height:40px;
+                border: 1px solid #ddd;
+                box-sizing: border-box;
+                padding-left: 5px;
+            }
+            ul li:nth-child(3){
+                width: 259.2px;
+                display: inline-block;
+                font-size: 0;
+            }
+            ul li:nth-child(3) input{
+                width: 189.2px;
+            }
+            .login_code_icon{
+                background: #fff;
+                width:90px;
+                margin-left: 21.6px;
+                display: inline-block;
+                height: 40px;
+                vertical-align:top;
+                margin-top: 5px;
+                font-size: 14px;
+            }
+            ul li span{
+                font-size: 14px;
+                color: #09a4e1;
+                display: inline-block;
+                height: 50px;
+                line-height: 50px;
+                text-align: justify;
+                text-align-last: justify;
+            }
+            .login_layout{
+                width: 300.8px;
+                margin-left: 70px;
+                height: 40px;
+            }
+            .go-to-other{
+                color: #fff;
+                position: absolute;
+                right: 45px;
+                bottom: 30px;
+                color: #0aa4dd;
+                text-decoration: underline;
+            }
+        }
+    </style>
+</head>
+<body style="min-width:1440px">
+<div id="main_container" style="min-width:1440px;">
+   <img src="./img/bg2.png" style="width: 100%;height: 99%" alt="">
+    <div class="content" style="text-align:center;position:relative;">
+        <div id="login" class="index-content">
+           <p>
+               <span>起点支付</span>后台管理系统
+           </p>
+            <form id="login_form" method="post">
+                <ul style="margin-bottom:0;">
+                    <li>
+                        <span>用户名</span><span>:</span>
+                        <input type="text"name="username" id="user_name" class="login_number" placeholder="请输入您的账号"></input>
+                    </li>
+                    <li>
+                        <span>密码</span><span>:</span>
+                        <input type="password" name="userpwd" id="password" class="login_number" placeholder="密码6-18位"></input>
+                    </li>
+                    <li>
+                        <span>验证码</span><span>:</span>
+                        <input type="text" name="useryz" class="login_code" placeholder="请输入验证码"></input>
+                    </li>
+                    <span class="login_code_icon"><img style="width: 100%;height: 100%;" id="validation_img" src="/captcha.html"  alt="点击更换" title="点击更换" onClick="this.src='/captcha.html?seed='+Math.random()"/></span>
+                </ul>
+                <div class="login_layout">
+                    <button style="width: 100%;height:100%;border:1px solid #0582b8;color:white;background:#0aa4dd;border-radius: 3px;font-size: 16px;box-sizing: border-box;" type="submit" class="login_button">立即登陆</button>
+                </div>
+                <a class="go-to-other" href="">去注册 ></a>
+            </form>
+       </div>
+    </div>
+</div>
+
+<script>
+    var content = document.querySelector(".content");
+    var contentImg = document.querySelector(".content-img");
+    var loginImg = document.querySelector(".login_img");
+    var Login = document.querySelector("#login");
+    window.onresize=function(){
+        contentImg.style.height = contentImg.offsetWidth*0.375+"px";
+        content.style.height = contentImg.offsetHeight+"px";
+        loginImg.style.marginTop = (contentImg.offsetHeight-loginImg.offsetHeight)/2+"px"
+        Login.style.marginTop = (contentImg.offsetHeight-Login.offsetHeight)/2+"px"
+    };
+    contentImg.style.height = contentImg.offsetWidth*0.375+"px";
+    content.style.height = contentImg.offsetHeight+"px";
+    loginImg.style.marginTop = (contentImg.offsetHeight-loginImg.offsetHeight)/2+"px"
+    Login.style.marginTop = (contentImg.offsetHeight-Login.offsetHeight)/2+"px"
+    
+    function IsPC() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = ["Android", "iPhone",
+                    "SymbianOS", "Windows Phone",
+                    "iPad", "iPod"];
+        var flag = true;
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    }
+ 
+    var flag = IsPC(); 
+</script>
+
+</body>
+</html>

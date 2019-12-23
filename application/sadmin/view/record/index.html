@@ -1,0 +1,154 @@
+{include file="common/head"}
+<style type="text/css">
+  
+  body{
+  	padding-left:20px;
+    padding-top:20px;
+    padding-right:20px;
+  }
+
+</style>
+<form class="layui-form" action="/sadmin/record/index.html">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="uid"  autocomplete="off" class="layui-input" placeholder="商户编号">
+            </div>
+        </div>
+
+<!--         <div class="layui-inline">
+            <div class="layui-input-inline">
+                <select name="pay_status" lay-search="">
+                    <option value="">订单状态</option> 
+                    <option value="0">全部</option>
+                    <option value="1">已支付</option>
+                    <option value="2">未支付</option>
+                   
+                </select>
+            </div>
+        </div> -->
+
+      <div class="layui-inline">
+        <div class="layui-input-inline">
+          <button type="submit" class="layui-btn layui-btn-small">查询</button>
+          <button type="reset" class="layui-btn layui-btn-warm layui-btn-small" >取消</button>
+        </div>
+      </div>
+    </div>
+    
+</form>
+
+
+<style type="text/css">
+  th{
+  	border:1px solid #ccc !important;
+    text-align: left !important;
+    padding-left:10px !important;
+    font-weight:bold !important;
+  }
+    td{
+        text-align: left;
+        padding-left:10px !important;
+      	border:1px solid #ccc !important;
+        line-height:30px !important;
+    }
+
+
+</style>
+<table class="layui-table" style="border-collapse:collapse !important;border:1px solid #ccc">
+
+  <colgroup>
+    <col width="250">
+    <col width="300">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+<!--       <th>编号</th> -->
+      <th>操作人</th>
+      <th>被操作代理</th>
+      <th>操作时间</th>
+      <th>金额</th>
+      <th>冻结金额</th>
+      <th>说明</th>
+<!--       <th>状态</th> -->
+      
+<!--       <th>操作</th> -->
+    </tr> 
+  </thead>
+  <tbody>
+    {volist name="$record_data" id="v"}
+    <tr>
+<!--       <td>{$i}</td> -->
+      <td>{$v.top_name.merchant_cname}_{$v.top_name.mch_id} {$v.top_name.name}</td>
+      <td>{$v.child_name.merchant_cname}_{$v.child_name.mch_id} {$v.child_name.name}</td>
+      <td>{$v.date}</td>
+      <td>{$v.money/100}</td>
+      <td>{$v.freeze_money/100}</td>
+      <td>{$v.content}</td>
+
+       
+<!--       <td> <a href="{:url('nagent/user/edit_group')}?id={$v.id}" class="layui-btn  edit layui-btn-small" >编辑</a></td> -->
+    </tr>
+    {/volist}
+  </tbody>
+
+</table>
+
+  {$record_data->render()}
+  <style>
+    .pagination li{
+        display:inline-block;
+    }
+  
+  </style>
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+//注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+layui.use(['form'], function(){
+  var form = layui.form,layer=layui.layer;
+  
+//提交表单
+  $('.status_update').click(function(){
+
+    var status = $(this).attr('status');
+    var id = $(this).attr('value');
+    if(status == 1){
+
+      var text = '关闭';
+    }else{
+      var text = '开启';
+    }
+
+     layer.confirm('确认要 '+text+' 此分组账户吗？？', {
+              btn: ['确定','取消'] //按钮
+            }, function(){
+              
+
+              $.post('{:url("nagent/Payment_account/status_update")}',{status:status,id:id},function(data){
+
+                if(data.code == '0000'){
+                     
+                      layer.msg(data.msg, {icon: 1,time:1000},function(){
+
+                        location.reload();
+
+                      });
+                    }else{
+                      layer.msg(data.msg, {icon: 5,time:1000});
+                    }
+
+              })
+             
+          })
+
+
+  })
+
+
+
+
+
+
+});
+  </script>

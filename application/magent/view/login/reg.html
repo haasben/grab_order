@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>MAGO码购注册</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link href="/static/magent/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+</head>
+<body style="background: url('/static/magent/img/login-bgs2.jpg') no-repeat;background-size: 100%;background-color: #fff;">
+<!--主体-->
+<!--顶部搜索-->
+<div class="login-form" style="margin-top:-60px;">
+    <div class="login-top">
+        <form>
+            <div class="login-ic">
+                <i><img src="/static/magent/img/m.png"/></i>
+                <input type="text" name="name" id="name" required placeholder="请输入商户名称"/>
+                <div class="clear"></div>
+            </div>
+          <div class="login-ic">
+                <i><img src="/static/magent/img/e.png"/></i>
+                <input type="text" name="email" id="email" required placeholder="请输入邮箱账号"/>
+                <div class="clear"></div>
+            </div>
+          <div class="login-ic">
+                <i><img src="/static/magent/img/p.png"/></i>
+                <input type="text" name="phone_num" id="phone_num" required placeholder="请输入手机号码"/>
+                <div class="clear"></div>
+            </div>
+            <div class="login-ic">
+                <i class="icon"><img src="/static/magent/img/l.png"/></i>
+                <input type="password" name="pass" id="pass" required placeholder="请输入登录密码"/>
+                <div class="clear"></div>
+            </div>
+          <div class="login-ic">
+                <i class="icon"><img src="/static/magent/img/l.png"/></i>
+                <input type="password" name="trading_pass" id="trading_pass" required placeholder="请输入交易密码"/>
+                <div class="clear"></div>
+            </div>
+           <div class="pos-relative">
+                <div class="login-ic code" style="width: 60%;">
+                    <i class="icon"><img src="/static/magent/img/l.png"/></i>
+                    <input type="text" name="captcha" id="code" required placeholder="验证码">
+                    <div class="clear"></div>
+                </div>
+                <div class="code_img"><img src="{:captcha_src()}" alt="点击刷新验证码"
+                                           onClick="this.src='{:captcha_src()}?seed='+Math.random()"/></div>
+            </div>
+           
+        </form>
+      	<div class="log-bwn">
+              	<input type="submit"  value="SIGN UP" placeholder="" onclick="regBtn();"/>
+            </div>
+      <div style="margin-top:15px;font-size:14px;color:#ccc;"><a href="/magent/login/login" style="color:#ccc;">返回登录</a> | <a>忘记密码？</a></div>
+    </div>
+  
+</div>
+<script>
+    document.write("<script type='text/javascript' src='/static/magent/js/jquery-2.1.4.js?v="+Math.random()+"'><\/script>"); 
+   	document.write("<script type='text/javascript' src='/static/magent/js/jquery-weui.js?v="+Math.random()+"'><\/script>"); 
+  	document.write("<script type='text/javascript' src='/static/layer-v3.1.0/layer/layer.js?v="+Math.random()+"'><\/script>"); 
+</script>
+<script type="text/javascript">
+    // 注册
+    function regBtn() {
+        var name = $("#name").val();
+      var email = $("#email").val();
+      var phone_num = $("#phone_num").val();
+      var trading_pass = $("#trading_pass").val();
+        var pass = $("#pass").val();
+        var vercode = $('#code').val();
+        //发送登录请求
+        $.ajax({
+            url: '/magent/login/reg',
+            type: 'post',
+            data: {name, email, phone_num, pass, trading_pass, vercode},
+            success: function (data) {
+                //验证信息
+                if (data.success == 1) {
+                    layer.msg(data.hint, {icon: 1, time: 1200});
+                    setTimeout(function () {
+                        window.location.href = data.url;
+                    }, 1500);
+                } else {
+                    layer.msg(data.hint, {icon: 2, time: 1500});
+                }
+            }
+        });
+    };
+</script>
+</body>
+</html>

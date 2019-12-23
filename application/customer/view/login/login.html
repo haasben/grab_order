@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>MAGO码购登录</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link href="/static/magent/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+</head>
+<body style="background: url('/static/magent/img/login-bg.jpg') no-repeat;background-size: 100%;background-color: #fff;">
+<!--主体-->
+<!--顶部搜索-->
+<div class="login-form">
+    <div class="login-top">
+        <form>
+            <div class="login-ic">
+                <i><img src="/static/magent/img/m.png"/></i>
+                <input type="text" name="username" id="phone" required placeholder="请输入您的账号"/>
+                <div class="clear"></div>
+            </div>
+            <div class="login-ic">
+                <i class="icon"><img src="/static/magent/img/l.png"/></i>
+                <input type="password" name="password" id="password" required placeholder="请输入您的密码"/>
+                <div class="clear"></div>
+            </div>
+            <div class="pos-relative">
+                <div class="login-ic code" style="width: 60%;">
+                    <i class="icon"><img src="/static/magent/img/l.png"/></i>
+                    <input type="text" name="captcha" id="code" required placeholder="验证码">
+                    <div class="clear"></div>
+                </div>
+                <div class="code_img"><img src="{:captcha_src()}" alt="点击刷新验证码"
+                                           onClick="this.src='{:captcha_src()}?seed='+Math.random()"/></div>
+            </div>
+           
+        </form>
+      	<div class="log-bwn">
+              	<input type="submit"  value="LOGIN" placeholder="" onclick="loginBtn();"/>
+            </div>
+      <div style="margin-top:15px;font-size:14px;color:#ccc;"><a href="/magent/login/reg" style="color:#ccc;">注册账户</a> | <a>忘记密码？</a></div>
+    </div>
+</div>
+<script>
+    document.write("<script type='text/javascript' src='/static/magent/js/jquery-2.1.4.js?v="+Math.random()+"'><\/script>"); 
+   	document.write("<script type='text/javascript' src='/static/magent/js/jquery-weui.js?v="+Math.random()+"'><\/script>"); 
+  	document.write("<script type='text/javascript' src='/static/layer-v3.1.0/layer/layer.js?v="+Math.random()+"'><\/script>"); 
+</script>
+<script type="text/javascript">
+    // 登录
+    function loginBtn() {
+        var email = $("#phone").val();
+        var pass = $("#password").val();
+        var vercode = $('#code').val();
+        //发送登录请求
+        $.ajax({
+            url: '/magent/login/login',
+            type: 'post',
+            data: {email, pass, vercode},
+            success: function (data) {
+                //验证信息
+                if (data.success == 1) {
+                    layer.msg(data.hint, {icon: 1, time: 1200});
+                    setTimeout(function () {
+                        window.location.href = data.url;
+                    }, 1500);
+                } else if (data.success == 5) {
+                    layer.msg(data.hint, {icon: 2, time: 1500});
+                } else if (data.success == 4) {
+                    $("#validation_img").trigger("click");
+                    layer.msg(data.hint, {icon: 2, time: 1500});
+                } else {
+                    layer.msg(data.hint, {icon: 2, time: 1500});
+                }
+            }
+        });
+    };
+</script>
+</body>
+</html>

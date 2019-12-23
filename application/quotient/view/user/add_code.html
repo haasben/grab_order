@@ -1,0 +1,414 @@
+<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+
+<div style="margin-top:20px;width: 60% ">
+
+<form class="layui-form" action="" id="myform">
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">添加类型</label>
+    <div class="layui-input-block">
+      <select name="add_type" lay-verify="required" lay-filter='add_type' id="add_type">
+        <option value="1">新增</option>
+        <option value="2">追加</option>
+
+      </select>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">收款码类型</label>
+    <div class="layui-input-block">
+      <select name="pay_type" id="pay_type" lay-verify="required" lay-filter='pay_type'>
+<!--         <option value=""></option>
+        <option value="0">支付宝</option> -->
+        <option value="1" selected="selected">微信</option>
+         <option value="3">聚合码</option>
+      </select>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+<div id="group_id">
+    <div class="layui-form-item">
+    <label class="layui-form-label">所属分组</label>
+    <div class="layui-input-block">
+      <select name="group_id" lay-verify="required" >
+        <option value="">选择分组</option>
+{volist name="$group_name" id="g"}
+
+        <option value="{$g.id}">{$g.group_name}</option>
+{/volist}
+
+      </select>
+    </div>
+  </div>
+</div>
+
+<div id="pid_data">
+  
+
+</div>
+
+
+<div id="old_data">
+  <div class="layui-form-item">
+    <label class="layui-form-label">真实账户名</label>
+    <div class="layui-input-block">
+      <input type="text" name="name"  required  lay-verify="required" placeholder="请输入真实收款账户名" autocomplete="off" class="layui-input real_name">
+    </div>
+  </div>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">下游显示名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="show_name" required  lay-verify="required" placeholder="请输入展示给下游的收款账户名" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">手机设备app_id</label>
+    <div class="layui-input-block">
+      <input type="text" name="app_id" required  lay-verify="required" placeholder="请输入手机设备app_id" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  
+
+</div>
+
+
+    <div class="layui-form-item the_way">
+    <label class="layui-form-label">生成方式</label>
+    <div class="layui-input-block">
+      <select name="the_way" id="the_way" lay-verify="required" lay-filter='the_way'>
+        <!--<option value=""></option>-->
+        <option value="1">自动产码</option>
+         <option value="2">手动产码</option>
+      </select>
+    </div>
+  </div>
+
+<div id="img_data">
+    
+
+
+
+
+
+</div>
+
+
+
+
+
+<div id="way">
+  
+
+</div>
+   
+<div id="aisle_type">
+  
+
+
+</div>
+
+<div id="alipay_data">
+  
+
+
+</div>
+
+
+<!--  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">路径地址</label>
+    <div class="layui-input-block">
+      <textarea name="desc" placeholder="图片路径，图片以PNG格式结尾" class="layui-textarea">/static/code/</textarea>
+    </div>
+  </div> -->
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      <a class="layui-btn add_group" >添加分组</a>
+    </div>
+  </div>
+</form>
+<div class="wenzhi" style="width: 400px;margin:auto;color: red;font-size: 20px"></div>
+</div>
+
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+ <script type="text/javascript" src="/static/jq/jQuery1.9.1.js"></script>
+<script>
+//Demo
+layui.use(['form','upload'], function(){
+  var form = layui.form,upload = layui.upload;
+
+  //执行实例
+  var uploadInst = upload.render({
+    elem: '#test1' //绑定元素
+    ,url: '{:url("sadmin/upfiles/upload")}' //上传接口
+    ,done: function(res){
+      //上传完毕回调
+      $('.img_src').html('<img style="width:200px;heigth:200px" src="'+res.src+'">');
+      $('.img').val(res.src)
+    }
+    ,error: function(){
+      //请求异常回调
+    }
+  });
+  
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    var json = data.field;
+
+    $.post('{:url("sadmin/user/add_code")}',json,function(data){
+      if(data.code == '0000'){
+        $('.real_name').val('');
+
+        if(data.info != ""){
+          $('.wenzhi').text('图片文件请上传至：  '+data.info+' 目录');
+        }
+        
+    　　 layer.msg(data.msg,{icon:1,time:2000});
+
+      }else{
+        layer.msg(data.msg,{icon:5,time:2000});
+      }
+
+      
+
+
+    })
+
+
+      
+
+    return false;
+  });
+
+
+$('.add_group').click(function(){
+
+
+  window.location.href = '{:url("sadmin/user/add_group")}';
+
+})
+
+form.on('select(is_enterprise)',function(data){
+
+
+  if(data.value == 0){
+
+     $('#alipay_data').html('');
+
+
+  }else{
+
+       // var add_type_id =  $('#add_type').val();
+
+       // if(add_type_id == 2){
+       //  return false;
+       // }
+
+
+      var html = '<div class="layui-form-item"><label class="layui-form-label">商户APPID</label><div class="layui-input-block"><input type="text" name="mch_id" required  lay-verify="required" placeholder="请输入商户APPID" autocomplete="off" class="layui-input"></div></div><div class="layui-form-item layui-form-text"><label class="layui-form-label">商户生成的私钥</label><div class="layui-input-block"><textarea name="private_key" placeholder="请输入支付私钥" lay-verify="required" class="layui-textarea"></textarea></div></div><div class="layui-form-item layui-form-text"><label class="layui-form-label">支付宝公钥</label><div class="layui-input-block"><textarea name="public_key" placeholder="请输入支付公钥" lay-verify="required" class="layui-textarea"></textarea></div></div><div class="layui-form-item"><label class="layui-form-label">收款支付宝姓名</label><div class="layui-input-block"><input type="text" name="receive_name" required  lay-verify="required" placeholder="请输入收款支付宝实名姓名" autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">收款支付宝账户</label><div class="layui-input-block"><input type="text" name="receive_amount" required lay-verify="required" placeholder="请输入收款支付宝账户" autocomplete="off" class="layui-input"></div><div class="layui-form-mid layui-word-aux"><a target="_blank" href="https://openhome.alipay.com/</div>';
+
+      $('#alipay_data').html(html);
+
+
+  }
+
+ 
+
+
+
+
+})
+
+form.on('select(the_way)',function(data){
+
+  if(data.value == 2){
+   var html = ' <div class="layui-form-item"><label class="layui-form-label">金额数组</label><div class="layui-input-block"><textarea name="amount_array" placeholder="分为单位，英文,号隔开。示例100,200,300,400元" class="layui-textarea"></textarea></div></div><div class="layui-form-item"><label class="layui-form-label">单收款码数量</label><div class="layui-input-block"><select name="num" lay-verify="required"><option value=""></option><option value="1">1个</option><option value="2">2个</option><option value="3">3个</option><option value="4">4个</option><option value="5">5个</option><option value="6">6个</option><option value="7">7个</option><option value="8">8个</option><option value="9">9个</option><option value="10">10个</option></select></div></div>';
+
+    $('#way').html(html);
+    $('#img_data').html('');
+    form.render('select');
+
+   
+
+
+  }else if(data.value == 1){
+
+    var html = '<div class="layui-form-item test1"><label class="layui-form-label">聚合码图片</label><div class="layui-input-block"><input type="hidden" name="img" class="img" value=""><button type="button" class="layui-btn" id="test1"><i class="layui-icon">&#xe67c;</i>上传图片</button><div class="img_src"></div></div>';
+
+     $('#img_data').html(html);
+     $('#way').html('');
+
+     form.render('select');
+
+  }
+  
+});
+
+
+
+
+
+form.on('select(pay_type)',function(data){
+
+  var the_way = $('[name=the_way]').val();
+  if(data.value == 3 && the_way == 1){
+
+
+      var html = '<div class="layui-form-item test1"><label class="layui-form-label">聚合码图片</label><div class="layui-input-block"><input type="hidden" name="img" class="img" value=""><button type="button" class="layui-btn" id="test1"><i class="layui-icon">&#xe67c;</i>上传图片</button><div class="img_src"></div></div>';
+
+       $('#img_data').html(html);
+
+       form.render('select');
+
+
+  }else{
+
+    $('#img_data').html('');
+   // $('.test1').css('display','none');
+    form.render('select');
+
+   	 // $('#aisle_type').html('');
+   	 // $('#alipay_data').html('');
+
+
+  }
+})
+ if($('#add_type').val() == 2){
+
+      var pay_type = data.value;
+      console.log(pay_type);
+
+      $.post('{:url("sadmin/user/pay_account_type")}',{type:pay_type},function(data){
+          var html = '<div class="layui-form-item"><label class="layui-form-label">添加类型</label><div class="layui-input-block"><select lay-filter="pay_account_type" name="pid" lay-verify="required" lay-search>';
+          html+='<option value="">请选择通道</option>';
+          $.each(data,function(index,item){
+
+            html+= '<option value="'+item.id+'">'+item.name+'</option>';
+
+          })
+          html+= ' </select></div></div>';
+          $('#pid_data').html(html);
+          $('#old_data').html('');
+          form.render('select');
+
+      })
+
+    
+
+
+
+};
+
+form.on('select(pay_account_type)',function(data){
+
+  var pay_type = $('#pay_type').val();
+      if(pay_type == 0){
+
+        var is_enterprise = $('#is_enterprise').val();
+
+
+
+              $.post('{:url("sadmin/payment_account/is_mch_id")}',{id:data.value},function(data){
+
+                if(data.code == '1111'){
+                  $('#aisle_type').html('');
+                  $('#alipay_data').html('');
+
+                }else{
+
+                    var html = '<div class="layui-form-item"><label class="layui-form-label">通道类型</label><div class="layui-input-block"><select name="is_enterprise" lay-verify="required" lay-filter="is_enterprise" id="is_enterprise"><option value=""></option><option value="0">个人码</option><option value="1">企业码</option></select></div></div>';
+
+                    $('#aisle_type').html(html);
+                    form.render('select');
+
+
+                }
+
+
+            })
+
+        
+      }
+
+
+
+});
+
+
+
+
+
+
+
+
+
+  form.on('select(add_type)' ,function(data){
+
+    if(data.value == 1){
+
+          var html = '<div class="layui-form-item"><label class="layui-form-label">真实账户名</label><div class="layui-input-block"><input type="text" name="name"  required  lay-verify="required" placeholder="请输入真实收款账户名" autocomplete="off" class="layui-input real_name"></div></div><div class="layui-form-item"><label class="layui-form-label">下游显示名称</label><div class="layui-input-block"><input type="text" name="show_name" required  lay-verify="required" placeholder="请输入展示给下游的收款账户名" autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">手机设备app_id</label><div class="layui-input-block"><input type="text" name="app_id" required  lay-verify="required" placeholder="请输入手机设备app_id" autocomplete="off" class="layui-input"></div></div></div>';
+
+          $('#pid_data').html('');
+          $('#old_data').html(html);
+          form.render('select');
+
+    }else{
+
+        var pay_type = $('#pay_type').val();
+        console.log(pay_type);
+      $.post('{:url("sadmin/user/pay_account_type")}',{type:pay_type},function(data){
+          var html = '<div class="layui-form-item"><label class="layui-form-label">添加类型</label><div class="layui-input-block"><select lay-filter="pay_account_type" name="pid" lay-verify="required" lay-search>';
+          html+='<option value="">请选择通道</option>';
+          $.each(data,function(index,item){
+
+            html+= '<option value="'+item.id+'">'+item.name+'</option>';
+
+          })
+          html+= ' </select></div></div>';
+          $('#pid_data').html(html);
+          $('#old_data').html('');
+          form.render('select');
+
+      })
+
+
+
+
+      var pay_type = $('#pay_type').val();
+      if(pay_type == 0){
+
+        var is_enterprise = $('#is_enterprise').val();
+
+          if(is_enterprise == 1){
+              $.post('{:url("sadmin/payment_account/is_mch_id")}',{},function(data){
+
+                if(data.code == '1111'){
+                  $('#aisle_type').html('');
+                  $('#alipay_data').html('');
+
+                }
+              })
+          }
+        
+      }
+    }
+  })
+
+});
+
+
+
+
+
+</script>

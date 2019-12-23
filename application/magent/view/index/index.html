@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>码商代理管理首页</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <!--顶部轮播-->
+    <div class="title">MAGO 码购&nbsp;&nbsp;控制台-首页</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+    <div class="swiper-container swiper-banner bg-white">
+        <div class="weui-notice clearfix">
+            <div class="float-left"><img src="/static/magent/img/notice.png" class="notice-img"/></div>
+            <div class="weui-title notice float-left m-l-5">
+              <div class="wrap">
+                    <div id="info" class="info" style="margin-top:2px;color:red;">
+                        <div class="inner">
+                            <p class="txt">
+                               {volist name="$data.user.announcement" id="v"}
+                                  {$v}
+                               {/volist}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+          	</div>
+        </div>
+        <div class="swiper-wrapper">
+            <div class="swiper-slide clearfix m-b_100">
+                <img src="/static/magent/img/ban1.png" class="banner-img"/>
+                <div class="agent-name">代理商ID : {$data['user']['name']}</div>
+                <div class="login-time">上次登录:{$data['user']['login_time']}</div>
+                <div class="today-order">今日订单（元）</div>
+                <div class="today-order-value">{$data['entry']['today']}</div>
+            </div>
+            <div class="swiper-slide clearfix m-b_100">
+                <img src="/static/magent/img/ban2.png" class="banner-img"/>
+                <div class="weui-wrap receview_1 swiper_order clearfix">
+                    <div class="float-left weui-width-1 text-align-l m-l-10">
+                        <div class="weui-title font-white">收单</div>
+                        <div class="weui_value font-white">
+                            {$data['user']['success_num']|default=0}/{$data['user']['all_num']|default=0}
+                        </div>
+                        <div class="border-bottom"></div>
+                    </div>
+                    <div class="float-right weui-width-1 text-align-l m-l-10">
+                        <div class="weui-title font-white">收单率</div>
+                        <div class="weui_value font-white">{$data['user']['success_rate']}%</div>
+                        <div class="border-bottom"></div>
+                    </div>
+                </div>
+                <div class="weui-wrap receview_2 swiper_order clearfix">
+                    <div class="float-left weui-width-1 text-align-l m-l-10">
+                        <div class="weui-title  font-white">收单金额 (元)</div>
+                        <div class="weui_value font-white m-b-20">{$data['user']['success_price']}</div>
+                    </div>
+                    <div class="float-right weui-width-1 text-align-l m-l-10">
+                        <div class="weui-title font-white">派单金额 (元)</div>
+                        <div class="weui_value font-white m-b-20">{$data['user']['all_price']}</div>
+                    </div>
+                </div>
+            </div>
+          <div class="swiper-slide clearfix m-b_100">
+                <img src="/static/magent/img/ban2.png" class="banner-img"/>
+                <div class="weui-wrap swiper_order clearfix ">
+                    <div class="float-left weui-width-1 text-align-l m-l-10">
+                        <div class="weui-title font-white">保证金额度 (元)</div>
+                        <div class="weui_value font-white">
+                            {$data['user']['margin']}
+                        </div>
+                        <div class="border-bottom"></div>
+                    </div>
+                    <div class="float-right weui-width-1 text-align-l m-l-10">
+                        <div class="weui-title font-white">冻结金额度 (元)</div>
+                        <div class="weui_value font-white">{$data['user']['freeze']}</div>
+                        <div class="border-bottom"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <!-- 代理信息 -->
+    <div class="weui-form-preview m-t-20">
+        <div class="weui-form-preview__hd">
+            <a href="/magent/index/agent.html">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">代理信息</label>
+                <span class="weui-more">查看更多 ></span>
+            </a>
+        </div>
+        <div class="weui-wrapper">
+            <table cellspacing="0" style="width: 94%;">
+                <tr class="bg-gray">
+                    <td width="30%">下级代理</td>
+                    <td width="30%">收单金额</td>
+                    <td width="20%">收单率</td>
+                    <td width="20%">操作</td>
+                </tr>
+                {volist name="$data['daili']" id="vo"}
+                <tr>
+                    <td class="bg-gray">{$vo['name']}</td>
+                    <td class="count">{$vo['price']}</td>
+                    <td class="count">{$vo['rate']}%</td>
+                    <td class="count"><a href="{:url('magent/index/agent_details',['id'=>$vo['id']])}" class="weui-btn edit_btn">详情</a></td>
+                </tr>
+                {/volist}
+            </table>
+        </div>
+    </div>
+
+    <!-- 总入金 -->
+    <div class="weui-form-preview m-t-20">
+        <div class="weui-form-preview__hd">
+            <a href="/magent/order/index.html">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">入金总览</label>
+                <!--<span class="weui-more">查看更多 ></span>-->
+            </a>
+        </div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left weui-width-1 text-align-l">
+                <div class="weui-title">总入金</div>
+                <div class="weui_value">{$data['entry']['all_price']}</div>
+                <div class="border-bottom"></div>
+            </div>
+            <div class="float-right weui-width-1 text-align-l">
+                <div class="weui-title">今日入金</div>
+                <div class="weui_value">{$data['entry']['today']}</div>
+                <div class="border-bottom"></div>
+            </div>
+        </div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left weui-width-1 text-align-l">
+                <div class="weui-title">昨日入金</div>
+                <div class="weui_value m-b-20">{$data['entry']['yesterday']}</div>
+            </div>
+            <div class="float-right weui-width-1 text-align-l">
+                <div class="weui-title">本周入金</div>
+                <div class="weui_value m-b-20">{$data['entry']['week']}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 订单 -->
+    <div class="weui-form-preview m-t-20">
+        <div class="weui-form-preview__hd">
+            <a href="/magent/order/index.html">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">订单总览</label>
+                <span class="weui-more">查看更多 ></span>
+            </a>
+        </div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left weui-width-1 text-align-l">
+                <div class="weui-title">总订单 (笔)</div>
+                <div class="weui_value">{$data['order']['all_num']}</div>
+                <div class="border-bottom"></div>
+            </div>
+            <div class="float-right weui-width-1 text-align-l">
+                <div class="weui-title">今日订单 (笔)</div>
+                <div class="weui_value">{$data['order']['today']}</div>
+                <div class="border-bottom"></div>
+            </div>
+        </div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left weui-width-1 text-align-l">
+                <div class="weui-title">昨日订单 (笔)</div>
+                <div class="weui_value m-b-20">{$data['order']['yesterday']}</div>
+            </div>
+            <div class="float-right weui-width-1 text-align-l">
+                <div class="weui-title">本周订单 (笔)</div>
+                <div class="weui_value m-b-20">{$data['order']['week']}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功率 -->
+    <div class="weui-form-preview m-t-20 p-b-4">
+        <div class="weui-form-preview__hd">
+            <a href="#">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">成功率</label>
+                <span class="weui-more"></span>
+            </a>
+        </div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left weui-width-1 text-align-l">
+                <div class="weui-title">总成功率</div>
+                <div class="weui_value">{$data['rate']['all']}%</div>
+                <div class="border-bottom"></div>
+            </div>
+            <div class="float-right weui-width-1 text-align-l">
+                <div class="weui-title">今日成功率</div>
+                <div class="weui_value">{$data['rate']['today']}%</div>
+                <div class="border-bottom"></div>
+            </div>
+        </div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left weui-width-1 text-align-l">
+                <div class="weui-title">昨日成功率</div>
+                <div class="weui_value m-b-20">{$data['rate']['yesterday']}%</div>
+            </div>
+            <div class="float-right weui-width-1 text-align-l">
+                <div class="weui-title">本周成功率</div>
+                <div class="weui_value m-b-20">{$data['rate']['week']}%</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--底部导航-->
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+{include file="public/footer" /}
+<script src="/static/magent/js/swiper.js"></script>
+<script>
+  	$('.wrap').css('width',document.body.clientWidth-70);
+    $(".swiper-banner").swiper({
+        loop: true,
+        autoplay: 3000
+    });
+    $(".swiper-news").swiper({
+        loop: true,
+        direction: 'vertical',
+        paginationHide: true,
+        autoplay: 30000
+    });
+</script>
+  <script>
+    function scroll(){
+        var info = document.getElementById('info');
+        var div = info.getElementsByTagName('div')[0];
+        var p = document.getElementsByTagName('p')[0];
+        var p_w = p.offsetWidth;
+        var div_w = info.offsetWidth;
+        if(div_w > p_w){ return false; }
+        div.innerHTML += div.innerHTML;
+
+        setInterval(function(){
+            if(p_w <= info.scrollLeft){
+                info.scrollLeft -= p_w;
+            } else {
+                info.scrollLeft++;
+            }
+        }, 30);
+    }
+    scroll();
+</script>
+</body>
+</html>

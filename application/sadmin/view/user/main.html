@@ -1,0 +1,289 @@
+<?php 
+use think\Cache;
+//初始值；
+//总收款金额，总订单，总成功率；
+$all_amount = 159930532.67;
+$all_order = 521456;
+$all_per = 70.51;
+//昨日收款金额，昨日订单，昨日成功率；
+$last_amount = 3917841.23;
+$last_order = 11257 ;
+$last_per = 70.62;
+//今日收款金额，今日订单，今日成功率;
+$today_amount = 1620126.12;
+$today_order = 5915;
+$today_per = 61.33;
+
+//增量随机取值；
+$rand_num = rand(1,9);
+if($rand_num<=5){
+	$amount_num = 120;
+	$per_num =0.01;
+	$order_num = 1;
+}else{
+	$amount_num = 560;
+	$per_num =-0.03;
+	$order_num = 3;
+}
+
+
+//清除缓存；
+//Cache::clear();
+
+
+//总缓存随今日缓存数据增加；
+if(!Cache::has('data_virtual_all_amount')){
+	Cache::set('data_virtual_all_amount', $all_amount, 60*60*24);
+}else{
+	$aa = Cache::get('data_virtual_all_amount')+$amount_num;
+	Cache::set('data_virtual_all_amount',$aa, 60*60*24);
+}
+if(!Cache::has('data_virtual_all_order')){
+	Cache::set('data_virtual_all_order', $all_order, 60*60*24);
+}else{
+	$ao = Cache::get('data_virtual_all_order')+$order_num;
+	Cache::set('data_virtual_all_order',$ao, 60*60*24);
+}
+if(!Cache::has('data_virtual_all_per')){
+	Cache::set('data_virtual_all_per', $all_per, 60*60*24);
+}else{
+	$ap = Cache::get('data_virtual_all_per');
+	
+	Cache::set('data_virtual_all_per',$ap, 60*60*24);
+}
+
+//昨日缓存不变;
+if(!Cache::has('data_virtual_last_amount')){
+	Cache::set('data_virtual_last_amount', $last_amount, 60*60*24);
+}
+if(!Cache::has('data_virtual_last_order')){
+	Cache::set('data_virtual_last_order', $last_order, 60*60*24);
+}
+if(!Cache::has('data_virtual_last_per')){
+	Cache::set('data_virtual_last_per', $last_per, 60*60*24);
+}
+
+//今日缓存随着刷新增加；
+if(!Cache::has('data_virtual_today_amount')){
+	Cache::set('data_virtual_today_amount', $today_amount, 60*60*24);
+}else{
+	$ta = Cache::get('data_virtual_today_amount')+$amount_num;
+	Cache::set('data_virtual_today_amount',$ta, 60*60*24);
+}
+if(!Cache::has('data_virtual_today_order')){
+	Cache::set('data_virtual_today_order', $today_order, 60*60*24);
+}else{
+	$to = Cache::get('data_virtual_today_order')+$order_num;
+	Cache::set('data_virtual_today_order',$to, 60*60*24);
+}
+if(!Cache::has('data_virtual_today_per')){
+	Cache::set('data_virtual_today_per', $today_per, 60*60*24);
+}else{
+	$tp = Cache::get('data_virtual_today_per');
+	$tp+=$per_num;
+	Cache::set('data_virtual_today_per',$tp, 60*60*24);
+}
+
+
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+ <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>后台管理</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="__SADMIN__/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__SADMIN__/css/style.css" rel="stylesheet">
+      <link href="__SADMIN__/css/zuy.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="__SADMIN__/css/iconfont.css"/>
+<style>
+        .layui-form-label {width:110px;padding:4px}
+        .layui-form-item .layui-form-checkbox[lay-skin="primary"]{margin-top:0;}
+        .layui-form-switch {width:54px;margin-top:0px;}
+    </style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated">
+
+
+<div class="row">
+  <div class="col-sm-12">
+
+      <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <i class="fa fa-warning"></i><a href="vmain.html">平台数据总览</a>
+       <span style="color:#F30">
+                    </span>
+      </div>
+
+  </div>
+</div>
+
+<div class="row zuy-nav">
+  
+  <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <!-- <h5>{$order_data.sum_money/100}</h5>-->
+       <h5><?php echo(Cache::get('data_virtual_all_amount')); ?></h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">平台总入金(元)</h1>
+        <i class="iconfont icon-cunqianguan" style="color: #fff1f3;"></i>
+      </div>
+    </div>
+  </div>
+    
+    
+  <div class="col-sm-4" >
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+       <!--  <h5>{$order_data.succ_count}</h5>-->
+       <h5><?php echo(Cache::get('data_virtual_all_order')); ?></h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">平台总成交订单(笔)</h1>
+        <i class="iconfont icon-tuiguangzhuanqian" style="color: #fffbe8;"></i>
+      </div>
+    </div>
+  </div>
+    
+  <div class="col-sm-4" >
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <!--<h5>{if condition="$order_data.count == 0 "}100{else}{:round($order_data.succ_count/$order_data.count,4)*100}{/if}%</h5>-->
+        <h5><?php echo(Cache::get('data_virtual_all_per')."%"); ?></h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">平台总成功率(%)</h1>
+        <i class="iconfont icon-iconfontjikediancanicon20" style="color: #f0faf8;"></i>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <!--<h5>{$order_data.today_sum_money/100}</h5>-->
+        <h5><?php echo(Cache::get('data_virtual_today_amount')); ?></h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">今日平台入金(元)</h1>
+        <i class="iconfont icon-qianbao" style="color: #edf7fe;"></i>
+      </div>
+    </div>
+  </div>
+    
+  <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <!--<h5>{$order_data.today_succ_count}</h5>-->
+        <h5><?php echo(Cache::get('data_virtual_today_order')); ?></h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">今日平台成交订单(笔)</h1>
+        <i class="iconfont icon-shourusel" style="color: #fff6f0;"></i>
+      </div>
+    </div>
+  </div>
+    
+  <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <!-- <h5>{if condition="$order_data.today_count == 0 "}100{else}{:round($order_data.today_succ_count/$order_data.today_count,4)*100}{/if}%</h5>-->
+        <h5><?php echo(Cache::get('data_virtual_today_per')."%"); ?></h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">今日平台成功率(%)</h1>
+        <i class="iconfont icon-shouru" style="color: #eff2fe;"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <!--<h5>{$order_data.yesterday_sum_money/100}</h5>-->
+        <h5><?php echo(Cache::get('data_virtual_last_amount')); ?></h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">昨日平台入金(元)</h1>
+        <i class="iconfont icon-qianbao" style="color: #edf7fe;"></i>
+      </div>
+    </div>
+  </div>
+    
+  <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+       <!--<h5>{$order_data.yesterday_succ_count}</h5>-->
+          <h5><?php echo(Cache::get('data_virtual_last_order')); ?></h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">昨日平台成交订单(笔)</h1>
+        <i class="iconfont icon-shourusel" style="color: #fff6f0;"></i>
+      </div>
+    </div>
+  </div>
+    
+  <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+      <!-- <h5>{if condition="$order_data.yesterday_count == 0 "}100{else}{:round($order_data.yesterday_succ_count/$order_data.yesterday_count,4)*100}{/if}%</h5>-->
+         <h5><?php echo(Cache::get('data_virtual_last_per')."%"); ?></h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">昨日平台成功率(%)</h1>
+        <i class="iconfont icon-shouru" style="color: #eff2fe;"></i>
+      </div>
+    </div>
+  </div>
+
+  	<!-- <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <h5>{$order_data.week_sum_money/100}</h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">本周平台总入金(元)</h1>
+        <i class="iconfont icon-qianbao" style="color: #edf7fe;"></i>
+      </div>
+    </div>
+  </div>
+    
+  <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <h5>{$order_data.week_succ_count}</h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">本周平台总成交订单(笔)</h1>
+        <i class="iconfont icon-shourusel" style="color: #fff6f0;"></i>
+      </div>
+    </div>
+  </div>
+    
+  <div class="col-sm-4">
+    <div class="ibox float-e-margins">
+      <div class="ibox-title">
+        <h5>{if condition="$order_data.week_count == 0 "}0{else}{:round($order_data.week_succ_count/$order_data.week_count,4)*100}{/if}%</h5>
+      </div>
+      <div class="ibox-content" style="padding-top:0;height: 67px">
+        <h1 class="no-margins">本周平台总成功率(%)</h1>
+        <i class="iconfont icon-shouru" style="color: #eff2fe;"></i>
+      </div>
+    </div>
+  </div>
+-->
+ 
+
+</div>
+<!-- 全局js -->
+</div>
+
+
+</body>
+</html>

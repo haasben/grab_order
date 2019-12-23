@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>码商后台管理</title>
+    <link rel="stylesheet" href="/static/sadmin/frame/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/sadmin/frame/static/css/style.css">
+  	<script type="text/javascript" src="__SADMIN__js/jQuery1.9.1.js" ></script>
+</head>
+<script>
+
+/**
+ * 与GatewayWorker建立websocket连接，域名和端口改为你实际的域名端口，
+ * 其中端口为Gateway端口，即start_gateway.php指定的端口。
+ * start_gateway.php 中需要指定websocket协议，像这样
+ * $gateway = new Gateway(websocket://0.0.0.0:7272);
+ */
+var ws = new WebSocket("ws://"+document.domain+":8282");
+
+ws.onopen = function()
+   {
+  	  var data = '{"type":"nagent_bind","uid":{$login_user.id}}';
+      ws.send(data);
+      // Web Socket 已连接上，使用 send() 方法发送数据
+      var t2 = window.setInterval("hello()",8000); 
+    
+   };
+function hello(){ 
+	var data = '{"type":"ping"}';
+	ws.send(data);
+} 
+
+  
+  
+// 服务端主动推送消息时会触发这里的onmessage
+ws.onmessage = function(e){
+
+var newMessageRemind={
+_step: 0,
+_title: document.title,
+_timer: null,
+//显示新消息提示
+show:function(){
+var temps = newMessageRemind._title.replace("【　　　                 】", "").replace("【新订单"+data.order_id+"】", "");
+newMessageRemind._timer = setTimeout(function() {
+newMessageRemind.show();
+
+newMessageRemind._step++;
+if (newMessageRemind._step == 3) { newMessageRemind._step = 1 };
+if (newMessageRemind._step == 1) { document.title = "【　　　                 】" + temps };
+if (newMessageRemind._step == 2) { document.title = "【新订单"+data.order_id+"】" + temps };
+}, 800);
+return [newMessageRemind._timer, newMessageRemind._title];
+},
+//取消新消息提示
+clear:function(){
+clearTimeout(newMessageRemind._timer);
+//document.title = newMessageRemind._title;
+
+}
+
+};
+    // json数据转换成js对象
+    var data = JSON.parse(e.data);
+    var type = data.type || '';
+    switch(type){
+        case 'ping':     
+            break;
+		case 'nagent_bind':
+        	console.log('绑定成功');
+            break;
+        case 'new_order':
+        document.title="【新订单】 "+data.order_id+"";
+        //newMessageRemind.show();
+	   //alert('您有一笔新的客服订单,订单号：'+data.order_id+'，请立即回复');
+        	break;
+        case 'has_done':
+            console.log('取消新订单提醒');
+        	//newMessageRemind.clear();
+        	document.title="码商后台管理";    
+            break;
+        default :
+    }
+};
+
+ws.onclose = function(){
+
+    console.log('链接关闭');
+}
+</script>

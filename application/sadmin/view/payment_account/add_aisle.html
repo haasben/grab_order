@@ -1,0 +1,236 @@
+
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script type="text/javascript" src="__SADMIN__js/jQuery1.9.1.js" ></script>
+        <form class="layui-form" action="">
+
+
+
+
+<div style="margin:30px 0 0 30px;width: 50%">
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">操作类型</label>
+    <div class="layui-input-block">
+      <select name="add_type" lay-verify="required" lay-filter="add_type">
+        <option value="1">添加新通道</option>
+        <option value="2">增加子商户</option>
+
+      </select>
+    </div>
+  </div>
+
+<div class="layui-form-item">
+  <label class="layui-form-label">通道类型</label>
+  <div class="layui-input-block">
+    <select name="is_enterprise" lay-verify="required" lay-filter="is_enterprise" id="is_enterprise">
+<!--       <option value=""></option> -->
+      <option value="0">个人转账码</option>
+      <option value="1">企业转账码</option>
+    </select>
+  </div></div>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">所属分组</label>
+    <div class="layui-input-block">
+      <select name="group_id" lay-verify="required" >
+        <option value="">选择分组</option>
+{volist name="$group_name" id="g"}
+        
+        <option value="{$g.id}">{$g.group_name}</option>
+{/volist}
+
+      </select>
+    </div>
+  </div>
+
+<div id="add_new">
+  <div class="layui-form-item">
+    <label class="layui-form-label">该通道名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="name" required id="name"  placeholder="请输入公司或个人名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">通道类型</label>
+    <div class="layui-input-block">
+      <select name="sql_name" lay-verify="required">
+        <option value="alipay_transf">支付宝转账码</option>
+
+      </select>
+    </div>
+  </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">展示给下级名称</label>
+         <div class="layui-input-block">
+          <input type="text" name="show_name" required   placeholder="请输入展示给下级名称" autocomplete="off" class="layui-input">
+    </div>
+    </div>
+</div> 
+<div id="add_sub_account" style="display: none">
+    
+          <div class="layui-form-item">
+            <label class="layui-form-label">主账户</label>
+            <div class="layui-input-block">
+              <select name="name_account"  lay-search id='top_account'>
+                      
+              </select>
+            </div>
+          </div>
+
+</div>
+
+ <div class="layui-form-item">
+        <label class="layui-form-label">设备号</label>
+         <div class="layui-input-block">
+          <input type="text" name="app_id" required  lay-verify="required" placeholder="请输入设备app_id" autocomplete="off" class="layui-input">
+    </div>
+    </div>
+
+
+<div id="mch_secret">
+
+</div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">通道手续费率</label>
+         <div class="layui-input-block">
+          <input type="text" name="fee" required  lay-verify="required|number" placeholder="0.01表示千分之一" autocomplete="off" value="0" class="layui-input">
+    </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">收款账户姓名</label>
+         <div class="layui-input-block">
+          <input type="text" name="receive_name" required  lay-verify="required" placeholder="请输入收款支付宝实名姓名" autocomplete="off" class="layui-input">
+    </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">收款账户PID</label>
+        <div class="layui-input-inline">
+      <input type="text" name="receive_amount" required lay-verify="required" placeholder="请输入收款支付宝账户PID" autocomplete="off" class="layui-input">
+      </div>
+      <div class="layui-form-mid layui-word-aux"><a target="_blank" href="https://openhome.alipay.com/platform/keyManage.htm?keyType=partner">点此获取账户PID</a></div>
+
+    </div>
+
+</div>
+
+    </div>
+  </div>
+    <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      <a class="layui-btn add_group" >添加分组</a>
+    </div>
+  </div>
+</div>
+
+</form>
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+//注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+layui.use(['form'], function(){
+  var form = layui.form,layer=layui.layer;
+  
+//提交表单
+
+
+  form.on('submit(formDemo)', function(data){
+
+      var data = data.field;
+
+    //console.log(data);return false;
+      $.post('{:url("sadmin/payment_account/add_aisle")}',data,function(res){
+
+
+        if(res.code == '0000'){
+          $('#name').val('');
+            layer.msg(res.msg);
+        }else{
+
+            layer.msg(res.msg);
+        }
+            
+
+      })
+
+      return false;
+  });
+
+$('.add_group').click(function(){
+
+
+  window.location.href = '{:url("sadmin/user/add_group")}';
+
+})
+  form.on('select(add_type)', function(data){
+
+  var value = data.value;
+  if(value == 1){
+
+    $('#add_new').css('display','block');
+    $('#add_sub_account').css('display','none');
+  }else{
+
+
+    $.post("{:url('sadmin/payment_account/top_account')}",{},function(data){
+
+        var html = '<option value="">请选择收款账户</option>';
+        $.each(data,function(index,item){
+            html += '<option value="'+item.id+'">'+item.name+'</option>'
+
+        })
+      console.log(html)
+      $('#top_account').html(html);
+      form.render('select'); //刷新select选择框渲染
+
+    })
+
+    $('#add_sub_account').css('display','block');
+    $('#add_new').css('display','none');
+
+
+
+  }
+
+
+
+});        
+
+form.on('select(is_enterprise)',function(data){
+console.log(1);
+
+  if(data.value == 0){
+
+     $('#mch_secret').html('');
+
+
+  }else{
+
+
+      var html = '<div class="layui-form-item"><label class="layui-form-label">商户APPID</label><div class="layui-input-block"><input type="text" name="mch_id" required  lay-verify="required" placeholder="请输入商户APPID" autocomplete="off" class="layui-input"></div></div><div class="layui-form-item layui-form-text"><label class="layui-form-label">商户生成的私钥</label><div class="layui-input-block"><textarea name="private_key" placeholder="请输入支付私钥" lay-verify="required" class="layui-textarea"></textarea></div></div><div class="layui-form-item layui-form-text"><label class="layui-form-label">支付宝公钥</label><div class="layui-input-block"><textarea name="public_key" placeholder="请输入支付公钥" lay-verify="required" class="layui-textarea"></textarea></div></div><div class="layui-form-item"><label class="layui-form-label">转账支付宝姓名</label><div class="layui-input-block"><input type="text" name="alipay_name" required  lay-verify="required" placeholder="请输入转账支付宝实名姓名" autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label">转账支付宝账户</label><div class="layui-input-block"><input type="text" name="alipay_amount" required lay-verify="required" placeholder="请输入转账支付宝账户" autocomplete="off" class="layui-input"></div><div class="layui-form-mid layui-word-aux"><a target="_blank" href="https://openhome.alipay.com/</div>';
+
+      $('#mch_secret').html(html);
+
+
+  }
+
+ 
+
+
+
+
+})
+
+
+
+
+
+
+});
+</script>

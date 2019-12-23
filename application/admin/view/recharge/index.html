@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="__ADMIN__css/shop.css" type="text/css" rel="stylesheet"/>
+    <link href="__ADMIN__css/Sellerber.css" type="text/css" rel="stylesheet"/>
+    <link href="__ADMIN__css/bkg_ui.css" type="text/css" rel="stylesheet"/>
+    <link href="font/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <script src="__ADMIN__js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="__ADMIN__js/jquery.cookie.js"></script>
+    <script src="__ADMIN__js/shopFrame.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/Sellerber.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/layer/layer.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/laydate/laydate.js" type="text/javascript"></script>
+    <script type="text/javascript" src="__ADMIN__js/proTree.js"></script>
+    <script src="__ADMIN__js/dist/echarts.js" type="text/javascript"></script>
+    <!--[if lt IE 9]>
+    <script src="__ADMIN__js/html5shiv.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/respond.min.js"></script>
+    <script src="__ADMIN__js/css3-mediaqueries.js" type="text/javascript"></script>
+    <![endif]-->
+    <title>已支付</title>
+</head>
+
+<body>
+<div class="margin" id="page_style">
+    <div class="operation clearfix mb15 same_module">
+        <form action="/admin/Recharge/index.html">
+        <ul class="choice_search">
+            <li style="min-width:280px;margin-bottom: 10px" class="clearfix col-xs-2 col-lg-3 col-ms-3 "><label class="label_name ">商户单号：</label>
+                <input placeholder="输入商户订单号" value="{:input('get.order_num')}" name="order_num" type="text" class="form-control col-xs-8 col-lg-8 col-ms-8">
+            </li>
+            <li style="min-width:280px;margin-bottom: 10px" class="clearfix col-xs-2 col-lg-3 col-ms-3"><label class="label_name ">平台单号：</label>
+                <input placeholder="请输入平台单号" value="{:input('get.id')}" name="id" type="text" class="form-control col-xs-8 col-lg-8 col-ms-8">
+            </li>
+            <li style="min-width:280px;margin-bottom: 10px" class="clearfix col-xs-2 col-lg-3 col-ms-3"><label class="label_name ">开始时间：</label>
+                <input class="inline laydate-icon form-control Select_Date" name="start_time" id="start">
+            </li>
+            <li style="min-width:280px;margin-bottom: 10px" class="clearfix col-xs-2 col-lg-3 col-ms-3"><label class="label_name ">结束时间：</label>
+                <input class="inline laydate-icon form-control Select_Date" name="end_time" id="end">
+            </li>
+
+            <li style="min-width:180px;margin-bottom: 10px" class="clearfix col-xs-2 col-lg-2 col-ms-2"><label class="label_name ">订单状态：</label>
+                <select name="pay_status" class="margin-right l_f select_style">
+                      <option value="1">已完成</option>
+  <option value="2">未完成</option>
+  <option value="0">全部</option>
+                </select>
+            </li>
+
+         <li style="min-width:180px;margin-bottom: 10px" class="clearfix col-xs-1 col-lg-1 col-ms-1"><label class="label_name ">出入金：</label>
+                <select name="order_type" class="margin-right l_f select_style">
+                        <option value="1">入金</option>
+  <option value="2">出金</option>
+  <option value="0">全部</option>
+                </select>
+            </li>
+
+                        <li style="min-width:180px;margin-bottom: 10px" class="clearfix col-xs-2 col-lg-2 col-ms-2"><label class="label_name ">回调状态：</label>
+                <select name="notify_url_info" class="margin-right l_f select_style">
+                      <option>全部</option>
+    <option value="0">未触发</option>
+    <option value="1">success</option>
+    <option value="2">fail</option>
+    <option value="3">参数错误</option>
+                </select>
+            </li>
+            <li style="width:200px;margin-bottom: 10px" class="clearfix col-xs-1 col-lg-1 col-ms-1 ">
+              <a>总金额：</a>
+              <span style="color: red;font-size: 20px;">{$sum_amount/100}</span>
+            </li>
+
+
+            <li class="clearfix col-xs-1 col-lg-1 col-ms-1 ">
+                <button type="submit" class="btn button_btn bg-deep-blue "><i class="icon-search"></i>查询</button>
+            </li>
+        </ul>
+        </form>
+    </div>
+    <div class="h_products_list clearfix mb15" id="Sellerber">
+        <!--品牌展示-->
+        <div class="Sellerber_left menu" id="menuBar">
+            <div class="show_btn" id="rightArrow"><span></span></div>
+            <div class="menu_style" id="menu_style">
+                <div class="list_content">
+
+                </div>
+            </div>
+        </div>
+        <!--品牌列表-->
+        <div class="list_Exhibition list_show padding15">
+            <div class="operation clearfix mb15  same_module">
+       <span class="l_f">
+        <a href="/admin/Recharge/index.html?{$get_srt}excel=1" title="添加品牌" class="btn button_btn bg-deep-blue"><i class="fa fa-plus"></i>导出数据</a>
+<?php
+$jr_start_time = date('Y-m-d 00:00:00');
+$jr_end_time = date('Y-m-d 23:59:59');
+
+$zr_start_time = date('Y-m-d 00:00:00',strtotime("-1 day"));
+$zr_end_time = date('Y-m-d 23:59:59',strtotime("-1 day"));
+?>
+
+        <a href="/admin/Recharge/index.html?start_time={$jr_start_time}&end_time={$jr_end_time}&order_type=0" class="btn  button_btn btn-danger"><i class="fa fa-trash"></i>今日订单</a>
+        <a href="/admin/Recharge/index.html?start_time={$zr_start_time}&end_time={$zr_end_time}&order_type=0" class="btn button_btn btn-Dark-success">昨日订单</a>
+       </span>
+                <!--<span class="r_f">共：<b>234</b>笔</span>-->
+            </div>
+            <div class=" datalist_show">
+                <div class="datatable_height confirm">
+                    <table class="table table_list table_striped table-bordered" id="sample-table">
+                        <thead>
+                        <tr>
+                            <th width="25px"><label><input type="checkbox" class="ace"><span class="lbl"></span></label>
+                            </th>
+                            <th width="80px">序号</th>
+                            <th >入金/出金</th>
+                            <th >平台订单号</th>
+                            <th >商户订单号</th>
+                            <th >支付方式</th>
+                            <th >生成时间</th>
+                            <th >支付时间</th>
+                            <th >付款金额</th>
+                            <th >手续费</th>
+                            <th >订单状态</th>
+                            <th >实际到账</th>
+                            <th >账户余额</th>
+                            <th >商户回调状态</th>
+                            <th >通知次数</th>
+                            <th >订单备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="order_data" id="vo"}
+<?php
+
+
+
+$vo['pay_amount'] = $vo['order_type']==1||$vo['note_ext']=='退款'?$vo['pay_amount']:-$vo['pay_amount'];
+
+
+$vo['ext'] = $vo['ext']==null?'&nbsp;':$vo['ext'];
+?>
+
+                        <tr>
+                            <td width="25px"><label><input type="checkbox" class="ace"><span class="lbl"></span></label>
+                            </td>
+                            <td>{$i}</td>
+                            <td class=""><?php echo $vo['order_type']==1?'入金':'出金';?></td>
+                            <td class="">{$login_user.merchant_cname}_{$vo.id}</td>
+                            <td class="">{$vo.order_num}</td>
+                            <td>{$vo.show_name} {$vo.note_ext}</td>
+                            <td>{:date('Y-m-d H:i:s',$vo.accept_time)}</td>
+                            <td><?php
+if($vo['pay_time']==0){
+  echo "未支付";
+}else{
+  echo date('Y-m-d H:i:s',$vo['pay_time']);
+}
+?></td>
+                            <td>{$vo.pay_amount/100}</td>
+                            <td>{$vo.this_fee/100}</td>
+                            <td>
+	
+                              {if condition="$vo['order_type'] == 1"}
+                              
+                              	{if condition="$vo['pay_status'] == 1"}
+                              		<span class="label label-success">支付成功</span>
+                              	{else}
+                              		<span class="label label-danger" style="background-color: #D15B47 !important;">未支付</span>
+                              	{/if}
+                              {else}
+                              	
+                              	{if condition="$vo['pay_time'] == 0"}
+                              		<span class="label label-danger" style="background-color: #D15B47 !important;">已提交</span>
+                              	{else}
+                              		<span class="label label-success">交易完成</span>
+                              	{/if}
+                              
+                              
+                              
+                              {/if}
+                          
+                          </td>
+                            <td><?php
+
+if($vo['pay_time']==0){
+  echo "未支付";
+}else{
+  if($vo['order_type']==1){
+    echo ($vo['pay_amount']-$vo['this_fee'])/100;
+  }else{
+    echo $vo['pay_amount']/100;
+  }
+  
+}
+
+?></td>
+                            <td>{$vo.this_money/100}</td>
+                            <td>
+                              
+                            {switch name="$vo['notify_url_info']"}
+                              {case value="1"}<span class="label label-success">success</span>{/case}
+                              {case value="2"}<span class="label label-danger" style="background-color: #D15B47 !important;">fail</span>{/case}
+                              {case value="3"}<span class="label label-danger" style="background-color: #D15B47 !important;">返回参数错误</span>{/case}
+                              {case value="0"}<span class="label label-danger" style="background-color: #D15B47 !important;">未触发</span>{/case}
+                          	{/switch}
+                              
+                          </td>
+                            <td>{$vo.notice_num}</td>
+                            <td>{$vo.ext}</td>
+                            <td>
+
+<?php
+if($vo['pay_time']>1&&$vo['order_type']==1){
+?>	
+								<a title="删除" href="javascript:;" value="{$vo.id}" class="repeat_notify_url btn btn-xs label-success">补发通知</a>
+<?php
+}?>
+
+                            </td>
+                        </tr>
+                    {/volist}
+                        </tbody>
+                    </table>
+                    <div class="larry-table-page clearfix">
+              
+              <div style="float: left;padding-top: 10px">
+                {$order_data->render()}
+              </div>
+
+
+              <!--<a style="float: right;margin-right: 15px;">共<span style="color: red;font-size: 20px;">{$list_number}</span>笔</a>-->
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+<script>
+$('.repeat_notify_url').click(function(){
+    if ($(this).parents('tr').find('.order_num').text()=="提现") {
+      alert('提现订单，无补发地址');
+      return false;
+    }
+    if ($(this).parents('tr').find('.pay_time').text()=="未支付") {
+      alert('订单未付款，无法补发');
+      return false;
+    }
+    var msg = "确定补发通知？";
+    if (confirm(msg)==true){
+      var id = $(this).attr('value');
+      $.ajax({
+        url:'/api/Notify/repeat_notify_url.html',
+        data:{
+          id:id
+        },
+        dataType:'html',
+        success:function(data){
+
+          alert('补发成功，商户返回：'+data);
+
+          location.reload();
+        }
+      })
+    }
+  })
+  $('.del_order').click(function(){
+    var msg = "确定删除订单？";
+    if (confirm(msg)==true){
+      var id = $(this).attr('value');
+      $.ajax({
+        url:'/admin/Recharge/del_order.html',
+        data:{
+          id:id
+        },
+        type:'post',
+        dataType:'html',
+        success:function(data){
+          // console.log(data);return ;
+          alert(data);
+          location.reload();
+        }
+      })
+    }
+  })
+
+    //设置时间
+    laydate({
+        elem: '#start',
+        event: 'focus'
+    });
+    laydate({
+        elem: '#end',
+        event: 'focus'
+    });
+</script>
+

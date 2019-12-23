@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Integrated Software Management</title>
+    <link rel="stylesheet" type="text/css" href="/static/index/css/login_main.css">
+    <script type="text/javascript" src="/static/index/js/login_background.js"></script>
+    <script src="/static//jq/jQuery1.9.1.js"></script>
+    <script src="/static//jq/public_fun.js"></script>
+    <script type="text/javascript" src="/static/layer-v3.1.0/layer/layer.js"></script><link rel="stylesheet" href="/static/layer-v3.1.0/layer/theme/default/layer.css?v=3.1.0" id="layuicss-layer">
+</head>
+<body style="background-color:#0086b3;">
+<div id="main_container">
+    <!-- <div class="landscape"></div>
+    <div class="filter"></div> -->
+    <h1>Integrated-Sys Console</h1>
+
+   <!-- <canvas id="canvas"></canvas>-->
+
+    <div class="content">
+        <div id="login">
+            <form id="login_form" method="post">
+                <ul>
+                    <li>
+                        <i><img src="/static/index/img/login_user.png"></i>
+                        <span class="login_line">|</span>
+                        <input type="text"name="username" id="user_name" class="login_number" placeholder="Account@email">
+                    </li>
+                    <li>
+                        <i><img src="/static/index/img/login_locked.png"></i>
+                        <span class="login_line">|</span>
+                        <input type="password" name="userpwd" id="password" class="login_number" placeholder="Password">
+                    </li>
+                    <li style="width: 180px;margin-left: 190px;">
+                        <i><img src="/static/index/img/login_write.png"></i>
+                        <span class="login_line">|</span>
+                        <input type="text" name="useryz" class="login_code" placeholder="Vali-Code">
+                    </li>
+                    <span class="login_code_icon"><img style="width: 100%;height: 100%;" id="validation_img" src="{:captcha_src()}"  alt="change" title="change" onClick="this.src='{:captcha_src()}?seed='+Math.random()"/></span>
+                </ul>
+                <!--<div class="login_layout">
+                    记住密码
+                    <input type="checkbox" id="rememberPassWord" /><span class="login_text">Remember</span>
+                </div>-->
+				<div  style="margin: -8px 0 -8px 219px;">
+                        <div class="login_forget_password" ><a href="/index/Registered/register.html" style="color:rgb(255,255,255,0.6);margin-left:12px">Register Now?</a></div>
+                 </div>
+                <div class="login_layout">
+                    <button type="submit" class="login_button" style="background-color:#ffaa00;">Login...</button>
+                </div>
+				
+
+            </form>
+        </div>
+    </div>
+    <!-- 尾部 start-->
+    <div class="footer">
+        <div class="footer_text_1">Integrated System.</div>
+        <div class="footer_text_2">2019 @ &nbsp;Copyright◎All &nbsp;Rights&nbsp;Reserved</div>
+    </div>
+    <!-- 尾部 end-->
+</div>
+
+</body>
+<script type="text/javascript" src="/static/index/js/page/login.js"></script>
+<script type="text/javascript">
+    function Star(id, x, y) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.r = Math.floor(Math.random() * 2) + 1;
+        var alpha = (Math.floor(Math.random() * 10) + 1) / 10 / 2;
+        this.color = "rgba(255,255,255," + alpha + ")";
+    }
+    Star.prototype.draw = function() {
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = this.r * 2;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
+        ctx.closePath();
+        ctx.fill();
+    }
+    Star.prototype.move = function() {
+        this.y -= .15;
+        if (this.y <= -10) this.y = HEIGHT + 10;
+        this.draw();
+    }
+    Star.prototype.die = function() {
+        stars[this.id] = null;
+        delete stars[this.id];
+    }
+
+    function Dot(id, x, y, r) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.r = Math.floor(Math.random() * 5) + 1;
+        this.maxLinks = 2;
+        this.speed = .5;
+        this.a = .5;
+        this.aReduction = .005;
+        this.color = "rgba(255,255,255," + this.a + ")";
+        this.linkColor = "rgba(255,255,255," + this.a / 4 + ")";
+        this.dir = Math.floor(Math.random() * 140) + 200;
+    }
+    Dot.prototype.draw = function() {
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = this.r * 2;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
+        ctx.closePath();
+        ctx.fill();
+    }
+    Dot.prototype.link = function() {
+        if (this.id == 0) return;
+        var previousDot1 = getPreviousDot(this.id, 1);
+        var previousDot2 = getPreviousDot(this.id, 2);
+        var previousDot3 = getPreviousDot(this.id, 3);
+        if (!previousDot1) return;
+        ctx.strokeStyle = this.linkColor;
+        ctx.moveTo(previousDot1.x, previousDot1.y);
+        ctx.beginPath();
+        ctx.lineTo(this.x, this.y);
+        if (previousDot2 != false) ctx.lineTo(previousDot2.x, previousDot2.y);
+        if (previousDot3 != false) ctx.lineTo(previousDot3.x, previousDot3.y);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    function getPreviousDot(id, stepback) {
+        if (id == 0 || id - stepback < 0) return false;
+        if (typeof dots[id - stepback] != "undefined") return dots[id - stepback];
+        else return false; //getPreviousDot(id - stepback);
+    }
+    Dot.prototype.move = function() {
+        this.a -= this.aReduction;
+        if (this.a <= 0) {
+            this.die();
+            return
+        }
+        this.color = "rgba(255,255,255," + this.a + ")";
+        this.linkColor = "rgba(255,255,255," + this.a / 4 + ")";
+        this.x = this.x + Math.cos(degToRad(this.dir)) * this.speed,
+            this.y = this.y + Math.sin(degToRad(this.dir)) * this.speed;
+        this.draw();
+        this.link();
+    }
+    Dot.prototype.die = function() {
+        dots[this.id] = null;
+        delete dots[this.id];
+    }
+    var canvas = document.getElementById('canvas'),
+        ctx = canvas.getContext('2d'),
+        WIDTH,
+        HEIGHT,
+        mouseMoving = false,
+        mouseMoveChecker,
+        mouseX,
+        mouseY,
+        stars = [],
+        initStarsPopulation = 80,
+        dots = [],
+        dotsMinDist = 2,
+        maxDistFromCursor = 50;
+    setCanvasSize();
+    init();
+
+    function setCanvasSize() {
+        WIDTH = document.documentElement.clientWidth,
+            HEIGHT = document.documentElement.clientHeight;
+
+        canvas.setAttribute("width", WIDTH);
+        canvas.setAttribute("height", HEIGHT);
+    }
+
+    function init() {
+        ctx.strokeStyle = "white";
+        ctx.shadowColor = "white";
+        for (var i = 0; i < initStarsPopulation; i++) {
+            stars[i] = new Star(i, Math.floor(Math.random() * WIDTH), Math.floor(Math.random() * HEIGHT));
+            //stars[i].draw();
+        }
+        ctx.shadowBlur = 0;
+        animate();
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+        for (var i in stars) {
+            stars[i].move();
+        }
+        for (var i in dots) {
+            dots[i].move();
+        }
+        drawIfMouseMoving();
+        requestAnimationFrame(animate);
+    }
+    window.onmousemove = function(e) {
+        mouseMoving = true;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        clearInterval(mouseMoveChecker);
+        mouseMoveChecker = setTimeout(function() {
+            mouseMoving = false;
+        }, 100);
+    }
+
+    function drawIfMouseMoving() {
+        if (!mouseMoving) return;
+
+        if (dots.length == 0) {
+            dots[0] = new Dot(0, mouseX, mouseY);
+            dots[0].draw();
+            return;
+        }
+        var previousDot = getPreviousDot(dots.length, 1);
+        var prevX = previousDot.x;
+        var prevY = previousDot.y;
+        var diffX = Math.abs(prevX - mouseX);
+        var diffY = Math.abs(prevY - mouseY);
+        if (diffX < dotsMinDist || diffY < dotsMinDist) return;
+        var xVariation = Math.random() > .5 ? -1 : 1;
+        xVariation = xVariation * Math.floor(Math.random() * maxDistFromCursor) + 1;
+        var yVariation = Math.random() > .5 ? -1 : 1;
+        yVariation = yVariation * Math.floor(Math.random() * maxDistFromCursor) + 1;
+        dots[dots.length] = new Dot(dots.length, mouseX + xVariation, mouseY + yVariation);
+        dots[dots.length - 1].draw();
+        dots[dots.length - 1].link();
+    }
+    //setInterval(drawIfMouseMoving, 17);
+    function degToRad(deg) {
+        return deg * (Math.PI / 180);
+    }
+</script>
+</html>

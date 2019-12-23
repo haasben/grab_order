@@ -1,0 +1,490 @@
+{include file="common/head"}
+<body class="body">
+
+<form class="layui-form layui-form-pane" action="/nagent/User/account.html" style="">
+    <div class="layui-form-item" style="margin:20px 0px 30px 0px;">
+
+        <span class="layui-form-label" style="height:30px;line-height:30px;font-size:12px;padding:0px;">下级代理编号：</span>
+        <div class="layui-input-inline">
+            <input type="text" name="uid" autocomplete="off" placeholder="请输入搜索条件" class="layui-input" style="height:30px;line-height:30px;font-size:12px;">
+        </div>
+        <button class="layui-btn layui-btn-small" type="submit">确定</button>
+        <a class="layui-btn layui-btn layui-btn-normal add_group layui-btn-xs" style="margin-left:10px;height:30px;line-height:30px;font-size:12px;">添加下级代理</a>
+    </div>
+</form>
+
+<style type="text/css">
+  th{
+  	border:1px solid #ccc !important;
+  }
+    .receivables_data td{
+        text-align: center;
+      	border:1px solid #ccc !important;
+    }
+
+
+</style>
+<table class="layui-table" lay-even="" lay-skin="nob" style="border-collapse:collapse !important;border:1px solid #ccc">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>注册时间</th>
+        <th>登陆时间</th>
+        <th><a href="/Userhtml?admin_status=1">状态</a></th>
+
+        <th>申请人</th>
+      	<th>通道列表</th>
+        <th>收/派单金额</th>
+        <th>收单率</th>
+        <th>成功率</th>
+      	<th>保证金</th>
+        <th>冻结金额</th>
+      	<th>今日总额</th>
+      	<th>挂码在线数 / 总量 / 开启中</th>
+
+        <th>收款功能</th>
+		 <th>操作</th> 
+    </tr>
+    </thead>
+    <tbody>
+{volist name="user_data" id="vo"}
+
+    <tr class="receivables_data">
+        <td class="auth_number_1">{$vo.merchant_cname}_{$vo.id}</td>
+        <td class="auth_time_1">{:date('Y-m-d H:i:s',$vo.join_time)}</td>
+        <td class="auth_login_1">{:date('Y-m-d H:i:s',$vo.login_time)}</td>
+        <td class="auth_status_1">{$vo.level_name}</td>
+
+        <td class="auth_apply_1">{$vo.name}</td>
+      	 <td class="auth_settlement_1">
+            {if condition="$vo['id'] !=$login_user['id']"}
+            <a href="javascript:;" class="user_fee" value="{$vo.id}">点击查看</a>
+            {else}
+
+            {volist name="$user_fee" id="u"}
+                {$u.channel_name}&nbsp;&nbsp;&nbsp;&nbsp;{$u.fee*1000}‰<br>
+            {/volist}
+
+            {/if}
+        </td>
+      
+        <td class="auth_money_1">{$vo.succ_count_sum/100}/{$vo.count_sum/100}</td>
+        <td class="auth_account_1">{$vo.succ_count}/{$vo.count}</td>
+        <td class="auth_settlement_1">{if condition="$vo.count_sum == 0"}100{else}
+            {:round($vo.succ_count/$vo.count*100,2)}
+        {/if}%</td>
+
+      <td class="auth_settlement_1">{$vo.margin/100}</td>
+      <td class="auth_settlement_1">{$vo.freeze/100}</td>
+      <td class="auth_settlement_1"><a href="javascript:;" class="today_money_num" value="{$vo.id}">点击查看</a></td>
+      <td class="auth_settlement_1"><a href="javascript:;" class="code_num" value="{$vo.id}">点击查看</a></td>
+      <td class="auth_settlement_1">
+        {if condition="$vo.is_open == 1"}<b style="color:#009688">已开启</b>{else}<b style="color:red">已关闭</b>{/if}
+      </td>
+      
+ <td class="auth_operation_1">
+		<a value="{$vo.id}" class="layui-btn layui-btn-small edit_users" style="height:25px;line-height:25px;font-size:12px">编辑</a> 
+  		 {if condition="$vo['id'] !=$login_user['id']"}
+   			<a value="{$vo.id}" class="layui-btn layui-btn-danger layui-btn-small debit" style="height:25px;line-height:25px;font-size:12px">上/下分</a> 
+            {if condition="$vo.is_open == 1"}
+                 <a value="{$vo.id}" class="open_pay layui-btn layui-btn-small layui-btn-normal" style="height:25px;line-height:25px;font-size:12px">关闭收款</a>
+            {else}
+                 <a value="{$vo.id}" class="open_pay layui-btn layui-btn-small " style="height:25px;line-height:25px;font-size:12px">开启收款</a>
+
+            {/if}
+   				<a href="/nagent/User/add_user_fee.html?id={$vo.id}" class="layui-btn layui-btn-small" value="{$vo.id}">增加通道</a>
+<!-- 			<a href="/nagent/User/go_merchants.html?id={$vo.id}" target="_blank"><button class="layui-btn layui-btn-small" >商户后台</button></a> -->
+            {/if}
+      </td>
+      
+    </tr>
+
+{/volist}
+
+    </tbody>
+</table>
+  {$user_data->render()}
+  
+<div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-10">
+
+</div>
+
+<script type="text/javascript" src="/static/sadmin/frame/layui/layui.js"></script>
+<script type="text/javascript">
+$(function(){
+  		
+  	$('.today_money_num').click(function(){
+        var index = layer.load(1, {
+          shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        var uid = $(this).attr('value');
+        var this_ele = $(this);
+        $.post('{:url("nagent/user/today_sum_money")}',{uid:uid},function(data){
+
+            if(data.code == '0000'){
+                layer.close(index);
+                this_ele.text(data.data);
+            }else{
+
+                layer.msg(data.msg,{icon:5,time:1500});
+
+            }
+
+        });
+    })
+  
+  
+  	    $('.code_num').click(function(){
+		var index = layer.load(1, {
+          shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        var uid = $(this).attr('value');
+        var this_ele = $(this);
+        $.post('{:url("nagent/user/code_num")}',{uid:uid},function(data){
+
+            if(data.code == '0000'){
+				layer.close(index);
+                this_ele.text(data.data);
+            }else{
+
+                layer.msg(data.msg,{icon:5,time:1500});
+
+            }
+
+        });
+    })
+  	$('.debit').click(function(){
+            var id = $(this).attr('value');
+            console.log(id)
+            layer.prompt({title: '输入交易密码，并确认', formType: 1}, function(pass, index){
+              layer.close(index);
+              layer.prompt({title: '请输入增加的金额，单位元(-1表示减一元)', formType: 4}, function(text, index){
+                 layer.close(index);
+                layer.prompt({title: '请输入操作原因', formType: 4}, function(text1, index){
+
+                    $.post('{:url("nagent/user/debit_money")}',{pass:pass,money:text,id:id,text1:text1},function(data){
+
+                        if(data.code == '0000'){
+
+                            layer.close(index);
+                            layer.msg(data.msg,{icon: 1,time:2000},function(){
+                                    location.reload();
+                                });
+                        }else{
+
+                            layer.msg(data.msg);
+
+                        }
+
+                    })
+                 });
+              });
+            });
+
+        })
+  
+  
+  
+    $('[name=admin_status]').find('[value={:input('get.admin_status')}]').attr('selected','selected');
+    $('.redirect_key').click(function(){
+        var id = $(this).attr('value');
+        var redirect_key = prompt("请输入口令");
+        if (!redirect_key) {
+            return false;
+        }
+        $.ajax({
+            url:'/sadmin/User/redirect_key.html',
+            data:{
+                redirect_key:redirect_key,
+                id:id
+            },
+            type:'post',
+            dataType:'json',
+            success:function(data){
+                // console.log(data);return;
+                if (data.success==1) {
+                    alert(data.hint);
+                }
+                location.reload();
+            }
+        })
+    })
+$('.add_group').click(function(){
+
+    layer.open({
+      type: 2,
+      title: '添加下级代理',
+      shadeClose: true,
+      shade: false,
+      maxmin: true, //开启最大化最小化按钮
+      area: ['600px', '600px'],
+      content: '{:url("nagent/user/add_users_group")}'
+    });
+ 
+
+
+})
+ $('.edit_users').click(function(){
+    var id = $(this).attr('value');
+
+    layer.open({
+      type: 2,
+      title: '编辑账户',
+      shadeClose: true,
+      shade: false,
+      maxmin: true, //开启最大化最小化按钮
+      area: ['600px', '600px'],
+      content: '{:url("nagent/user/edit_users")}?id='+id,
+    });
+ 
+
+
+})
+
+
+    $('.enable').click(function(){
+        var state = $(this).attr('state');
+        //账户状态
+        
+        if (state==100) {
+            alert('无法对超级管理员进线操作');
+            return false;
+        }
+        var id = $(this).attr('value');
+        if (state==3) {
+            var code = prompt("请输入确认删除代码", "");
+            if (code) {
+                if (code!=3333) {
+                    alert('代码错误');
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }else{
+            var msg = '确定'+$(this).text()+'?';
+            if (confirm(msg)!=true) {
+                return false;
+            }
+        }
+        //用户id
+        $.ajax({
+            url:'/sadmin/User/update_enable.html',
+            data:{
+                state:state,
+                id:id
+            },
+            type:'post',
+            dataType:'html',
+            success:function(data){
+                alert(data);
+                location.reload();
+            }
+        })
+    })
+})
+
+$(function(){
+    $('.open_pay').click(function(){
+        
+        var id = $(this).attr('value');
+        var msg = '确定'+$(this).text()+'?';
+        if (confirm(msg)!=true) {
+            return false;
+        }
+
+        //用户id
+        $.ajax({
+            url:'/nagent/User/update_open_pay.html',
+            data:{
+                id:id
+            },
+            type:'post',
+            dataType:'json',
+            success:function(data){
+                if(data.code == '0000'){
+                    layer.msg(data.msg,{icon:1,time:1000},function(){
+                        location.reload();
+                    })
+                    
+                }else{
+                     layer.msg(data.msg,{icon:5,time:1500});
+
+                }
+                
+            }
+        })
+    })
+
+    $('.fee').click(function(){
+        var id = $(this).attr('value');
+        var fee = prompt("请输入费率（35表示3.5%手续费）",$(this).attr('fee'));
+        if (!fee) {
+            return false;
+        }
+        var re = /^[0-9]+.?[0-9]*$/;
+        if (!re.test(fee)) {
+            alert("请输入数字");
+            return false;
+    　　}
+        
+
+        //用户id
+        $.ajax({
+            url:'/sadmin/User/update_fee.html',
+            data:{
+                fee:fee,
+                id:id
+            },
+            type:'post',
+            dataType:'html',
+            success:function(data){
+                alert(data);
+                location.reload();
+            }
+        })
+    })
+
+})
+
+</script>
+
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,layer = layui.layer;
+	
+	$('.user_fee').click(function(){
+
+        var id = $(this).attr('value');
+        layer.open({
+        type: 2,
+        title: '通道管理',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['70%', '80%'],
+        content: '{:url("nagent/channel/index")}?uid='+id
+      });
+
+
+
+    })  
+      
+    $('.my_code').click(function(){
+
+    $.post('{:url("sadmin/user/get_code")}',function(data){
+
+        if(data.code == '0000'){
+
+            var content = data.url;
+        }else{
+            var content = data.msg;
+        }
+        layer.open({
+          type: 1,
+          skin: 'layui-layer-demo', //样式类名
+          closeBtn: 0, //不显示关闭按钮
+          anim: 2,
+          shadeClose: true, //开启遮罩关闭
+          content: '<img src="'+content+'">'
+        });
+
+    })
+
+
+
+
+});
+       
+
+$('.set_fee').click(function(){
+
+
+    layer.open({
+      type: 2,
+      title: '全名费率设置',
+      shadeClose: true,
+      shade: false,
+      maxmin: true, //开启最大化最小化按钮
+      area: ['600px', '600px'],
+      content: '{:url("sadmin/user/set_fee")}'
+    });
+ 
+
+
+})
+
+    $("body").on("click",".add_bans",function(){  //违禁增加
+        var _this = $(this);
+        var id = _this.attr('value');
+        console.log(id);
+        layer.confirm('确定增加该用户违规次数吗？',{icon:3, title:'提示信息'},function(index){
+
+            $.ajax({
+                    url : "{:url('sadmin/user/add_bans')}?id="+id,
+                    type : "get",
+                    dataType : "json",
+                    success : function(data){
+                        if(data.code == '0000'){
+                            layer.close(index);
+                            // _this.parents("tr").remove();
+                            layer.msg(data.msg,{icon:1,time:1500},function(){
+
+                                location.reload();
+                            });
+
+                        }else{
+                            layer.msg(data.msg,{icon:5,time:1500});
+                        }
+
+                    }
+
+            })
+
+
+            
+        });
+    })
+      
+
+
+        //日期
+        laydate.render({
+            elem: '#date'
+        });
+        laydate.render({
+            elem: '#date1'
+        });
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            });
+            return false;
+        });
+
+
+    });
+  function get_key(id){
+
+      layer.open({
+        type: 2,
+        title: '密钥',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['500px', '300px'],
+        content: '{:url("sadmin/user/get_key")}?id='+id
+      });
+
+}
+</script>
+
+</body>
+</html>

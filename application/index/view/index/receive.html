@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>别偷看</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+<style type="text/css">
+  .gray-bg{
+
+      padding: 40px;
+	  
+  }  
+
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated">
+<form class="layui-form" action="">
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+
+                <table class="layui-table" >
+                    <thead>
+                    <tr>
+                        <th style="font-size:24px;font-weight:bold;line-height:40px;">设备编号</th>
+                        <th style="font-size:24px;font-weight:bold;">信息（Info）</th>
+                        <th style="font-size:24px;font-weight:bold;">时间（Time）</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="data" id="v"}
+                    <tr onMouseOver="this.style='font-weight:bold;color:red;'" onMouseOut="this.style='font-weight:normal;color:blank;'">    
+                        <td style="font-size:24px;line-height:35px;">{:substr($v.msg.0,20,8)}</td>
+                        <td style="font-size:24px;line-height:35px;">{$v.msg.2}</td>
+                        <td style="font-size:24px;line-height:35px;">{$v.time}</td>
+                    </tr>  
+                        {/volist}                 
+                        </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+</body>
+</html>

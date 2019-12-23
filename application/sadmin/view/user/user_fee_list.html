@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>商户费率</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="__SADMIN__/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="__SADMIN__/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <style>
+
+    </style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated">
+<form class="layui-form" action="">
+<div class="row">
+    <div class="col-md-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>商户编号：{$users_data.merchant_cname}_{$users_data.id}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;商户申请人：{$users_data.name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;公司名称：{$users_data.company}</h5>
+            </div>
+            <!--条件查询-->
+            <div class="ibox-content">
+
+                <table class="layui-table" >
+                    <thead>
+                    <tr>
+
+                        <th>通道编码</th>
+                        <th>通道名称</th>
+
+                        <th>商户费率(千分)</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="fee_list" id="v"}
+                    <tr>    
+
+                            <td>{$v.code}</td>
+                            <td>{$v.channel_name}</td>
+                            <td>{$v.fee*1000}‰</td>
+    
+                    </tr>  
+                        {/volist}                 
+
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>红云支付线上管理系统</title>
+		<link rel="stylesheet" href="__SADMIN__css/index2.css" />
+		<style>
+			td,th{
+				white-space: nowrap;/*不换行*/
+			}
+			tr:nth-child(even){
+				background: #e5f0f3;
+			}
+			.ext{
+				display: inline-block;   
+			    white-space: nowrap;
+			    width: 280px;
+			    border:none;
+			    border-bottom: 1px solid #ccc;
+			    overflow: hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+	<div class="box">
+{include file="common/header" /}
+		<div class="content">
+{include file="common/left" /}
+		<div class="content_right">
+		<form action="/sadmin/Recharge/index.html">
+		<div class="input_group">
+		商户编号：<input type="search" value="{:input('get.uid')}" name="uid">
+		</div>
+		<div class="input_group">
+		商户单号：<input value="{:input('get.order_num')}" type="text" name="order_num">
+		</div>
+		
+		<div class="input_group">
+		开始时间：<input type="datetime-local" name="start_time" style="width: 180px;">
+		</div>
+		<div class="input_group">
+		结束时间：<input type="datetime-local" name="end_time" style="width: 180px;">
+		</div>
+		<div class="input_group">
+		机构单号：<input value="{:input('get.id')}" type="text" name="id">
+		</div>
+
+		
+        
+		<div class="input_group">
+		订单状态：<select name="pay_status">
+		<option value="1">已支付</option>
+		<option value="2">未支付</option>
+		<option value="0">全部</option>
+		</select>
+		</div>
+         
+        <div class="input_group">
+		回调状态：<select name="notify_url_info">
+		<option value="全部">全部</option>
+		<option value="0">未触发</option>
+		<option value="1">success</option>
+		<option value="2">fail</option>
+		<option value="3">参数错误</option>
+		</select>
+		</div>
+
+
+
+		<div class="input_group">
+		流水号：<input value="{:input('get.trade_no')}" type="text" name="trade_no">
+		</div>
+        	
+        <div class="input_group">
+		回调状态：<select name="pay_type" style="width: 150px;">
+		<option value="0">全部</option>
+
+{volist name="top_account_assets" id="vo"}
+		<option value="{$vo.id}">{$vo.name}</option>
+{/volist}
+		</select>
+		</div>
+
+
+		<div class="input_group">
+		<button  style="color: white;">确定</button>
+		</div>
+		</form><br/>
+
+<div style="position: absolute;margin-top: 50px;">
+ 		<div class="zong">
+		总充值:<span id="sum_money">{$sum_amount/100}</span>元</div>
+		
+
+		<table>
+		<thead>
+
+		<th>下级编号</th>
+        <th>平台单号</th>
+		<th>下级单号</th>
+		<th>生成时间</th>
+		<th>订单状态</th>
+		<th>支付时间</th>
+		<th>付款金额</th>
+		<th>下级手续费</th>
+		<th>上级手续费</th>
+		<th>利润</th>
+		<th>利润余额</th>
+		<th>支付方式</th>
+		<th>上级到账</th>
+		<th>上级余额</th>
+		
+		<th>下级到账</th>
+		<th>下级余额</th>
+		<th>商户回调状态</th>
+		<th>通知次数</th>
+		<th>流水号</th>
+		<th>订单备注</th>
+		<th>操作</th>
+		
+		</thead>
+		
+
+{volist name="order_data" id="vo"}
+<?php
+
+if($vo['notify_url_info']==1){
+	$vo['notify_url_info'] = "success";
+}elseif($vo['notify_url_info']==2){
+	$vo['notify_url_info'] = "fail";
+}elseif($vo['notify_url_info']==3){
+	$vo['notify_url_info'] = "返回参数错误";
+}elseif($vo['notify_url_info']==0){
+	$vo['notify_url_info'] = "未触发";
+}
+
+$vo['ext'] = $vo['ext']==null?'&nbsp;':$vo['ext'];
+?>
+		<tr>
+		<td>{$vo.merchant_cname}_{$vo.uid}</td>
+        <td>{$vo.merchant_cname}_{$vo.id}</td>
+		<td class="order_num">{$vo.order_num}</td>
+
+		<td>{:date('m-d H:i:s',$vo.accept_time)}</td>
+		<td>
+<?php
+if($vo['pay_status']==1){
+	echo "支付成功";
+}elseif($vo['pay_status']==3){
+	echo "支付失败";
+}else{
+	echo "未支付";
+}
+?>
+		</td>
+		<td class="pay_time"><?php
+if($vo['pay_time']==0){
+	echo "未支付";
+}else{
+	echo date('m-d H:i:s',$vo['pay_time']);
+}
+?></td>
+		<td>{$vo.pay_amount/100}</td>
+		<td>
+			{$vo.this_fee/100}  
+		</td>
+		<td>
+			{$vo.this_channel_fee/100}  
+        </td>
+		<td>{$vo.fee/100}</td>
+		<td>{$vo.this_profits_money/100}</td>
+		<td>{$vo.name}</td>
+		<td>
+<?php
+if($vo['order_type']==1){
+	if($vo['pay_time']==0){
+		echo "未支付";
+	}else{
+		echo ($vo['pay_amount']-$vo['this_channel_fee'])/100;
+	}
+
+}else{
+	echo -$vo['pay_amount']/100;
+}
+
+
+?>
+		</td>
+		
+		<td>{$vo.this_received_money/100}</td>
+		
+		<td>
+<?php
+
+if($vo['pay_time']==0){
+	echo "未支付";
+}else{
+	if($vo['order_type']==1){
+		echo ($vo['pay_amount']-$vo['this_fee'])/100;
+	}else{
+		echo -($vo['pay_amount']-$vo['this_fee'])/100;
+	}
+	
+}
+
+?>
+
+		</td>
+		<td>{$vo.this_money/100}</td>
+		<td>{$vo.notify_url_info}</td>
+		<td>{$vo.notice_num}</td>
+		<td>{$vo.trade_no}</td>
+		<td title="{$vo.ext}" class="ext">{$vo.ext}</td>
+		<td>
+<?php
+if($vo['order_type']==1){
+?>
+
+<button value="{$vo.id}" class="repeat_notify_url" style="font-size: 50%;color: #fff;line-height: 30px;height: 30px;">补发通知</button>
+<?php
+}
+?>
+		</td>
+		</tr>	
+{/volist}
+
+		</table>
+		{$order_data->render()}
+</div>
+<script type="text/javascript">
+$(function(){
+
+
+	$('.repeat_notify_url').click(function(){
+		alert()
+		if ($(this).parents('tr').find('.order_num').text()=="提现"||$(this).parents('tr').find('.order_num').text()=="提现单作废") {
+			alert('提现订单，无补发地址');
+			return false;
+		}
+		
+		if ($(this).parents('tr').find('.pay_time').text()=="未支付") {
+			alert('订单未付款，无法补发');
+			return false;
+		}
+
+
+		var msg = "确定补发通知？";
+		if (confirm(msg)==true){
+			var id = $(this).attr('value');
+			$.ajax({
+				url:'/api/Notify/repeat_notify_url.html',
+				data:{
+					id:id
+				},
+				type:'get',
+				dataType:'html',
+				success:function(data){
+
+					alert('补发成功，商户返回：'+data);
+
+					location.reload();
+				}
+			})
+		}
+	})
+})
+</script>
+		</div>
+
+
+		</div>
+		</div>
+
+		
+		
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					修改密码
+				</h4>
+			</div>
+			<div class="modal-body" style="height: 120px;">
+				
+					<form class="form-horizontal" role="form">
+	<div class="form-group">
+	
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="firstname" 
+				   placeholder="新密码" style="width: 269px;height: 35px">
+		</div>
+	</div>
+	<div class="form-group">
+		
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="lastname" 
+				   placeholder="确认密码" style="width: 269px;height: 34px;">
+		</div>
+	</div>
+					
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="button" class="btn btn-primary" style="width: 82px;height: 34px;">
+					提交更改
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div>
+	</body>
+</html>

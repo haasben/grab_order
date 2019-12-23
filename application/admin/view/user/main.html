@@ -1,0 +1,321 @@
+{include file="common/header"}
+
+<body id="iframe_box">
+<div id="index_style" style="height:100%" class="clearfix">
+    <div class="spacing_style"></div>
+    <div style="min-width:768px" class="margin-bottom clearfix ">
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+            <a href="javascript:;" class="tile-button btn_Plate bg-deep-blue">
+                <div class="carousel Module_info">
+                    <div class="left_img bg_color_bule">
+                        <i class="fa  fa-clock-o "></i>
+                        <h3>成交总量</h3>
+                    </div>
+                    <div class="right_info">{$sum_order_num}笔</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+            <a href="javascript:;" class="tile-button btn_Plate bg-green">
+                <div class="carousel Module_info">
+                    <div class="left_img bg_color_green">
+                        <i class="fa fa-shopping-cart"></i>
+                        <h3>今日订单</h3>
+                    </div>
+                    <div class="right_info">{$today_order_num}笔</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+            <a href="javascript:;" class="tile-button btn_Plate bg-yellow ">
+                <div class="carousel Module_info">
+                    <div class="left_img bg_color_yellow">
+                        <i class="fa  fa-comments-o"></i>
+                        <h3>总入金</h3>
+                    </div>
+                    <div class="right_info">{$user_data.recharge_sum/100}元</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+            <a href="javascript:;" class="tile-button btn_Plate bg-orange">
+                <div class="carousel Module_info">
+                    <div class="left_img bg_color_orange">
+                        <i class="fa fa-cny"></i>
+                        <h3>当前余额</h3>
+                    </div>
+                    <div class="right_info">{$user_data.money/100}元</div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+    <div style="min-width:768px" class="center  clearfix margin-bottom">
+        <div class="col-lg-7 col-xs-12 col-md-6 ">
+            <div class="Shops_info clearfix frame">
+                <div class="clear-box">
+                    <div class="col-xs-3">
+                        <ul class="padding list_info margin-top-3">
+                            <li class="money">{$user_data.recharge_sum/100} </li>
+                        </ul>
+                        <div class="prompt_name margin-top margin-b-3">充值总额</div>
+                    </div>
+                    <div class="col-xs-3">
+                        <ul class="padding list_info margin-top-3">
+                            <li class="money">{$user_data.withdrawal_sum/100}</li>
+                        </ul>
+                        <div class="prompt_name margin-top margin-b-3">提现总额</div>
+                    </div>
+                    <div class="col-xs-3">
+                        <ul class="padding list_info margin-top-3">
+                            <li class="money">{$user_data.fee_sum/100} </li>
+                        </ul>
+                        <div class="prompt_name margin-top margin-b-3">手续费总额</div>
+                    </div>
+                    <div class="col-xs-3">
+                        <ul class="padding list_info margin-top-3">
+                            <li class="money">{$user_data.money/100}</li>
+                        </ul>
+                        <div class="prompt_name margin-top margin-b-3">余额总和</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-lg-5 col-md-6">
+            <div class="admin_info frame clearfix">
+                <div class="title_name"><i></i> 商户手续费<!-- <a href="javascript:;">+更多</a> -->
+                </div>
+                <table class="record_list table table_list">
+                    <tbody>
+                    {volist name="user_fee_data" id="vo"}
+                    <tr>
+
+                        <td>{$vo.show_name}->{$vo.fee*100}%</td>
+                        <td>状态：<?php echo $vo['status']==1?'正常':'关闭';?></td>
+                        <td>结算方式：{$vo.settlement_way}</td>
+
+                    </tr>
+                    {/volist}
+
+                  
+                    </tbody>
+                </table>
+            </div>
+        </div>
+<?php
+$sum_money = 0 ;
+?>
+{volist name="user_fee_data" id="vo"}
+<?php
+$sum_money += $vo['money'];
+?>
+
+                           
+
+{/volist}
+
+    </div>
+    <div class="Order_form " style="min-width:768px">
+        <div class="col-xs-6 col-lg-7">
+            <div class="frame margin-right clearfix">
+<!--             <div class=" col-xs-12 margin-top">
+            <div class="admin_info frame clearfix">
+                <div class="title_name"><i></i> 余额详情
+                </div>
+                <table class="record_list table table_list">
+                    <tbody>
+                    <tr>
+                        <td>总余额：{$sum_money/100}元</td>
+                        <td>可结算余额:<?php echo ($sum_money-$sum_freeze)/100;?>元
+
+
+                        </td>
+                        <td>不可结算余额：{$sum_freeze/100}元</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div> -->
+                <div class="title_name"><i></i>余额详情</div>
+                <div class="clearfix">
+                    <div class="col-xs-4 col-lg-6 ">
+                        <div class="prompt_name"><i class="icon_Order"></i>总金额</div>
+                        <ul class="padding list_info">
+                            <li>{$sum_money/100}元 </li>
+      
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-lg-6">
+                        <div class="prompt_name"><i class="icon_Promotions"></i>可结算金额</div>
+                        <ul class="padding list_info">
+                            <li><?php echo ($sum_money-$sum_freeze)/100;?>元 </li>
+                   <!--          <li>支付宝 </li>
+                            <li>网银 </li> -->
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-lg-6">
+                        <div class="prompt_name"><i class="icon_Aftermarket"></i>不可结算金额</div>
+                        <ul class="padding list_info">
+                            <li>{$sum_freeze/100}元 </li>
+                          <!--   <li>36127.26 </li>
+                            <li>64723.00 </li> -->
+                        </ul>
+                    </div>
+<!--                     <div class="col-xs-3 col-lg-6 ">
+                        <div class="prompt_name"><i class="icon_Billing"></i>账户余额</div>
+                        <ul class="padding list_info">
+                            <li>426746.07 </li>
+                            <li>482468.32 </li>
+                            <li>483238.32 </li>
+                        </ul>
+                    </div> -->
+                </div>
+
+
+                <div class="dd_echarts">
+                    <div id="main" style="padding-top: 20px;width:100%; height:500px"></div>
+                </div>
+            </div> 
+        </div>
+        <div class="col-xs-6 ranking_style col-lg-5">
+            <div class="frame clearfix">
+                <div class="title_name"><i></i>最新订单</div>
+                <table class="table table_list ranking_list">
+                    <thead>
+                    <th width="50">序号</th>
+                    <th>类别</th>
+                    <th>订单号</th>
+                    <th>状态</th>
+                    <th width="80">金额</th>
+                    <th >时间</th>
+                    </thead>
+                    <tbody>
+{volist name="new_order" id="vo"}
+
+                    <tr>
+                        <td><em>{$key+1}</em></td>
+                        <td><?php echo $vo['order_type']==1?'充值':'提现';?></td>
+                        <td>{$vo.order_num}</td>
+                        <td><?php echo $vo['pay_status']==1?'已支付':'待支付';?></td>
+                        <td>{$vo.pay_amount/100}元 </td>
+                        <td>{:date('Y-m-d H:i:s',$vo['accept_time'])}</td>
+                    </tr>
+{/volist}               
+                   
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="__ADMIN__js/dist/echarts.js" type="text/javascript"></script>
+<script>
+    //设置框架
+    $(function () {
+        $("#iframe_box").frame({
+            float: 'left',
+            Scroll: '#index_style',
+            color_btn: '.skin_select',
+            Sellerber_menu: '.list_content',
+            page_content: '.list_show',//内容
+            datalist: ".datatable_height",//数据列表高度取值
+            time: '#set-time',
+        });
+    });
+
+    /*********************/
+    require.config({
+        paths: {
+            echarts: '__ADMIN__js/dist'
+        }
+    });
+    require(
+        [
+            'echarts',
+            // 'echarts/theme/macarons',
+            // 'echarts/chart/line',   // 按需加载所需图表，如需动态类型切换功能，别忘了同时加载相应图表
+            'echarts/chart/bar'
+        ],
+        function (ec, theme) {
+            var myChart = ec.init(document.getElementById('main'), theme);
+            option = {
+                title: {
+                    text: '历史充值金额/元',
+                    // subtext: '每周7天的交易记录'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                },
+                // toolbox: {
+                //     show: true,
+                //     feature: {
+                //         mark: {show: true},
+                //         dataView: {show: true, readOnly: false},
+                //         magicType: {show: true, type: ['line', 'bar']},
+                //         restore: {show: true},
+                //         saveAsImage: {show: true}
+                //     }
+                // },
+                calculable: true,
+                xAxis: [
+                    {
+                        type: 'category',
+                        boundaryGap: true,
+                        data: [
+                        {volist name="weeks_order" id="vo"}
+                        '{$key}', 
+                        {/volist}
+]
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        axisLabel: {
+                            formatter: '{value}'
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '金额',
+                        type: 'bar',
+                        data: [
+                        {volist name="weeks_order" id="vo"}
+                              {$vo.sum_amount}, 
+                  {/volist}
+
+                        ],
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true, //开启显示
+                                    position: 'top', //在上方显示
+                                    textStyle: { //数值样式
+                                        color: '#666',
+                                        fontSize: 14
+                                    }
+                                }
+                            }
+                        },
+                        // markPoint: {
+                        //     data: [
+                        //         {type: 'max', name: '最大值'},
+                        //         {type: 'min', name: '最小值'}
+                        //     ]
+                        // },
+                        markLine: {
+                            data: [
+                                {type: 'average', name: '平均值'}
+                            ]
+                        }
+                    }
+                ]
+            };
+
+            myChart.setOption(option);
+        }
+    );
+</script>

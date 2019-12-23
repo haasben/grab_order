@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在线客服</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+    <link rel="stylesheet" href="/static/magent/css/chat4.css">
+
+</head>
+<style>
+
+  
+</style>
+<body ontouchstart="" style="background-color:#f2f2f2;">
+  
+    <div id="status_img" style="z-index:999;position:fixed;top:20%;left:15%;visibility:hidden;">
+                              <img style="width:80%;height:auto;" src="/static/magent/img/drop.png"/>
+  </div>
+  
+<header class="nav-bar-header bg-white">
+    <a href="/magent/order/index">
+      	{if condition="$is_kefu==1"}
+        <div class="weui_left float-left"><img src="/static/magent/img/left.png"/>
+         {/if}
+        </div>
+    </a>
+    <div class="title" style="position:fixed;top:0px;z-index:998;width:100%;background-image:url(/static/magent/img/backs.png);background-repeat:no-repeat;background-position:left;background-size:35px 35px;" onclick="window.history.go(-1);">当前会话： {$username}</div>
+</header>
+<div class="order" style="position:fixed;top:35px;z-index:999;height:70px;background-color:#fff;">
+	
+	<div class="money_left">订单金额：<font color=red>{$order_data.pay_amount/100}</font></div>
+	<span class="order_status">状态：
+		{if condition="$order_data.pay_status == 2"}
+			<font color=red>进行中……</font>
+		{elseif condition="$order_data.pay_status == 3"}
+			<font color=#999999>已作废</font>
+      	{else}
+      		<font color=green>已完成</font>
+		{/if}
+	</span>
+  <div class="money_right">
+    {if condition="$is_kefu == 1"}
+	{if condition="$order_data.pay_status == 2"}
+	<a class="confirm_amount" style="border:1px dashed #ccc;padding-left:10px;height:30px;line-height:30px;margin-top:10px;margin-right:5px;background-color:red;color:#fff;cursor:default;">确认收款&nbsp;&nbsp;</a>
+    <a class="confirm_drop" style="border:1px dashed #ccc;padding-left:10px;height:30px;line-height:30px;margin-top:10px;margin-right:5px;background-color:#ff9900;color:#fff;cursor:pointer;">作废&nbsp;&nbsp;</a>
+    {elseif condition="$order_data.pay_status == 3"}
+    订单已作废
+    {else}
+    已确认收款
+	{/if}
+    
+    {else}
+    <a onclick="javascript:history.go(-1);" style="border:1px dashed #ccc;padding-left:10px;height:30px;line-height:30px;margin-top:10px;margin-right:5px;background-color:red;color:#fff;">取消订单&nbsp;&nbsp;</a>
+	{/if}
+    
+  </div>
+  	<div style="background-color:#e5e5ff;clear:both;border-top:1px dashed #ccc;border-bottom:1px solid #ccc;font-size:12px;text-align:left;padding-left:10px;line-height:20px;">温馨提示：当前聊天系统监控中，请务必仔细核对订单金额，按订单金额付款，否则造成的任何损失及后果自负！</div>
+</div>
+<style type="text/css">
+.order{
+	text-align: center;
+	line-height: 40px;
+	
+	
+	
+	width: 100%;
+	
+	font-size: 14px;
+	
+
+}
+.money_left{
+	padding-left: 10px;
+	float: left;
+}
+.money_right{
+	float: right;
+	padding-right: 10px;
+}
+
+
+ .chat_one{
+ 	color:#000;width:auto;
+ }
+  .chat_one img{border-radius:5px;}
+ .header_1 img{
+ 	width: 25px;height:25px;border-radius: 50%;
+ }
+
+ #srcoll{
+	background-size: 100% 100%;
+	background-attachment: fixed;
+/*	height:44%;*/
+	position: relative;
+	top:90px;
+	padding-bottom: 55px;
+
+
+ }
+ .weui-uploader__inpu{
+ 	position:0;
+ }
+.chat_right{
+	text-align: right;
+}
+#msg{
+	height:43px;
+	position:fixed;
+	z-index:99;
+	color:#ffff1a;
+	right:0px;
+	bottom:1px;
+	width:70px;;
+	background-color:#00b300;
+	font-size:14px;
+  text-align:center;
+ line-height:43px;
+  border:0px;
+
+  border-radius:1px;
+}
+.pic{
+	position: fixed;z-index: 100;right:50px;bottom:5px;
+}
+#saytext{
+	width:90%;height:40px;line-height:40px;background-color:#fff;position:fixed;bottom:0px;padding-left:40px;
+}
+
+</style>
+
+
+<div class="chatbox" id="srcoll" scroll-y="true" style="margin-top:0px;top:130px">
+
+
+
+<!-- 	<p>温馨提示</p> -->
+<div class="chat">
+
+
+
+{volist name="list_data" id="vo"}
+
+		
+
+
+			<div class="chat_one">
+
+				{if condition="$vo.chatuserid == $uid"}
+					<span class="chat_content2 chat_right" style="width:auto;border:0px;margin-right:5px;margin-left:70px;background-color:#80ff80;">{$vo.chatcontent}
+					</span>
+
+				{else}
+					<span class="chat_content2" style="width:auto;border:0px;margin-left:5px;margin-right:70px;background-color:#fff;">
+					<b><font color=orange>{$vo.chatname}</font></b>
+					&nbsp;
+					{$vo.chatcontent}
+					</span>
+
+
+				{/if}
+				
+			</div>
+{/volist}
+</div>
+	</div>
+
+		
+<input type="text" name="send" id="saytext" placeholder="请输入您要发送的内容">
+<a id="msg">发 送</a>
+<span style="position: fixed;z-index: 300;left:0px;bottom:1px;height:43px;background-color:#00b300;width:10px;"></span>
+<span class="pic">
+<img id="uploaderInput" src="/static/magent/img/pic.png" style="width:25px;height:28px;margin-left:-60px;">
+</span>
+
+
+</div>
+
+</body>
+
+<!-- <script type="text/javascript" src="/static/magent/js/jquery.min.js" ></script> -->
+<!-- <script type="text/javascript" src="/static/magent/js/jquery.qqFace.js"></script> -->
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript" src='/static/magent/js/jquery-2.1.4.js'></script>
+<script type="text/javascript" src='/static/magent/js/jquery-weui.js'></script>
+<script type="text/javascript">
+
+$(function(){
+
+layui.use('upload', function(){
+  var upload = layui.upload,layer=layui.layer;
+  
+  //执行实例
+  var uploadInst = upload.render({
+    elem: '#uploaderInput' //绑定元素
+    ,url: '/magent/chat/upload' //上传接口
+    ,done: function(res){
+      //上传完毕回调
+
+      	var id = {$group_id};
+      	$.post('/magent/chat/upload_img_message',{chatcontent:res.src,group_id:id},function(){
+
+
+      	})
+
+    }
+    ,error: function(){
+      //请求异常回调
+    }
+  });
+  $(".layui-upload-file").hide();
+  $('html, body').animate({scrollTop: $(document).height()},)
+
+
+});
+	
+	$('.confirm_amount').click(function(){
+
+		 var id = {$order_data.id};
+		 $.confirm("<font color=red>警告：请务必核对收款金额，确认已收到该笔金额并补发通知？？？</font>", function () {
+            //点击确认后的回调函数
+            $.ajax({
+                url: '/magent/chat/update_status.html',
+                data: {
+                    id: id
+                },
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == '0000') {
+                      	
+                      	
+                        $.alert('补发成功，商户返回：' + data.msg);
+  
+                    } else {
+                        $.alert(data.msg);
+                    }
+                }
+            })
+        });
+
+
+
+	})
+//作废订单
+  $('.confirm_drop').click(function(){
+
+		 var id = {$order_data.id};
+		 $.confirm("<font color=red>警告：确定要作废该笔订单？？？</font>", function () {
+            //点击确认后的回调函数
+            $.ajax({
+                url: '/magent/chat/order_obsolete.html',
+                data: {
+                    order_id: id
+                },
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == '0000') {
+                      	
+                      	
+                        $.alert('此订单作废成功!');
+  						$('.order_status').text('订单状态：已作废');
+            			$('.money_right').text('订单已作废');
+                      	$('#status_img img').attr('src', '/static/magent/img/drop.png');
+                      	$('#status_img').css("visibility","visible");
+                    } else {
+                        $.alert(data.msg);
+                    }
+                }
+            })
+        });
+
+
+
+	})
+
+	$('#msg').click(function() {
+
+	
+		var msg = $('input[name="send"]').val();
+		var id = {$group_id};
+		if(msg == ""){
+			layer.msg('请先输入文字哦',{icon:5});;return false;
+		}
+		msg = replace_em(msg);
+		$.ajax({
+			url:'/magent/chat/send_message',
+			dataType:'json',
+			data:{
+				chatcontent:msg,
+				group_id:id
+			},
+			success:function(data){
+
+				if(data.code == '0000'){
+					$('input[name="send"]').val("");
+					return false;
+					// this_ajax();
+				}else{
+
+					layer.msg(data.msg,{icon:5});
+				}
+			}
+		})
+		return false;
+	})
+
+	// $('.emotion').qqFace({
+
+	// 	id : 'facebox', 
+
+	// 	assign:'saytext', 
+
+	// 	path:'/static/arclist/'	//表情存放的路径
+
+	// });
+
+
+
+//查看结果
+function replace_em(str){
+
+	str = str.replace(/\</g,'&lt;');
+
+	str = str.replace(/\>/g,'&gt;');
+
+	str = str.replace(/\n/g,'<br/>');
+
+	str = str.replace(/\[em_([0-9]*)\]/g,'<img src="/static/arclist/$1.gif"/>');
+
+	return str;
+
+}
+})
+
+
+
+
+/**
+ * 与GatewayWorker建立websocket连接，域名和端口改为你实际的域名端口，
+ * 其中端口为Gateway端口，即start_gateway.php指定的端口。
+ * start_gateway.php 中需要指定websocket协议，像这样
+ * $gateway = new Gateway(websocket://0.0.0.0:7272);
+ */
+var ws = new WebSocket("ws://"+document.domain+":8282");
+
+ws.onopen = function()
+   {
+      // Web Socket 已连接上，使用 send() 方法发送数据
+
+      var data = '{"type":"bind","group_id":{$group_id}}';
+      ws.send(data);
+      var t2 = window.setInterval("hello()",5000); 
+    
+   };
+function hello(){ 
+	var data = '{"type":"ping"}';
+	ws.send(data);
+} 
+
+// 服务端主动推送消息时会触发这里的onmessage
+ws.onmessage = function(e){
+    // json数据转换成js对象
+    var data = JSON.parse(e.data);
+    var type = data.type || '';
+    switch(type){
+        case 'ping':
+                
+            break;
+        case 'carry':
+        	$('.confirm_amount').remove();
+        	$('.order_status').text('订单已完成');
+            $('.money_right').text('已确认收款');
+        	$('#status_img img').attr('src', '/static/magent/img/done.png');
+            $('#status_img').css("visibility","visible");
+        	break;
+        case 'drop':
+        	$('.confirm_amount').remove();
+        	$('.order_status').text('订单已作废');
+            $('.money_right').text('订单已作废');
+        	$('#status_img img').attr('src', '/static/magent/img/drop.png');
+            $('#status_img').css("visibility","visible");
+        	break;
+        case 'receive':
+
+        	var html = '';
+        	var uid = '{$uid}';
+        	var chat_right = '';
+        	// console.log(uid);
+        	// console.log(data.data.chatuserid);
+        	if(data.data.chatuserid == uid){
+        		html+='<div class="chat_one"><span class="chat_content2 chat_right" style="width:auto;border:0px;margin-right:5px;margin-left:70px;background-color:#80ff80;">'+data.data.chatcontent;
+        		html+='</span></div>';
+        	}else{
+        		html+='<div class="chat_one"><span class="chat_content2" style="width:auto;border:0px;margin-left:5px;margin-right:70px;background-color:#fff;"><b><font color=orange>'+data.data.chatname+'</font></b>&nbsp;'+data.data.chatcontent+'</span></div>'
+        	}
+
+
+    		
+    		$('.chat').append(html);
+
+		    $('html, body').animate({scrollTop: $(document).height()},)
+		    
+
+            break;
+
+        default :
+        
+            console.log(e.data);
+    }
+};
+
+ws.onclose = function(){
+
+    console.log('链接关闭');
+}
+</script>
+
+<!-- {include file="public/footer"} -->

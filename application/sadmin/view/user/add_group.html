@@ -1,0 +1,105 @@
+<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+
+<div style="margin-top:20px;width: 60% ">
+
+<form class="layui-form" action="" id="myform">
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">分组所属收款类型</label>
+    <div class="layui-input-block">
+      <select name="type"  lay-verify="required" >
+        {volist name="$pay_type" id="v"}
+        <option value="{$v.code}">{$v.show_name}</option>
+        {/volist}
+      </select>
+    </div>
+
+  </div>
+
+ 
+    <div class="layui-form-item">
+    <label class="layui-form-label">分组名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="group_name"  required  lay-verify="required" placeholder="请输入分组名称" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+      <div class="layui-form-item">
+    <label class="layui-form-label">备注</label>
+    <div class="layui-input-block">
+      <input type="text" name="remark"  placeholder="请输入备注" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+
+
+
+
+
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">确认添加</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    <a class="layui-btn return" >返回</a>
+    </div>
+  </div>
+</form>
+<div class="wenzhi" style="width: 400px;margin:auto;color: red;font-size: 20px"></div>
+</div>
+
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+ <script type="text/javascript" src="/static/jq/jQuery1.9.1.js"></script>
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form;
+  $('.return').click(function(){
+
+
+ window.history.back(-1); 
+
+})
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    var json = $('[name=group_name]').val();
+    var remark = $('[name=remark]').val();
+    var type = $('[name=type]').val();
+
+    if(json == ''){
+
+      layer.msg('分组名称不能为空',{icon:5,time:2000});return false;
+    }
+
+
+    $.post('{:url("sadmin/user/add_group")}',{group_name:json,remark:remark,type:type},function(data){
+      if(data.code == '0000'){
+          
+          $('[name=group_name]').val();
+
+    　　 layer.msg(data.msg,{icon:1,time:1500},function(){
+
+          window.history.go(-1);
+
+
+    });
+
+      }else{
+        layer.msg(data.msg,{icon:5,time:2000});
+      }
+
+
+    })
+
+
+    return false;
+  });
+
+
+
+});
+
+
+
+
+
+</script>

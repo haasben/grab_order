@@ -1,0 +1,126 @@
+{include file="common/head"}
+<body class="body">
+
+<form class="layui-form layui-form-pane" action="/quotient/Payment_account/index.html">
+    
+    <div class="layui-form-item">
+       <div class="layui-inline">
+            <label class="layui-form-label">账户名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" class="layui-input" placeholder="账户名称">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">开始时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="start_time" id="date1" autocomplete="off" class="layui-input" placeholder="请选择开始时间">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">结束时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="end_time" id="date" autocomplete="off" class="layui-input" placeholder="请选择结束时间">
+            </div>
+        </div>
+
+
+        <div style="" class="layui-inline">
+            <button style="background-color: #1E9FFF;" class="layui-btn" lay-submit="" lay-filter="demo2">确定</button>
+ 
+        </div>
+
+    </div>
+</form>
+  
+<style type="text/css">
+  .Fruit{
+
+      width: 20px;
+      height: 20px;
+
+
+  }
+  .all_Fruit{
+    width: 20px;
+    height: 20px;
+
+  }
+
+</style>
+
+<fieldset class="layui-elem-field layui-field-title" style="display: block">
+  
+     <legend>总收金额<span class="account_money">{$sum_money/100}</span>元</legend>
+     <legend>今日收款<span class="account_money">{$today_money/100}</span>元</legend>
+     <legend>昨日收款<span class="account_money">{$yesterday_money/100}</span>元</legend>
+
+    </legend>
+</fieldset>
+
+<table class="layui-table" lay-even="" lay-skin="nob">
+    <thead>
+    <tr>
+        <th><input name="Fruit" id="Fruit" class="all_Fruit" onclick="checkOrCancelAll();" type="checkbox" value="" /></th>
+        <th><a href="/quotient/Payment_account/index.html?order=id">编号</a></th>
+        <th><a href="/quotient/Payment_account/index.html?order=name">公司</a></th>
+        <th>账号类型</th>
+        <th><a href="/quotient/Payment_account/index.html?order=withdrawal_sum">总收款</a></th>
+        <th>时间段内收款（默认为当天）</th>
+        <th>累计手续费</th>
+        <th>累计提现</th>
+        <th><a href="/quotient/Payment_account/index.html?order=money">当前余额</a></th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="secret_key_data" id="vo"}
+    <tr class="receivables_data">
+        
+         <td><input name="Fruit" class="Fruit" type="checkbox" value="{$vo.id}" /></td>
+        <td>{$i}</td>
+        <td><a href="{$vo.server_url}" target="_blank">{$vo.name}</a></td>
+        <td>{$vo.code}{$vo.channel_name}</td>
+        <td>{$vo.recharge_sum/100}</td>
+        <td>{$vo.sum_amount/100}</td>
+        <td>{$vo.fee_sum/100}</td>
+        <td>{$vo.withdrawal_sum/100}</td>
+        <td>{$vo.money/100}</td>
+
+    </tr>
+    {/volist}
+
+    </tbody>
+</table>
+
+{$secret_key_data->render()}
+
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate;
+
+        //日期
+        laydate.render({
+            elem: '#date'
+            ,type: 'datetime'
+        });
+        laydate.render({
+            elem: '#date1'
+          ,type: 'datetime'
+        });
+
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            });
+            return false;
+        });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>提现查询</title>
+    <link rel="stylesheet" href="/static/sadmin/frame/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/sadmin/frame/static/css/style.css">
+  	<script type="text/javascript" src="__SADMIN__js/jQuery1.9.1.js" ></script>
+    <link rel="icon" href="/static/sadmin/frame/static/image/code.png">
+    <style>
+        .cash-title{
+            color: red;
+        }
+    </style>
+</head>
+<body class="body">
+<blockquote class="layui-elem-quote layui-text cash-title">
+    用户提现 商户名：{$assets_data.company} | 商户号：{$assets_data.merchant_cname}_{$assets_data.uid} | 当前余额：{$assets_data.money/100} | 操作人：{$login_user.name}
+</blockquote>
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>提现查询</legend>
+</fieldset>
+
+<form class="layui-form" action="/sadmin/Withdrawal/add_withdrawal.html?id={$assets_data.uid}" method="post" style="margin-left: 150px;">
+	<input name="uid" value="{$assets_data.uid}" type="hidden"> 
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择收款人：</label>
+        <div class="layui-input-block"  style="width: 28%;">
+            <select name="user_account_id" lay-filter="add_aihao">
+                <option value="0">新增</option>
+{volist name="user_account_data" id="vo"}
+						<option value ="{$vo.id}">{$vo.user_name}</option>
+{/volist}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">收款人姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 30%;">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">提现账户</label>
+        <div class="layui-input-block">
+            <input type="text" name="withdrawal_type" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 30%;">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">银行卡号</label>
+        <div class="layui-input-block">
+            <input type="text" name="id_num" placeholder="" autocomplete="off" class="layui-input" style="width: 30%;">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">提现金额</label>
+        <div class="layui-input-block">
+            <input type="text" name="w_amount"  placeholder="" autocomplete="off" class="layui-input" style="width: 30%;">
+            <div class="layui-form-mid layui-word-aux">当前余额<span style="color: red;">{$assets_data.money/100}</span>元</div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">提现手续费</label>
+        <div class="layui-input-block">
+            <input type="text" name="fee"  placeholder="" autocomplete="off" class="layui-input" value="2" style="width: 30%;">
+            <div class="layui-form-mid layui-word-aux">此处填写转账时收取费用</div>
+        </div>
+    </div>
+
+     <div class="layui-form-item">
+        <label class="layui-form-label">付款渠道</label>
+        <div class="layui-input-block"  style="width: 28%;">
+            <select name="pay_type" lay-filter="test">
+                <option value="">请选择</option>
+              	{volist name="$top_account_assets_data" id="v"}
+              			<option value ="{$v.id}">{$v.name}</option>
+      
+              	{/volist}
+              
+
+            </select>
+        </div>
+    </div>
+   <!-- <div class="layui-form-item">
+        <label class="layui-form-label">付款子账户</label>
+        <div class="layui-input-block"  style="width: 28%;">
+            <select id="ticd" name="tcid" lay-filter="aihao">
+                <option value=""></option> 
+
+            </select>
+            <div class="layui-form-mid layui-word-aux">当前余额<span id="this_monye" style="color: red;">0.00</span>元</div>
+        </div>
+    </div>-->
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <textarea placeholder="请输入内容" class="layui-textarea" name="ext" style="width: 30%;"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">提交</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+$(function(){
+
+
+
+	$('select[name="tcid"]').change(function(){
+		var id = $(this).val();
+		if (id>0) {
+			$.ajax({
+	            url:'/sadmin/Withdrawal/get_alipay_money2.html',
+	            data:{
+	                id:id,
+	            },
+	            dataType:'html',
+	            success:function(data){
+	            	// console.log(data);
+	            	$('#this_monye').text(data);
+	            }
+	        })
+		}else{
+			$('#this_monye').html('0.00');
+		}
+	})
+
+
+
+
+
+	$('form').submit(function(){
+		var msg = "确定提交吗？"; 
+		if (confirm(msg)!=true){
+			return false;
+		}
+	})
+})
+</script>
+<script type="text/javascript" src="/static/sadmin/frame/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'laydate'], function(){
+        var form = layui.form
+                ,layer = layui.layer
+                ,laydate = layui.laydate;
+
+        //日期
+        laydate.render({
+            elem: '#date'
+        });
+        laydate.render({
+            elem: '#date1'
+        });
+
+      	form.on('select(add_aihao)', function(data){
+		var id = data.value;
+		if (id>0) {
+			$.ajax({
+	            url:'/sadmin/Withdrawal/get_user_account.html',
+	            data:{
+	                id:id
+	            },
+	            dataType:'json',
+	            success:function(data){
+	            	$('input[name="name"]').val(data.user_name);
+	            	$('input[name="withdrawal_type"]').val(data.withdrawal_type);
+	            	$('input[name="id_num"]').val(data.id_num);
+	            	$('textarea[name="ext"]').val(data.ext);
+	            }
+	        })
+		}
+	})
+      
+      
+      
+      form.on('select(test)', function(data){
+		
+		var id = data.value;
+
+		if (id>0) {
+			$.ajax({
+	            url:'/sadmin/Withdrawal/get_alipay_money.html',
+	            data:{
+	                id:id
+	            },
+	            dataType:'json',
+	            success:function(data){
+	            	// console.log(data);
+	            	var html_str = '';
+	                for (var i = data.length - 1; i >= 0; i--) {
+	                	html_str += '<option value ="'+data[i].id+'">'+data[i].login_user+'</option>';
+	                }
+	                // console.log(html_str)
+	                $('#ticd').html(html_str);
+	                form.render('select')
+	                $('#this_monye').text(data[data.length - 1].money/100);
+	            }
+	        })
+		}else{
+			$('[name=tcid]').html('');
+			$('#this_monye').html('0.00');
+		}
+	})
+        // //监听提交
+        // cash.on('submit(demo1)', function(data){
+        //     layer.alert(JSON.stringify(data.field), {
+        //         title: '最终的提交信息'
+        //     });
+        //     return false;
+        // });
+    });
+</script>
+</body>
+</html>

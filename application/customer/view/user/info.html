@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>账户信息</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <!--顶部轮播-->
+    <div class="weui_left float-left" onclick="javascript:history.go(-1);"><img src="/static/magent/img/left.png"/>
+    </div>
+    <div class="title">账户信息</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <!-- 订单数据 -->
+    <div class="weui-form-preview m-t-20">
+        <div class="weui-form-preview__hd">
+            <span class="example"></span>
+            <label class="weui-form-preview_label">基本信息</label>
+        </div>
+        <div class="weui_border"></div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">代理名称</div>
+            <div class="float-left"><input type="text" name="name" class="info-input" placeholder="{$info['name']}" value="{$info['name']}"/></div>
+        </div>
+        <div class="weui_border_info"></div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱</div>
+            <div class="float-left"><input type="text" name="email" class="info-input" placeholder="{$info['email']}" value="{$info['email']}"/></div>
+        </div>
+        <div class="weui_border_info"></div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">手 机 号</div>
+            <div class="float-left"><input type="text" name="phone" class="info-input" placeholder="{$info['phone_num']}" value="{$info['phone_num']}"/></div>
+        </div>
+        <div class="weui_border_info"></div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">验证码：<input type="text" name="captcha" id="code" class="info-input"
+                                                         placeholder="验证码"
+                                                         data-msg-required="请输入验证码！"></div>
+            <div class="weui_code_img float-right"><img src="{:captcha_src()}" alt="点击刷新验证码"
+                                                        onClick="this.src='{:captcha_src()}?seed='+Math.random()"
+                                                        id="captcha"/></div>
+        </div>
+        <div class="weui_border_botttom"></div>
+    </div>
+    <div class="preview m-t-20">
+        <div class=" clearfix">
+            <input type="hidden" name="id" value="{$info['id']}">
+            <button type="button" class="weui-btn btn weui-btn-reissue" onclick="loginBtn();">修改信息</button>
+        </div>
+    </div>
+
+</div>
+<!--底部导航-->
+{include file="public/footer" /}
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item  weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+<script type="text/javascript" src="/static/layer-v3.1.0/layer/layer.js"></script>
+<script>
+    function loginBtn() {
+        var id = $("input[name='id']").val();
+        var name = $("input[name='name']").val();
+        var email = $("input[name='email']").val();
+        var phone_num = $("input[name='phone']").val();
+        var captcha = $("input[name='captcha']").val();
+        //发送登录请求
+        $.ajax({
+            url: '/magent/user/info',
+            type: 'post',
+            data: {id,name,email,phone_num,captcha},
+            success: function (data) {
+                //验证信息
+                if (data.success == 1) {
+                    layer.msg(data.hint, {icon: 1, time: 1200});
+                    setTimeout(function () {
+                        window.location.href = data.url;
+                    }, 1500);
+                } else if (data.success == 2) {
+                    layer.msg(data.hint, {icon: 2, time: 1500});
+                } else if (data.success == 4) {
+                    $("#validation_img").trigger("click");
+                    layer.msg(data.hint, {icon: 2, time: 1500});
+                } else {
+                    layer.msg(data.hint, {icon: 2, time: 1500});
+                }
+            }
+        });
+    };
+</script>
+</body>
+</html>

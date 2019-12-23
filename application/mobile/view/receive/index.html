@@ -1,0 +1,166 @@
+{include file="common/head"}
+
+<div class="content">
+    <div class="buttons-tab">
+        <a href="{:url('mobile/index/index')}" class="button">首页</a>
+        <a href="{:url('mobile/Acount/account_list')}" class=" button">账户总览</a>
+        <a href="{:url('mobile/order/order_list')}" class=" button">订单查询</a>
+        <a href="{:url('Mobile/cash/cash_list')}" class=" button">提现查询</a>
+        <a href="{:url('Mobile/receive/index')}" class="tab-link active  button">收款账户</a>
+    </div>
+    <div class="tabs">
+        <div id="tab5" class="tab active">
+            <form action="" method="">
+                <div class="search-wrap">
+                    <div class="clearfix">
+                        <div class="search-item"><input type="text" value="{$_GET['name']|default=''}" class="search-input" name="name" placeholder="收款账户名"/></div>
+                        <div class="search-item">
+                            <select class="search-input" name="channel_type" style="width: 90%;">
+                                <option value="">通道类型</option>
+                                <option value="">全部</option>
+                                {volist name="channel" id="v"}
+                                  {present name="$_GET['channel_type']"}
+                                      {eq name="$_GET['channel_type']" value="$v.id"}
+                                          <option value="{$v.id}" selected>{$v.channel_name}</option>
+                                      {/eq}
+                                  {/present}
+                                <option value="{$v.id}">{$v.channel_name}</option>
+								
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="clearfix">
+                        <div class="search-item"><input type="text" value="{$_GET['start_time']|default=''}" class="search-input start_time" name="start_time" placeholder="开始日期"/></div>
+                        <div class="search-item"><input type="text" value="{$_GET['end_time']|default=''}" class="search-input end_time" name="end_time" placeholder="结束日期"/></div>
+                        <div class=""><button type="submit" class="search-btn">查询</button></div>
+                    </div>
+                </div>
+            </form>
+    {volist name="secret_key_data" id="vo"}
+            <div class="card box-shadow">
+                <div class="card-header green_text">收款账户：{$vo.name}</div>
+                <div class="list-block media-list">
+                    <ul>
+                        <li>
+                            <div href="{:url('mobile/receive/index_des',['id'=>$vo['id']])}" class="item-link item-content">
+                                <div class="item-inner">
+                                     <div class="item-title-row">
+                                        <div class="item-title">通道类型：{$vo.channel_name|default='未定义通道名'}</div>
+                                    </div> 
+                                    <div class="item-subtitle">总收款:{$vo.recharge_sum/100}</div>
+                                    <div class="item-subtitle">时间段内收款: {$vo.sum_amount/100} </div>
+                                    <div class="item-subtitle">累计手续费:{$vo.fee_sum/100}</div>
+                                    <div class="item-subtitle">累计提现:{$vo.withdrawal_sum/100}</div>
+                                    <div class="item-subtitle">当前余额:{$vo.money/100}</div>
+                                    <div class="item-subtitle operation" value="{$vo.id}" status="{$vo.status}" >状态:{if condition="$vo['status'] == 1"}开启使用中
+
+                                            {else /} 账户已停用
+                                            {/if}</div>
+                                    
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+<!--                 <div class="card-footer">
+                    <span></span>
+                    <span class="green_text"><a href="{:url('mobile/receive/index_des',['id'=>$vo['id']])}">查看详情</a></span>
+                </div> -->
+            </div>
+    {/volist}
+<!--    ["id"] => int(66)
+        ["fee_sum"] => string(3) "0.0"
+        ["server_url"] => string(0) ""
+        ["name"] => string(16) "云闪付-张凯"
+        ["withdrawal_sum"] => string(3) "0.0"
+        ["recharge_sum"] => string(3) "0.0"
+        ["money"] => string(3) "0.0"
+        ["sum_amount"] => NULL
+        ["status"] => int(2)
+        ["receive_account"] => string(0) ""
+        ["type"] => int(3)
+        ["app_id"] => string(22) "Pcode_cloudesc_Bind_26" -->
+ 
+        </div>
+    </div>
+    <style type="text/css">
+    .pagination{
+
+        display: inline-block;
+        padding-left: 0;
+        margin: 20px 0;
+        border-radius: 4px;
+
+    }
+    .pagination > li{
+
+        display: inline-block;
+
+    }
+
+    .pagination>li>a, .pagination>li>span{
+
+           position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    }
+    
+
+
+
+
+</style>
+
+    {$secret_key_data->render()}
+</div>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+<script type="text/javascript">
+
+    $('.operation').click(function(){
+
+        var status = $(this).attr('status');
+        var id = $(this).attr('value');
+
+                if (status==1) {
+            var msg = "确定禁用？";
+            if (confirm(msg)!=true){
+                return false;
+            }
+        }
+        $.ajax({
+            url:'{:url("mobile/receive/update_status")}',
+            data:{
+                status:status,
+                id:id,
+            },
+            type:'get',
+            dataType:'json',
+            success:function(data){
+                alert(data.hint);
+                location.reload();
+            }
+        })
+    })
+
+
+    var time=new Date();
+    $(".start_time").calendar({
+        value: [time.getFullYear()+'-'+(time.getMonth()+1)+'-'+time.getDate()]
+    });
+    $(".end_time").calendar({
+        value: [time.getFullYear()+'-'+(time.getMonth()+1)+'-'+time.getDate()]
+    });
+</script>
+</body>
+</html>

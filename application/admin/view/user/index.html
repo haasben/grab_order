@@ -1,0 +1,236 @@
+{include file="common/header"}
+<!--[if lt IE 9]>
+<script src="__ADMIN__js/html5shiv.js"></script>
+<script src="__ADMIN__js/respond.min.js"></script>
+<script type="text/javascript" src="__ADMIN__js/PIE/PIE_IE678.js"></script>
+<![endif]-->
+<body>
+<div class="Sellerber" id="Sellerber">
+    <!--顶部-->
+    <div class="Sellerber_header apex clearfix" id="Sellerber_header">
+        <div class="l_f logo header" style="font-size: 20px;line-height: 75px;margin-left: 30px;">商户后台管理系统</div>
+        <div class="r_f Columns_top clearfix header">
+  <!--           <div class="news l_f "><a href="#" class="fa fa-bell Notice prompt" id="promptbtn"></a><em>5</em></div> -->
+            <div class="administrator l_f">
+                <img src="__ADMIN__images/avatar.png" width="36px"/><span class="user-info">欢迎你,{$login_user.name}</span><i
+                    class="glyph-icon fa  fa-caret-down"></i>
+                <ul class="dropdown-menu">
+<!--                     <li><a href="#"><i class="fa fa-user"></i>个人信息</a></li>
+                    <li><a href="#"><i class="fa fa-cog"></i>系统设置</a></li> -->
+                    <li><a href="javascript:void(0)" id="Exit_system"><i class="fa fa-user-times"></i>退出</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--左侧-->
+    <div class="Sellerber_left menu" id="menuBar">
+        <div class="show_btn" id="rightArrow"><span></span></div>
+        <div class="side_title"><a title="隐藏" class="close_btn"><span></span></a></div>
+        <div class="menu_style" id="menu_style">
+            <div class="list_content">
+                <!--栏目切换-->
+                <div class="skin_select clearfix">
+                    <ul class="dropdown-menu dropdown-caret clearfix">
+                        <li><a class="colorpick-btn selected" href="javascript:void(0)" data-val="default" id="default"
+                               style="background-color:#222A2D"></a></li>
+                        <li><a class="colorpick-btn" href="javascript:void(0)" data-val="blue"
+                               style="background-color:#438EB9;"></a></li>
+                        <li><a class="colorpick-btn" href="javascript:void(0)" data-val="green"
+                               style="background-color:#72B63F;"></a></li>
+                        <li><a class="colorpick-btn" href="javascript:void(0)" data-val="gray"
+                               style="background-color:#41a2ff;"></a></li>
+                        <li><a class="colorpick-btn" href="javascript:void(0)" data-val="red"
+                               style="background-color:#FF6868;"></a></li>
+                        <li><a class="colorpick-btn" href="javascript:void(0)" data-val="purple"
+                               style="background-color:#6F036B;"></a></li>
+                    </ul>
+                </div>
+                <!--左侧菜单栏目-->
+                <div class="column_list">
+                    <ul class="menuUl menu_list" id="column_list">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--内容-->
+    <div class="Sellerber_content" id="contents">
+        <div class="breadcrumbs" id="breadcrumbs">
+            <a id="js-tabNav-prev" class="radius btn-default left_roll" href="javascript:;"><i
+                    class="fa fa-backward"></i></a>
+            <div class="breadcrumb_style clearfix">
+                <ul class="breadcrumb clearfix" id="min_title_list">
+                    <li class="active home"><span title="我的桌面" data-href="index.html"><i
+                            class="fa fa-home home-icon"></i>首页</span></li>
+                </ul>
+            </div>
+        </div>
+        <!--具体内容-->
+        <div id="iframe_box" class="iframe_content">
+            <div class="show_iframe index_home" id="show_iframe">
+                <iframe scrolling="yes" class="simei_iframe" frameborder="0" src="{:url('admin/user/main')}" name="iframepage" data-href="{:url('admin/user/main')}"></iframe>
+            </div>
+        </div>
+    </div>
+    <!--底部-->
+<!--     <div class="Sellerber_bottom info" id="bottom">
+        <span class="align">版权所有：成都紫光极客有限责任公司 </span>
+    </div> -->
+    <!--消息提示板块内容-->
+
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    var data = [
+        {
+            id: 1,
+            pid: 0,
+            url: "#",
+            icon: 'fa fa-home',
+            name: '商户中心',
+        },
+        {
+            id: 2,
+            pid: 0,
+            url: "#",
+            icon: 'fa fa-desktop',
+            name: '订单管理',
+        },
+        {
+            id: 3,
+            pid: 0,
+            url: "#",
+            icon: 'fa fa-database',
+            name: '出金详情',
+        },
+        {
+            id: 4,
+            pid: 0,
+            url: "#",
+            icon: 'fa fa-user',
+            name: '账户管理',
+        },
+        {
+            id: 5,
+            pid: 1,
+            icon: 'fa fa-angle-double-right',
+            url: '{:url("admin/user/main")}',
+            name: '资产总览',
+
+        },
+        {
+            id: 6,
+            pid: 1,
+            icon: 'fa fa-angle-double-right',
+            url: '/admin/User/personinfo.html',
+            name: '商户信息',
+
+        },
+        {
+            id: 8,
+            pid: 2,
+            icon: 'fa fa-angle-double-right',
+            url: '/admin/Recharge/index.html',
+            name: '已支付',
+
+        },
+        {
+            id: 9,
+            pid: 2,
+            icon: 'fa fa-angle-double-right',
+            url: '/admin/Recharge/index.html?pay_status=2',
+            name: '未支付',
+
+        },
+        {
+            id: 10,
+            pid: 2,
+            icon: 'fa fa-angle-double-right',
+            url: '/admin/Recharge/index.html?pay_status=0&order_type=0',
+            name: '全部订单',
+
+        },
+        {
+            id: 11,
+            pid: 2,
+            icon: 'fa fa-angle-double-right',
+            url: '/admin/Recharge/index.html?order_off=1',
+            name: '商户丢单',
+
+        },
+        {
+            id: 12,
+            pid: 2,
+            icon: 'fa fa-angle-double-right',
+            url: '/admin/Recharge/index.html?&order_type=0',
+            name: '余额流水',
+
+        },
+         {
+            id: 13,
+            pid: 3,
+            icon: 'fa fa-angle-double-right',
+            url: '/admin/Withdrawal/index.html',
+            name: '代付订单',
+
+        },
+        {
+            id: 14,
+            pid: 3,
+            icon: 'fa fa-angle-double-right',
+            url: '/admin/Withdrawal/add_withdrawal.html',
+            name: '在线提现',
+
+        },
+        {
+            id: 15,
+            pid: 4,
+            icon: 'fa fa-angle-double-right',
+            url: 'update_login_pass.html',
+            name: '修改登录密码',
+        },
+        {
+            id: 16,
+            pid: 4,
+            icon: 'fa fa-angle-double-right',
+            url: 'update_trading_pass_page.html',
+            name: '修改交易密码',
+        }
+        ]
+    //设置框架
+    $(function () {
+        $("#Sellerber").frame({
+            float: 'left',//设置菜单栏目方向属性
+            minStatue: true,//切换模式
+            hheight: 70,//设置顶部高度 高度为0时自动样式切换（达到另外一种界面效果）
+            bheight: 30,//设置底部高度
+            mwidth: 200,//菜单栏宽度（最好不要改动该数值，一般200的宽度值最好）
+            switchwidth: 50,//切换菜单栏目宽度
+            color_btn: '.skin_select',//设置颜色
+            menu_nav: '.menu_list',//设置栏目属性
+            column_list: '.column_list',//设置栏目名称
+            time: '.date_time',//设置时间属性(不填写不显示)
+            logo_img: 'images/logo_01.png',//logo地址链接（当header为0时显示该属性）
+            Sellerber_content: '.Sellerber_content',//右侧名称
+            Sellerber_menu: '.list_content', //左侧栏目
+            header: '.Sellerber_header',//顶部栏目
+            prompt: '.prompt_style',
+            prompt_btn: '#promptbtn',//点击事件
+            data: data,//数据
+            mouIconOpen: "fa fa-angle-down",// 菜单(展开)图标
+            mouIconClose: "fa fa-angle-up", // 菜单（隐藏）图标
+            Rightclick: true//是否禁用右键
+        });
+    });
+    $('#Exit_system').on('click', function () {
+        layer.confirm('是否确定退出系统？', {
+                btn: ['是', '否'],//按钮
+                icon: 2,
+            },
+            function () {
+                location.href = "{:url('admin/user/exit_login')}";
+            });
+    });
+</script>
+

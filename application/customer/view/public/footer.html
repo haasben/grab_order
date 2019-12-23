@@ -1,0 +1,58 @@
+<script>
+    document.write("<script type='text/javascript' src='/static/magent/js/jquery-2.1.4.js?v="+Math.random()+"'><\/script>"); 
+   	document.write("<script type='text/javascript' src='/static/magent/js/jquery-weui.js?v="+Math.random()+"'><\/script>");
+</script>
+<script>
+    var wsObj = new WebSocket("ws://"+document.domain+":8282");   //建立连接
+    var uid = {:session('login_user','','magent')['id']};
+  	// 长链加心跳
+  	var heartCheck = {
+        timeout: 6000,//6s
+        timeoutObj: null,
+        reset: function(){
+            clearTimeout(this.timeoutObj);
+         this.start();
+        },
+        start: function(){
+            this.timeoutObj = setTimeout(function(){
+                wsObj.send(JSON.stringify({type:'order',uid: uid}));
+            }, this.timeout)
+        }
+  	}
+    wsObj.onopen = function(){  //发送请求
+        //console.log('websocket connect success');
+      	// 开启心跳
+      	heartCheck.start();
+    };
+  	var id = 0;
+    wsObj.onmessage = function(ev){
+      	var data = JSON.parse(ev.data)
+        //console.log(data);
+      	// 重置心跳
+      	heartCheck.reset();
+        //获取后端响应
+      	if(data.code == 1 && id != data.id){
+          	id = data.id;
+        	speakText('您有一笔新的订单，请注意查收！');
+          	// 更新缓存
+            $.get("/magent/index/updateData",function (data) {
+               // console.log(data);
+            });
+        }
+    };
+
+    wsObj.onclose = function(ev){
+        console.log('websocket close');
+    };
+    wsObj.onerror = function(ev){
+        console.log('websocket error');
+    };
+
+    function speakText(text){
+        var url = "http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=6&text="+encodeURI(text);
+        var audio = new Audio(url);
+        audio.src = url;
+      console.log(url);
+        audio.play();
+    }
+</script>

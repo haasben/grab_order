@@ -1,0 +1,41 @@
+{include file="common/header"}
+
+<body>
+<div class="margin inside_pages clearfix">
+    <div class="add_style clearfix relative">
+        <ul>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">用户名：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="text" name="" value="{$user_data.name}" data-required="1" class="col-xs-12"/></div>
+            </li>
+            <?php
+if($user_data['state']==1){
+  $user_data['state'] = "正常";
+}elseif($user_data['state']==4){
+  $user_data['state'] = "未开通支付功能，请联系客服申请";
+}
+?>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">商户状态：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="text" name="" value="{$user_data.state}" data-required="1" class="col-xs-12"/></div>
+            </li>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">商户号：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="text" name="" value="{$user_data.merchant_cname}_{$user_data.uid}" data-required="1" class="col-xs-12"/></div>
+            </li>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">手机号码：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="text" name="" value="{:substr_replace($user_data.phone_num,'****',1,4)}" data-required="1" class="col-xs-12"/></div>
+            </li>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">邮箱：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="text" name="" value="{:substr_replace($user_data.email,'****',1,4)}" data-required="1" class="col-xs-12"/></div>
+            </li>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">注册日期：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="text" name="" value="{:date('Y-m-d H:i:s',$user_data['join_time'])}" data-required="1" class="col-xs-12"/></div>
+            </li>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">上次登录IP：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="text" name="" value="{$login_user.login_ip}" data-required="1" class="col-xs-12"/></div>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
+<!--复文本编辑框-->
+<script type="text/javascript" charset="utf-8" src="__ADMIN__js/utf8-jsp/ueditor.config.js"></script>

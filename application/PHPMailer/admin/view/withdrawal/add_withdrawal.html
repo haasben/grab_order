@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script type="text/javascript" src="__SADMIN__js/jQuery1.9.1.js" ></script>
+		<link rel="stylesheet" href="__SADMIN__css/bootstrap.min.css" />
+		<style>
+			.form{
+				width: 55%;
+				padding-left: 50px;
+
+				padding-top: 30px;
+				}
+			form{
+				margin: 0 auto;
+			}
+			input[type=text],input[type=password]
+			{
+				width: 320px;
+				height: 35px;
+				border: 1px solid gray;
+				outline: none;
+				padding-left:3px;
+				
+			}
+			.box2{
+			margin-bottom: 25px;	
+			}
+			.name{
+				width: 100px;
+				display: block;
+				float: left;	
+				line-height: 30px;	
+				text-align: left;	}
+				input[type=reset]
+				{
+					width: 80px;
+					height: 30px;
+					background: gray;
+					color: white;
+					line-height: 30px;
+					border: none;
+					outline: none;
+					border-radius: 10px;
+					margin-left: 100px;
+				}
+				input[type=submit]
+				{
+					width: 80px;
+					height: 30px;
+					background: red;
+					color: white;
+					line-height: 30px;
+					border: none;
+					outline: none;
+					border-radius: 10px;
+					margin-left: 80px;
+					margin-top: 30px;
+				}
+				textarea{
+					width: 320px;
+					height: 100px;
+					padding-left: 0px;
+				}
+				#nav_1_active{
+					background: white;
+					color: #097b9c;
+					margin-left: -10px;
+					width: 120%;
+				}
+		</style>
+		
+	</head>
+
+	<body>
+		
+			<div class="form">
+			<form action="/admin/Withdrawal/add_withdrawal.html?id={$assets_data.uid}" method="post">
+{:token()}
+				<input name="uid" value="{$assets_data.uid}" type="hidden"> 
+				
+
+				<div class="box2">
+					<span class="name">支付方式：</span>
+
+					<select name="pay_type" style="width: 320px;height: 32px;">
+						<option value="0">请选择</option>
+{volist name="user_fee_data" id="vo"}
+						<option value ="{$vo.taid}">{$vo.show_name}-{$vo.money/100}元</option>
+{/volist}
+					</select>
+				</div>
+
+				<div class="box2">
+					<span class="name">提现账户：</span>
+
+					<select name="user_account_id" style="width: 320px;height: 32px;">
+						<option value="0">请选择</option>
+{volist name="user_account_data" id="vo"}
+						<option value ="{$vo.id}">{$vo.user_name}</option>
+{/volist}
+					</select>
+					<span><a href="add_user_account.html">添加提现账户</a></span>
+				</div>
+
+				<div class="box2">
+					<span class="name">收款人姓名</span><input name="name" disabled="disabled" type="text"> 
+				</div>
+
+				<!--<div class="box2">
+					<span class="name">身份证号：</span><input name="name_id" disabled="disabled" type="text"> 
+				</div>
+
+				<div class="box2">
+					<span class="name">绑定手机：</span><input name="phone_num" disabled="disabled" type="text"> 
+				</div>-->
+
+
+				<div class="box2">
+					<span class="name">所属银行：</span><input disabled="disabled" name="withdrawal_type" type="text"> 
+				</div>
+				<div class="box2">
+					<span class="name">银行卡号：</span><input disabled="disabled" name="id_num" type="text"> 
+				</div>
+				<div class="box2">
+					<span class="name">开户地址：</span><input disabled="disabled" name="address" type="text"> 
+				</div>
+				<!--<div class="box2">
+					<span class="name">开户行号：</span><input disabled="disabled" name="bank_no" type="text"> 
+				</div>-->
+				<div class="box2">
+					<span class="name">提现金额：</span><input name="w_amount" type="text" placeholder="请输入你要提现的金额"> <span>当前余额 <span style="color: red;">{$assets_data.money/100}</span> 元</span>
+				</div>
+
+				<div class="box2">
+					<span class="name">交易密码：</span><input name="trading_pass" type="password" placeholder="请输入交易密码">
+				</div>
+				
+				
+				
+
+				<input type="reset"></input>
+				<input type="submit"></input>
+			</form>
+			</div>
+	</body>
+<script type="text/javascript">
+$(function(){
+
+	$('select[name="user_account_id"]').change(function(){
+		var id = $(this).val();
+		if (id>0) {
+			$.ajax({
+	            url:'/admin/Withdrawal/get_user_account.html',
+	            data:{
+	                id:id
+	            },
+	            dataType:'json',
+	            success:function(data){
+
+	            	$('input[name="name"]').val(data.user_name);
+	            	$('input[name="withdrawal_type"]').val(data.withdrawal_type);
+	            	$('input[name="id_num"]').val(data.id_num);
+
+	            	//$('input[name="phone_num"]').val(data.phone_num);
+	            	//$('input[name="name_id"]').val(data.name_id);
+	            	$('input[name="address"]').val(data.address);
+	            	//$('input[name="bank_no"]').val(data.bank_no);
+
+	            }
+	        })
+		}
+	})
+
+	$('form').submit(function(){
+		var msg = "确定提交吗？"; 
+		if (confirm(msg)!=true){
+			return false;
+		}
+	})
+})
+</script>
+</html>

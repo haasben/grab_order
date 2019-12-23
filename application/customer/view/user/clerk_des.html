@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>订单详情页</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+  <link rel="stylesheet" href="/static/layui/css/layui.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<header class="nav-bar-header bg-white clearfix">
+    <!--顶部轮播-->
+    <a href="/magent/user/clerk_list"><div class="weui_left float-left"><img src="/static/magent/img/left.png"/>
+    </div></a>
+    <div class="title">{$des['name']|default=''}</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+    <div class="clearfix bg-white">
+        <div class="receive float-left font-size-14">今日收款(元)： <span class="weui_money">{$des.sum_amount/100}</span>
+        </div>
+        <div class="online float-right font-size-12">在线时间：{$des.app_time}
+        </div>
+    </div>
+    <div class="bg-white m-t-20">
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">总收款(元)</span>
+                <span class="float-right">{$des.recharge_sum/100}</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left">设备号</span>
+                <span class="float-right">{$des['app_id']|default=''}</span>
+            </div>
+        </div>
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">收单率</span>
+                <span class="float-right">{$des['succ_count']|default='0'}/{$des['count']|default='0'}</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left">成功率</span>
+                <span class="float-right font-red">{$des['rate']|default='0.00'}%</span>
+            </div>
+        </div>
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">类型</span>
+                <span class="float-right font-size-12">{$des['channel_name']|default=''}</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left">分组</span>
+                <span class="float-right font-size-12">{$des['group_name']|default=''}</span>
+            </div>
+        </div>
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">二维码数量</span>
+                <span class="float-right">{$des['count_img']|default='0'}</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left">是否店员</span>
+                <span class="float-right">{$des['clerk']|default='否'}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="weui-form-preview m-t-20">
+        <div class="weui-wrap clearfix p-b-2" style="
+    padding-top: 20px;">
+          
+          	{if condition="$des.type !=1032"}
+            {if condition="$des.is_clerk == 0"}
+            <div class="float-left"><a href="#"  class="weui-btn details_btn showIOSDialog2"
+                                       data-id="{$des['id']}">绑定店员</a></div>
+            {elseif condition="$des.is_clerk == 2"}
+            <div class="float-left"><a href="#"  class="showIOSDialog4 weui-btn details_btn"
+                                       data-id="{$des['id']}" data-status="edit">解除店员</a></div>
+            {else}
+            {/if}
+            {neq name="$des['is_clerk']" value="1"}
+            <div class="float-left m-l-5"><a href="{:url('user/add_qrcode',['id'=>$des['id']])}"
+                                             class="weui-btn edit_btn bg-green">加码</a></div>
+            <div class="float-left m-l-5"><a href="#" class="showIOSDialog3 weui-btn edit_btn bg-green w-6"
+                                             data-id="{$des['id']}">二维码</a>
+            </div>
+            {/neq}
+          	{/if}
+            <div class="float-left m-l-5"><a href="/magent/user/edit_info/id/{$des['id']}"
+                                             class="weui-btn edit_btn bg-green">编辑</a></div>
+            <div class="float-left m-l-5">
+                <div class="float-left"><a href="#" class="showIOSDialog4 weui-btn edit_btn" data-id="{$des['id']}"
+                                           data-status="del">删号</a>
+                </div>
+            </div>
+          
+        </div>
+      
+    </div>
+  
+<style type="text/css">
+  
+  tbody td{
+
+    padding: 0px;
+    height:10px;
+    text-align:left;
+	  
+  }  
+
+</style>
+  <div style="margin-top:20px;font-size:14px;text-align:center;">————回调监控数据（<a href="clerk/id/{$des['id']}" style="color:#ff3300;">点击刷新</a>）——————</div>
+  <div style="text-align:center;padding:5px;">
+  <form class="layui-form" action="">
+<div class="row">
+    <div>
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+
+                <table class="layui-table" >
+                    <thead>
+                    <tr style="background-color:#80ffbf;">
+                        <!--<th style="font-size:12px;font-weight:bold;line-height:15px;">设备号</th>-->
+                        <th style="font-size:12px;font-weight:bold;">设备号：{$des.app_id} 监控信息（Info）</th>
+                        <th style="font-size:12px;font-weight:bold;">回传时间（Time）</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="data" id="v"}
+                    <tr onMouseOver="this.style='font-weight:bold;color:red;'" onMouseOut="this.style='font-weight:normal;color:blank;'">    
+                        <!--<td style="font-size:12px;width:5%;">{:substr($v.msg.0,20,8)}</td>-->
+                        <td style="font-size:12px;">{$v.msg.2}</td>
+                        <td style="font-size:12px;width:10%;">{$v.time}</td>
+                    </tr>  
+                        {/volist}              
+                        </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+    <!--弹出层店员-->
+    <div id="dialogs">
+        <div class="js_dialog" id="iosDialog2" style="opacity: 1; display: none;">
+            <div class="weui-mask">
+            </div>
+            <div class="weui-dialog bg-white">
+                <div class="weui-dialog__bd clearfix">
+                    <div class="float-left">账号</div>
+                    <div class="float-left">
+                        <select class="search-select" name="clerk_id">
+                            <option>选择店员账号</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="#" class="weui-dialog__btn font-size-14 weui-dialog__btn_primary">确认</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--弹出层end-->
+<!--弹出层二维码-->
+<div id="dialogs1">
+    <div class="js_dialog" id="iosDialog3" style="opacity: 1; display: none;">
+        <div class="weui-mask">
+        </div>
+        <div class="weui-dialog">
+            <img id="qr_code" src="/static/magent/img/code1.png" style="width:85%;height:auto;">
+            <div class="weui-dialog__ft">
+                <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">关闭</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--弹出层end-->
+<!--弹出层提示-->
+<div id="dialogs2">
+    <div class="js_dialog" id="iosDialog4" style="opacity: 1; display: none;">
+        <div class="weui-mask">
+        </div>
+        <div class="weui-dialog" style="background: #fff">
+            <p>弹出层提示</p>
+            <div class="weui-dialog__ft m-t-20">
+                <a href="javascript:;" class="weui-dialog__btn font-size-14 weui-dialog__btn_default">取消</a>
+              <a href="javascript:;" class="weui-dialog__btn font-size-14 font-green weui-dialog__btn_default queren">确认</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--弹出层end-->
+</div>
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+{include file="public/footer" /}
+<script>
+    $(function () {
+        var $iosDialog1 = $('#iosDialog2');
+        $('#dialogs').on('click', '.weui-dialog__btn', function () {
+            var id = $(this).attr('data-id');
+            var clerk_id = $("[name='clerk_id']").val();
+            bind_clerk(id, clerk_id)
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+       $('#dialogs2').on('click', '.weui-dialog__btn', function(){
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+        $('.showIOSDialog2').on('click', function () {
+            var id = $(this).attr('data-id');
+            $.get('/magent/user/bind_clerk/id/' + id, function (data) {
+                var html = "<option value=\"\">选择店员账号</option>";
+                $.each(data, function (i, e) {
+                    html += "<option value=" + e.id + ">" + e.name + "->" + e.app_id + "</option>";
+                })
+                $("[name='clerk_id']").html(html);
+            })
+            $('#dialogs .weui-dialog__btn').attr('data-id', id)
+            $iosDialog1.fadeIn(200);
+        });
+        // 二维码
+        var $iosDialog2 = $('#iosDialog3');
+        $('#dialogs1').on('click', '.weui-dialog__btn', function () {
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+        $('.showIOSDialog3').on('click', function () {
+            var id = $(this).attr('data-id');
+            get_qrcode(id);
+            $iosDialog2.fadeIn(200);
+        });
+        // 提示
+        var $iosDialog3 = $('#iosDialog4');
+        $('#dialogs2').on('click', '.queren', function () {
+            var id = $(this).attr('data-id')
+            var st = $(this).attr('data-status')
+            if (st == 'edit') lift_clerk(id);
+            if (st == 'del') del_account(id);
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+        $('.showIOSDialog4').on('click', function () {
+            var st = $(this).attr('data-status')
+            var id = $(this).attr('data-id')
+            if (st == 'edit') $("#dialogs2 .weui-dialog p").text('确认解绑该店员吗？');
+            if (st == 'del') $("#dialogs2 .weui-dialog p").text('确认删除该账号吗？');
+            $("#dialogs2 .queren").attr('data-id', id);
+            $("#dialogs2 .queren").attr('data-status', st);
+            $iosDialog3.fadeIn(200);
+        });
+    });
+
+    function bind_clerk(id, clerk_id) {
+        $.post("/magent/user/bind_clerk", {id, clerk_id}, function (data) {
+            $.toast(data.msg,1000);
+            setTimeout(function () {
+                location.reload();
+            }, 1000)
+        });
+    }
+
+    function lift_clerk(id) {
+        $.post('{:url("magent/user/lift_clerk")}', {id: id}, function (data) {
+            if (data.code == '0000') {
+                $.toast(data.msg,1000);
+                setTimeout(function () {
+                    location.reload();
+                }, 1000)
+            } else {
+                $.toast(data.msg);
+            }
+        })
+    }
+
+    function del_account(id) {
+        //删除收款账号
+        $.post('{:url("magent/user/del_account")}', {id: id}, function (data) {
+            if (data.success == 2) {
+                $.toast(data.hint,1000);
+                setTimeout(function () {
+                    location.reload();
+                }, 1000)
+            } else {
+                $.toast(data.hint,1000);
+            }
+        })
+    }
+
+    function get_qrcode(id) {
+        $.post('/magent/user/get_qrcode', {id}, function (data) {
+            if (data.code) {
+                $("#qr_code").attr('src', data.msg)
+            }
+        })
+    }
+</script>
+</body>
+</html>

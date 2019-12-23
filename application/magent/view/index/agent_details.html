@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>详情页</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white clearfix">
+    <a href="/magent/index/index">
+        <div class="weui_left float-left"><img src="/static/magent/img/left.png"/></div>
+    </a>
+    <div class="title">{$info['name']}</div>
+</header>
+
+<div class='weui-content' style="margin-top: 40px;">
+    <div class="bg-white m-t-20">
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">编号</span>
+                <span class="float-right font-size-12">{$info['merchant_cname']}_{$info['id']}</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left">级别</span>
+                <span class="float-right font-size-12">{$info['level_name']}</span>
+            </div>
+        </div>
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">注册时间</span>
+                <span class="float-right font-size-12">{:date("Y.m.d H:i:s",$info['join_time'])}</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left">登录时间</span>
+                <span class="float-right font-size-12">{:date("Y.m.d H:i:s",$info['login_time'])}</span>
+            </div>
+        </div>
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">收/派单(元)</span>
+                <span class="float-right font-size-12">{:number_format($info['succ_count_sum'] / 100, 2)}/{:number_format($info['count_sum'] / 100, 2)}</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left" style="width: 100%;">收单率</span>
+                <span class="float-right font-size-12">{$info['succ_count']}/{$info['count']}</span>
+            </div>
+        </div>
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">申请人</span>
+                <span class="float-right font-size-12">{$info['name']}</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left">通道列表</span>
+                <span class="float-right font-size-12 showIOSDialog2">点击查看</span>
+            </div>
+        </div>
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">成功率</span>
+                <span class="float-right font-size-12">{$info['count']?number_format($info['succ_count']/$info['count']*100, 2):'0.00'}%</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left">保证金</span>
+                <span class="float-right font-size-12">{:number_format($info['margin'] / 100, 2)}</span>
+            </div>
+        </div>
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">冻结金</span>
+                <span class="float-right font-size-12">{:number_format($info['freeze'] / 100, 2)}</span>
+            </div>
+            <div class="details_name float-right font-size-12">
+                <span class="float-left">挂码/总量/开启</span>
+                <span class="float-right font-size-12">{$info['code']}</span>
+            </div>
+        </div>
+        <div class="weui_details_wrap clearfix">
+            <div class="details_name float-left font-size-14">
+                <span class="float-left">收款功能</span>
+                <span class="float-right font-size-12 {$info['is_open']==1?'font-green':'font-red'}">{$info['is_open']==1?'已开启':'已关闭'}</span>
+            </div>
+            <div class="details_name float-right font-size-14">
+                <span class="float-left">今日收款</span>
+                <span class="float-right font-size-12">{:number_format($info['today'] / 100, 2)}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="weui-form-preview m-t-20">
+        <div class="weui-wrap clearfix p-b-2" style="padding-top: 20px;">
+            <div class="float-left m-l-5"><a href="#" class="weui-btn edit_btn bg-red showIOSDialog"
+                                             style="width: 100% !important">上/下分</a></div>
+            <div class="float-left m-l-5"><a href="{:url('magent/user/info',['id'=>$info['id']])}"
+                                             class="weui-btn edit_btn bg-green" style="width: 100% !important">编辑</a>
+            </div>
+            <div class="float-left m-l-5"><a href="#" class="weui-btn edit_btn bg-green showIOSDialog1"
+                                             style="width: 100% !important">增加通道</a></div>
+            <div class="float-left m-l-5">
+              
+                    <a href="#"
+                       class="weui-btn edit_btn open_pay"
+                       style="width: 100% !important;{$info['is_open']==1?'background:#56b387':'background:#ff7b2b'}" state="{$info['state']}"
+                       value="{$info['id']}">{$info['is_open']==1?'关闭收款':'开启收款'}</a>
+            
+              
+              
+            </div>
+        </div>
+    </div>
+
+    <!--弹出层begin-->
+    <div id="dialogs">
+        <div class="js_dialog" id="iosDialog" style="opacity: 1; display: none;">
+            <div class="weui-mask">
+            </div>
+            <div class="weui-dialog bg-white">
+                <div class="weui-dialog__bd clearfix">
+                    <div class="float-left font-size-14">交易密码<input type="password" class="search-input"
+                                                                    name="trading_pass" placeholder="交易密码"></div>
+                    <div class="float-left font-size-14">交易金额<input type="number" class="search-input"
+                                                                    name="money" placeholder="交易的金额"></div>
+                    <div class="float-left font-size-14">操作原因<input type="text" class="search-input" name="text1"
+                                                                    placeholder="操作原因"></div>
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn font-size-14 debit_money">确认</a>
+                    <a href="javascript:;" class="weui-dialog__btn font-size-14 quxiao">取消</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--弹出层end-->
+    <!--弹出层begin-->
+    <div id="dialogs1">
+        <div class="js_dialog1" id="iosDialog1" style="opacity: 1; display: none;">
+            <div class="weui-mask">
+            </div>
+            <div class="weui-dialog bg-white">
+                <div class="weui-dialog__bd clearfix">
+                    <div class="float-left">通道类型</div>
+                    <div class="float-left">
+                        <select class="search-select" name="channel">
+                            <option value="">选择通道</option>
+                            {volist name="$info['channel_list']" id="vo"}
+                            <option value="{$vo['id']}">{$vo['channel_name']}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="weui-dialog__bd clearfix">
+                    <div class="float-left">通道费率</div>
+                    <div class="float-left">
+                        <input type="number" name="fee" class="search-select" placeholder="0.001表示千分之一">
+                    </div>
+                </div>
+                <input type="hidden" name="user_id" value="{$info['id']}">
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn font-size-14 weui-dialog__btn_primary">确认</a>
+                    <a href="javascript:;" class="weui-dialog__btn font-size-14 quxiao">取消</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--弹出层end-->
+    <div id="dialogs2">
+        <div class="js_dialog2" id="iosDialog2" style="opacity: 1; display: none;">
+            <div class="weui-mask">
+            </div>
+            <div class="weui-dialog bg-white">
+                <div class="weui-dialog__bd clearfix">
+                    <div class="float-left">
+                        {volist name="$info['channel']" id="vo"}
+                        {$vo['channel_name']}  {$vo.fee*100}%<br/>
+                        {/volist}
+                    </div>
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn font-size-14 quxiao">确认</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="public/footer" /}
+<script type="text/javascript" class="">
+    $(function () {
+        var $iosDialog = $('#iosDialog');
+
+        $('#dialogs').on('click', '.debit_money', function () {
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+        $('#dialogs').on('click', '.quxiao', function () {
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+        $('.showIOSDialog').on('click', function () {
+            $iosDialog.fadeIn(200);
+        });
+
+        var $iosDialog1 = $('#iosDialog1');
+
+        $('#dialogs1').on('click', '.weui-dialog__btn_primary', function () {
+            $(this).parents('.js_dialog1').fadeOut(200);
+            var channel = $("[name='channel']").val();
+            var fee = $("[name='fee']").val();
+            var uid = $("[name='user_id']").val();
+            if(channel == ''){
+                 $.toast('通道不能为空', 500);
+                 setTimeout(function(){
+                $('.weui-toast').remove();
+            },600)
+              return false;
+            
+            }else if(fee == ''){
+                $.toast('费率不能为空', 500);
+                setTimeout(function(){
+                $('.weui-toast').remove();
+            },600)
+              return false;
+            }
+            $.ajax({
+                url: "/magent/index/add_user_fee",
+                type: "post",
+                data: {channel, fee, uid},
+                success: function (data) {
+                    $.toast(data.msg, 500);
+                    location.reload();
+                }
+            })
+        });
+        $('.quxiao').click(function(){
+
+            $('#iosDialog1').css('display','none');
+
+
+        })
+        $('#dialogs').on('click', '.quxiao', function () {
+            $(this).parents('.js_dialog1').fadeOut(200);
+        });
+        $('.showIOSDialog1').on('click', function () {
+            $iosDialog1.fadeIn(200);
+        });
+
+        var $iosDialog2 = $('#iosDialog2');
+
+        $('#dialogs2').on('click', '.debit_money', function () {
+            $(this).parents('.js_dialog2').fadeOut(200);
+        });
+        $('#dialogs2').on('click', '.quxiao', function () {
+            $(this).parents('.js_dialog2').fadeOut(200);
+        });
+        $('.showIOSDialog2').on('click', function () {
+            $iosDialog2.fadeIn(200);
+        });
+
+        $('.open_pay').click(function () {
+            var state = $(this).attr('state');
+            //账户状态
+            if (state == 100) {
+                $.toast('无法对超级管理员进线操作', 500);
+                return false;
+            }
+            var id = $(this).attr('value');
+            var msg = '确定' + $(this).text() + '?';
+            $.confirm({
+                title: '提示',
+                text: msg,
+                onOK: function () {
+                    $.ajax({
+                        url: '/magent/index/update_open_pay',
+                        data: {state, id},
+                        type: 'post',
+                        success: function (data) {
+                            $.toast(data.msg, 500);
+                            if (data.code == '0000') {
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 500);
+                            }
+                        }
+                    })
+                },
+                onCancel: function () {
+                    location.reload();
+                }
+            });
+        })
+
+        $(".debit_money").click(function () {
+            var pass = $("[name='trading_pass']").val();
+            var money = $("[name='money']").val();
+            var id = {$info['id']};
+            var text1 = $("[name='text1']").val();
+
+            $.post('{:url("magent/index/debit_money")}', {pass, money, id, text1}, function (data) {
+                $.toast(data.msg, 500);
+              	if(data.code == '0000'){
+                	location.reload();
+                }else{
+                  setTimeout(function () {
+                        $('.weui-toast').remove();
+                    }, 1000);
+                	
+                }
+                
+            })
+        })
+    });
+</script>
+</body>
+</html>

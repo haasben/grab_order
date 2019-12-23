@@ -1,0 +1,74 @@
+{include file="common/mobileheader"}
+<div class="content">
+   <div class="buttons-tab">
+        <a href="{:url('nagent/mobile/index')}" class="button">首页</a>
+        <a href="{:url('nagent/mobile/account_list')}" class="tab-link active button">账户总览</a>
+        <a href="{:url('nagent/mobile/order_list')}" class="button">订单查询</a>
+        <a href="{:url('nagent/mobile/receive_index')}" class=" button">收款账户</a>
+    </div>
+<style type="text/css">
+    .item-title-row{
+        margin:5px 0;
+    }
+    .subtitle{
+        margin:5px 0;
+    }
+
+</style>
+    <div class="tabs">
+        <div id="tab2" class="tab active">
+
+            <div class="card box-shadow">
+                <div class="card-header green_text">{$user_data.company}-{$user_data.merchant_cname}</div>
+                <div class="list-block media-list">
+                    <ul>
+                        <li>
+                            <a href="JavaScript:;" class="item-link item-content">
+                                <div class="item-inner">
+                                    <div class="item-title-row">
+                                        <div class="item-title">代理商名称：{$user_data.name}</div>
+                                    </div>
+                                    <div class="item-title-row">
+                                        <div class="item-title">手机号：{$user_data.phone_num}</div>
+                                    </div>
+                                    <div class="item-title-row">
+                                        <div class="item-title">邮箱：{$user_data.email}</div>
+                                    </div>
+                                    <div class="item-subtitle">充值总金额: {$user_data.recharge_sum/100} </div>
+                                    <div class="item-subtitle">手续费合计:{$user_data.fee_sum/100}</div>
+                                    <div class="item-subtitle">已结算金额:{$user_data.withdrawal_sum/100}</div>
+                                    <div class="item-subtitle">剩余金额:{$user_data.money/100}</div>
+                                    <div class="item-subtitle">保证金:{$user_data.margin/100}</div>
+                                    <div class="item-subtitle">违规次数:{$user_data.bans_num}</div>
+                                    <div class="item-subtitle">收款状态:{if condition="$user_data.is_open == 1"}已开启{else}已关闭{/if}</div>
+                                    <div class="item-subtitle">最近登录时间:{:date('Y-m-d H:i:s',$user_data.login_time)}</div>
+
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+  <!--               <div class="card-footer">
+                    <span class=""></span>
+                    <span class="green_text"><a href="{:url('mobile/Acount/account_des',['id'=>$user_data['uid']])}">查看详情</a></span>
+                </div> -->
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+<script type="text/javascript">
+    var time = new Date();
+    $(".start_time").calendar({
+        value: [time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()]
+    });
+    $(".end_time").calendar({
+        value: [time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()]
+    });
+</script>
+</body>
+</html>

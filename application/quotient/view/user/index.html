@@ -1,0 +1,83 @@
+{include file="common/head"}
+<!-- layout admin -->
+<div class="layui-layout layui-layout-admin">
+    <!-- header -->
+    <div class="layui-header my-header" style="background-color:#021938">
+        <div class="my-header-logo">
+ 
+           <div class="header_left_img"style="padding: 5px 0 0 10;font-size:30px">线上管理系统</div>
+            <!--<div class="header_center">
+                <span >上次登录时间：{$login_user.login_time|date="Y-m-d H:i:s",###}</span><span style="margin-left: 10px;">|</span>
+                <sapn style="margin-left: 10px;">上次登陆IP&nbsp;IP:{$login_user.login_ip}</sapn>
+            </div>-->
+            <div class="header_right">
+                <ul>
+                    <li class="login-name"><i><img src="/static/sadmin/img/icon_welcome.png"/></i><span style="margin-left: 5px;">欢迎，{$login_user.name}</span></li>
+  
+                    <li><a href="{:url('/quotient/user/exit_login')}"><i><img src="/static/sadmin/img/icon_quit.png"/></i><span style="margin-left: 5px;color: #fff;">退出</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- side -->
+    <div class="layui-side my-side">
+        <div class="layui-side-scroll">
+            <!-- 左侧主菜单添加选项卡监听 -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="side-main">
+               <li class="layui-nav-item  ">
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+    <!-- body -->
+    <div class="layui-body my-body">
+        <div class="layui-tab layui-tab-card my-tab" lay-filter="card" lay-allowClose="true">
+            <ul class="layui-tab-title">
+                <li class="layui-this" lay-id="1"><span><i class="layui-icon">&#xe638;</i>机构信息</span></li>
+            </ul>
+            <div class="layui-tab-content" style="heigth:100%">
+                <div class="layui-tab-item layui-show">
+                    <iframe style="" id="iframe" src="/quotient/payment_account/index.html" frameborder="0" style="height:100%"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer 分页数据-->
+    <div class="layui-footer my-footer"></div>
+    <!-- footer -->
+</div>
+
+
+
+
+
+<script type="text/javascript" src="/static/sadmin/frame/layui/layui.js"></script>
+<script type="text/javascript" src="/static/sadmin/frame/static/js/vip_comm.js"></script>
+<script type="text/javascript" src="/static/sadmin/frame/static/js/vip_nav.js"></script>
+<script type="text/javascript">
+        $(function () {
+        // $("#edit-password").on('click',function () {
+        //     layer.open({
+        //         type: 1,
+        //         content:$('#edit_password')
+        //     });
+        // })
+    })
+layui.use(['layer','vip_nav'], function () {
+
+    // 操作对象
+    var layer       = layui.layer
+        ,vipNav     = layui.vip_nav
+        ,$          = layui.jquery;
+
+    // 主体菜单生成 [请求地址,过滤ID,是否展开,携带参数]
+    vipNav.main('/static/sadmin/json/nav_main66.json','side-main',true);
+
+
+
+});
+</script>
+</body>
+</html>

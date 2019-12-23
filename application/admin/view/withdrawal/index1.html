@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>红云支付线上管理系统</title>
+		<link rel="stylesheet" href="__ADMIN__css/index3.css" />
+	</head>
+	<style>
+		tr:nth-child(even){
+			background: #e5f0f3;
+		}
+	</style>
+	<body>
+	<div class="box">
+{include file="common/header" /}
+		<div class="content">
+{include file="common/left" /}
+
+		<div class="content_right">
+		<form action="/admin/Withdrawal/index.html">
+		<div class="input_group">
+		提现订单号：<input name="id" value="{:input('get.id')}" type="text">
+		</div>
+		<div class="input_group">
+		开始时间：<input type="datetime-local" name="start_time" style="width: 180px;">
+		</div>
+		<div class="input_group">
+		结束时间：<input type="datetime-local" name="end_time" style="width: 180px;">
+		</div>
+		
+		<div class="input_group">
+		订单状态：<select name="status">
+		<option value="0">全部</option>
+		<option value="1">已完成</option>
+		<option value="2">已提交</option>
+		<option value="3">已作废</option>
+		</select>
+		</div>
+
+		<div class="input_group">
+		<button style="color: white;">确定</button>
+		</div>
+		</form><br/>
+          <!--
+		<div class="zong">
+		总金额:<span>0.00</span>元		</div>
+		-->
+		<table>
+		<thead>
+		<th>商户编号</th>
+		<th>提现订单号</th>
+		<th>收款人姓名</th>
+		<th>收款人账户</th>
+		<th>收款账户号</th>
+		<th>提交时间</th>
+		<th>提现金额</th>
+		<th>手续费</th>
+		<th>余额</th>
+		<th>备注</th>
+		<th>状态</th>
+		
+		
+		
+		</thead>
+		
+		
+{volist name="order_data" id="vo"}
+		<tr>
+		<td>{$vo.merchant_cname}_{$vo.uid}</td>
+		<td>{$vo.id}</td>
+		<td>{$vo.name}</td>
+		<td>{$vo.withdrawal_type}</td>
+		<td>{$vo.id_num}</td>
+		<td>{:date('Y-m-d H:i:s',$vo.add_time)}</td>
+		<td>{$vo.w_amount/100}</td>
+		<td>{$vo.fee/100}</td>
+		<td>{$vo.this_money/100}</td>
+		<td>{$vo.ext}</td>
+		<td>
+<?php
+if($vo['status']==2){
+	echo "已提交";
+}elseif($vo['status']==1){
+	echo "已完成";
+}elseif($vo['status']==3){
+	echo "已作废";
+}else{
+	echo $vo['status'];
+}
+?>
+		</td>
+		
+		</tr>
+{/volist}
+		
+		
+		</table>
+		</div>
+{$order_data->render()}
+          
+		</div>
+		</div>
+		
+<script type="text/javascript">
+$(function(){
+	$('input[name="start_time"]').val("{:input('get.start_time')}");
+    $('input[name="end_time"]').val("{:input('get.end_time')}");
+    $('[name=status]').find("[value={:input('get.status')}]").attr('selected','selected');
+})
+</script>
+		
+		
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+             <br/><br/>
+			请进入机构信息页面修改
+            <br/><br/>
+			</div>
+		</div><!-- /.modal-content -->
+	</div>
+	</body>
+</html>

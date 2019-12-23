@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>提现查询详情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="__MOBILE__css/index.css" type="text/css"/>
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+</head>
+<body>
+<header class="bar bar-nav green_nav">
+    <a href="javascript:history.back(-1)">
+        <span class="icon icon-left"></span>
+    </a>
+    <h1 class="title" style="color: #fff">提现查询</h1>
+</header>
+<div class="content">
+    <div class="student_top">
+    </div>
+    <div class="resume_title">基本信息</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-100"><span>商户名称：</span>{$order_data.merchant_cname}_{$order_data.uid}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">订单号</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-100"><span>下级单号：</span>{$order_data.order_num}</div>
+                <div class="col-100"><span>平台单号：</span>{$order_data.id}</div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="resume_title">交易信息</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-100"><span>提交时间：</span>{:date('Y-m-d H:i:s',$order_data.add_time)}</div>
+            </div>
+            <div class="row">
+                <div class="col-100"><span>付款方式：</span>{$order_data.t_name}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">支付信息</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>付款金额：</span>￥ {$order_data.w_amount/100}</div>
+                <div class="col-50"><span>提现手续费：</span>￥ {$order_data.fee/100}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">收款信息</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>收款人姓名：</span>{$order_data.name}</div>
+                <div class="col-50"><span>收款账户：</span>{$order_data.bank_name}</div>
+            </div>
+
+            <div class="row">
+                <div class="col-100"><span>收款卡号：</span>{$order_data.id_num}</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="resume_title">余额</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-100"><span>商户余额：</span>￥{$order_data.this_money/100}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="resume_title">状态</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-100"><span>订单状态：</span>{switch name="$order_data.status"}
+                                                            {case value="1"}已操作转账{/case}
+                                                            {case value="2"}已提交{/case}
+                                                            {case value="3"}订单作废金额退回{/case}
+                                                            {default /}已提交
+                                                        {/switch}</div>
+                <div class="col-100"><span>操作人：</span>{$order_data.add_user}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">订单备注</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-100"><span>订单备注：</span>{$order_data.ext}</div>
+            </div>
+        </div>
+    </div>
+<!--     <div class="resume_title">操作</div>
+    <div class="operation-box">
+        <div class="">
+            <div class="row">
+                <div class="col-20"><a href="#" class="button button_success">下账</a></div>
+                <div class="col-20"><a href="#" class="button button_success">冻结</a></div>
+                <div class="col-20"><a href="#" class="button button_success">秘钥</a></div>
+                <div class="col-40"><a href="#" class="button button_success">关闭支付</a></div>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+</body>
+</html>

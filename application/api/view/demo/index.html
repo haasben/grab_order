@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>支付demo</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+<body style="background-color:#f0fbf5">
+    <script type="text/javascript" src="__SADMIN__js/jQuery1.9.1.js" ></script>
+
+<style type="text/css">
+ .layui-form-item{
+  text-align: center;
+
+ } 
+
+
+</style>
+        <form class="layui-form" action="{:url('api/demo/submit_demo_post')}" method="post">
+
+
+
+
+<div style="margin:auto;width:100%">
+
+
+    <div style="margin:20px;text-align: center;"><h1><a href="javascript:history.back(-1)" class="layui-icon"  style="padding-right: 1rem">&#xe65c;</a>支付测试demo</h1>
+    <span id="result">
+
+    </span>
+  </div>
+
+  <div style="text-align: center;">
+      <div class="layui-form-item">
+        <label class="layui-form-label">订单金额</label>
+         <div class="layui-input-block">
+          <input type="text" name="pay_amount" required  lay-verify="required|number" placeholder="请输入订单金额(元)" value="10" autocomplete="off"  class="layui-input">
+      </div>
+    </div>
+  </div>
+  <div style="text-align: center;">
+      <div class="layui-form-item">
+        <label class="layui-form-label">订单号</label>
+         <div class="layui-input-block">
+          <input type="text" id="order_num" name="order_num" required  lay-verify="required" placeholder="请输入订单号" value="" autocomplete="off"  class="layui-input">
+    </div>
+  </div>
+</div>
+
+  <div style="text-align: center;">
+      <div class="layui-form-item">
+        <label class="layui-form-label">异步回调地址</label>
+         <div class="layui-input-block">
+          <input type="text" name="notify_url" required  lay-verify="required" placeholder="请输入你的异步回调地址" value="yousite" autocomplete="off"  class="layui-input">
+    </div>
+  </div>
+</div>
+    <div style="text-align: center;">
+      <div class="layui-form-item">
+        <label class="layui-form-label">同步跳转地址</label>
+         <div class="layui-input-block">
+          <input type="text" name="return_url" required  lay-verify="required" placeholder="请输入你的同步跳转地址" value="http://www.baidu.com" autocomplete="off"  class="layui-input">
+    </div>
+  </div>
+</div>
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">支付通道</label>
+    <div class="layui-input-block">
+      <select name="pay_type" lay-verify="required">
+        <option value=""></option>
+        {volist name="$channel" id="v"}
+        <option value="{$v.id}">{$v.show_name}</option>
+        {/volist}
+
+      </select>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">支付方式</label>
+    <div class="layui-input-block">
+      <select name="pay_method" id="pay_method" lay-verify="required">
+		 <option value="cash">收银台</option>
+        <option value="mobile">支付链接</option>
+       
+
+      </select>
+    </div>
+  </div>
+  <div style="text-align: center;">
+      <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+         <div class="layui-input-block">
+          <input type="text" name="ext" required  lay-verify="required" placeholder="请输入备注" value="demo测试" autocomplete="off"  class="layui-input">
+    </div>
+  </div>
+</div>
+
+    
+
+
+      <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+    </div>
+    
+</div>
+    
+</form>
+ 
+
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+//注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+layui.use(['form'], function(){
+  var form = layui.form,layer=layui.layer,jquery=layui.jquery;
+  var time = setInterval(function() {
+
+      var timestamp = (new Date()).getTime();
+      var x = 100;       
+      var y = 0; 
+      var rand = parseInt(Math.random()*(x - y + 1) + y);
+
+      $('#order_num').val('YUN_'+timestamp+''+rand);
+  },1000);
+//提交表单
+
+  form.on('submit(formDemo)', function(data){
+
+      var data = data.field;
+	  
+      var arrayList = ["1017","1018",'1012','1008','1030'];
+
+     if($.inArray(data.pay_type, arrayList) != '-1'){
+     	  return true;
+     }
+
+      $.post('{:url("api/demo/submit_demo")}',data,function(res){
+
+        $('#result').html('');
+
+        if(res.code == '0000'){
+
+            layer.msg(res.info,{icon:1,time:1500},function(){
+                      
+              	window.location.href=res.data;        
+                      
+              });
+
+           
+        }else{
+
+            layer.msg(res.info);
+        }
+            
+
+      })
+
+      return false;
+  });
+
+     
+
+});
+</script>
+</body>
+</head>
+</html>

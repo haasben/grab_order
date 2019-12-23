@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>数据总览</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <!--顶部轮播-->
+    <div class="weui_left float-left" onclick="javascript:history.go(-1);"><img src="/static/magent/img/left.png"/>
+    </div>
+    <div class="title">数据总览</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <div class="weui-tab">
+        <div class="weui-navbar">
+            <a class="weui-navbar__item weui-bar__item--on" href="#tab1" data-type="1">
+                上下分数据
+            </a>
+            <a class="weui-navbar__item" href="#tab2" data-type="2">
+                日切数据
+            </a>
+        </div>
+        <div class="weui-tab__bd">
+
+            <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+                <div class="weui-wrap clearfix" style="padding:10px 0 0 5px;width:100%">
+
+                <div class="float-left">
+                    <select class="search-select" style="width: 120px" name="group_id">
+                        <option value="">全部日志</option>
+                        {volist name="$record_type" id="r"}
+                        <option value="{$r.id}">{$r.name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                </div>
+                <div class="shangxiafen">
+                {volist name="list" id="vo"}
+                <div class="weui-form-preview__hd bg-white m-t-20">
+                    <a href="#">
+                        <span class="example"></span>
+                        <label class="weui-form-preview_label">{$vo.type}</label>
+                        <span class="weui-more">{$vo['date']}</span>
+                    </a>
+                </div>
+                <div class="data-info clearfix bg-white">
+                    <table cellspacing="0" cellpadding="0" class="weui-width-100">
+                        <tr>
+                            <td class="bg-gray" width="20%">操作人</td>
+                            <td width="15%">{$vo['operator']}</td>
+                            <td class="bg-gray" width="25%">被操作代理</td>
+                            <td width="10%">{$vo['child_id']}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg-gray" width="20%">日志类型</td>
+                            <td class="count">{$vo['type']}</td>
+                            <td class="bg-gray count">说明</td>
+                            <td class="count">{$vo['content']}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg-gray" width="20%">金额</td>
+                            <td width="15%">{$vo['money']}</td>
+                            <td class="bg-gray" width="25%">冻结额度</td>
+                            <td width="10%">{$vo['freeze_money']}</td>
+                        </tr>
+                    </table>
+                </div>
+                {/volist}
+            </div>
+            </div>
+
+            <div id="tab2" class="weui-tab__bd-item daily_data">
+                {volist name="daily_data" id="vo"}
+                <div class="weui-form-preview__hd bg-white m-t-20">
+                    <a href="#">
+                        <!--<span class="example"></span>
+                        <label class="weui-form-preview_label">  </label>-->
+                        <span class="weui-more">{$vo['date']}</span>
+                    </a>
+                </div>
+                <div class="data-info clearfix bg-white">
+                    <table cellspacing="0" cellpadding="0" class="weui-width-100">
+                        <tr>
+                            <td class="bg-gray" width="20%">所属用户</td>
+                            <td width="15%">{$vo['uid']}</td>
+                            <td class="bg-gray" width="25%">订单总笔数</td>
+                            <td width="10%">{$vo['order_sum']}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg-gray" width="20%">通道类型</td>
+                            <td class="count">{$vo['channel_name']}</td>
+                            <td class="bg-gray count">成功订单总笔数</td>
+                            <td class="count">{$vo['succ_sum']}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg-gray" width="20%">派单总额</td>
+                            <td width="15%">{$vo['money_sum']}</td>
+                            <td class="bg-gray" width="25%">成功总金额</td>
+                            <td width="10%">{$vo['succ_money_sum']}</td>
+                        </tr>
+                    </table>
+                </div>
+                {/volist}
+            </div>
+        </div>
+    </div>
+</div>
+<!--底部导航-->
+{include file="public/footer" /}
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item  weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+
+<script>
+    $(function () {
+        var loading = false;  //状态标记
+        var page = 2;
+        $(".weui-tab__bd-item--active").infinite().on("infinite", function () {
+            if (loading) return;
+            loading = true;
+            setTimeout(function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/magent/user/data',
+                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                    data: {page, dtype: 1},
+                    success: function (res) {
+                        page = res.page + 1
+                        if (res.list.length == 0) {
+                            $.toast('数据已全部加载', 500);
+                            return false;
+                        }
+                        $.each(res.list, function (i, e) {
+                            var html = "<div class=\"weui-form-preview__hd bg-white m-t-20\">\n" +
+                                "                    <a href=\"#\">\n" +
+                                "                        <span class=\"example\"></span>\n" +
+                                "                        <label class=\"weui-form-preview_label\">正常回调</label>\n" +
+                                "                        <span class=\"weui-more\">" + e.date + "</span>\n" +
+                                "                    </a>\n" +
+                                "                </div>\n" +
+                                "                <div class=\"data-info clearfix bg-white\">\n" +
+                                "                    <table cellspacing=\"0\" cellpadding=\"0\" class=\"weui-width-100\">\n" +
+                                "                        <tr>\n" +
+                                "                            <td class=\"bg-gray\" width=\"20%\">操作人</td>\n" +
+                                "                            <td width=\"15%\">" + e.operator + "</td>\n" +
+                                "                            <td class=\"bg-gray\" width=\"25%\">被操作代理</td>\n" +
+                                "                            <td width=\"10%\">" + e.child_id + "</td>\n" +
+                                "                        </tr>\n" +
+                                "                        <tr>\n" +
+                                "                            <td class=\"bg-gray\" width=\"20%\">日志类型</td>\n" +
+                                "                            <td class=\"count\">" + e.type + "</td>\n" +
+                                "                            <td class=\"bg-gray count\">说明</td>\n" +
+                                "                            <td class=\"count\">" + e.content + "</td>\n" +
+                                "                        </tr>\n" +
+                                "                        <tr>\n" +
+                                "                            <td class=\"bg-gray\" width=\"20%\">金额</td>\n" +
+                                "                            <td width=\"15%\">" + e.money + "</td>\n" +
+                                "                            <td class=\"bg-gray\" width=\"25%\">冻结额度</td>\n" +
+                                "                            <td width=\"10%\">" + e.freeze_money + "</td>\n" +
+                                "                        </tr>\n" +
+                                "                    </table>\n" +
+                                "                </div>";
+                            $(".shangxiafen").append(html);
+                        })
+                        $.toast('加载完成', 500)
+                    }
+                });
+                loading = false;
+            }, 1000);   //模拟延迟
+        });
+
+        $('.search-select').change(function(){
+            var type = $('.search-select').val();
+
+            
+            $.post('{:url("magent/user/data")}',{type_id:type},function(res){
+
+                var html = '';
+
+                $.each(res.list, function (i, e) {
+                    html += "<div class=\"weui-form-preview__hd bg-white m-t-20\">\n" +
+                        "                    <a href=\"#\">\n" +
+                        "                        <span class=\"example\"></span>\n" +
+                        "                        <label class=\"weui-form-preview_label\">正常回调</label>\n" +
+                        "                        <span class=\"weui-more\">" + e.date + "</span>\n" +
+                        "                    </a>\n" +
+                        "                </div>\n" +
+                        "                <div class=\"data-info clearfix bg-white\">\n" +
+                        "                    <table cellspacing=\"0\" cellpadding=\"0\" class=\"weui-width-100\">\n" +
+                        "                        <tr>\n" +
+                        "                            <td class=\"bg-gray\" width=\"20%\">操作人</td>\n" +
+                        "                            <td width=\"15%\">" + e.operator + "</td>\n" +
+                        "                            <td class=\"bg-gray\" width=\"25%\">被操作代理</td>\n" +
+                        "                            <td width=\"10%\">" + e.child_id + "</td>\n" +
+                        "                        </tr>\n" +
+                        "                        <tr>\n" +
+                        "                            <td class=\"bg-gray\" width=\"20%\">日志类型</td>\n" +
+                        "                            <td class=\"count\">" + e.type + "</td>\n" +
+                        "                            <td class=\"bg-gray count\">说明</td>\n" +
+                        "                            <td class=\"count\">" + e.content + "</td>\n" +
+                        "                        </tr>\n" +
+                        "                        <tr>\n" +
+                        "                            <td class=\"bg-gray\" width=\"20%\">金额</td>\n" +
+                        "                            <td width=\"15%\">" + e.money + "</td>\n" +
+                        "                            <td class=\"bg-gray\" width=\"25%\">冻结额度</td>\n" +
+                        "                            <td width=\"10%\">" + e.freeze_money + "</td>\n" +
+                        "                        </tr>\n" +
+                        "                    </table>\n" +
+                        "                </div>";
+                    
+                        })
+                console.log(html);
+                $(".shangxiafen").html(html);
+
+
+            })
+
+
+        })
+
+        $(".daily_data").infinite().on("infinite", function () {
+            if (loading) return;
+            loading = true;
+            setTimeout(function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/magent/user/data',
+                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                    data: {page, dtype: 2},
+                    success: function (res) {
+                        page = res.page + 1
+                        if (res.list.length == 0) {
+                            $.toast('数据已全部加载', 500);
+                            return false;
+                        }
+                        $.each(res.list, function (i, e) {
+                            var html = "<div class=\"weui-form-preview__hd bg-white m-t-20\">\n" +
+                                "                    <a href=\"#\">\n" +
+                                "                        <span class=\"example\"></span>\n" +
+                                "                        <label class=\"weui-form-preview_label\">正常回调</label>\n" +
+                                "                        <span class=\"weui-more\">" + e.date + "</span>\n" +
+                                "                    </a>\n" +
+                                "                </div>\n" +
+                                "                <div class=\"data-info clearfix bg-white\">\n" +
+                                "                    <table cellspacing=\"0\" cellpadding=\"0\" class=\"weui-width-100\">\n" +
+                                "                        <tr>\n" +
+                                "                            <td class=\"bg-gray\" width=\"20%\">所属用户</td>\n" +
+                                "                            <td width=\"15%\">" + e.uid + "</td>\n" +
+                                "                            <td class=\"bg-gray\" width=\"25%\">订单总笔数</td>\n" +
+                                "                            <td width=\"10%\">" + e.order_sum + "</td>\n" +
+                                "                        </tr>\n" +
+                                "                        <tr>\n" +
+                                "                            <td class=\"bg-gray\" width=\"20%\">通道类型</td>\n" +
+                                "                            <td class=\"count\">" + e.channel_name + "</td>\n" +
+                                "                            <td class=\"bg-gray count\">成功订单总笔数</td>\n" +
+                                "                            <td class=\"count\">" + e.succ_sum + "</td>\n" +
+                                "                        </tr>\n" +
+                                "                        <tr>\n" +
+                                "                            <td class=\"bg-gray\" width=\"20%\">收单总额</td>\n" +
+                                "                            <td width=\"15%\">" + e.money_sum + "</td>\n" +
+                                "                            <td class=\"bg-gray\" width=\"25%\">成功总金额</td>\n" +
+                                "                            <td width=\"10%\">" + e.succ_money_sum + "</td>\n" +
+                                "                        </tr>\n" +
+                                "                    </table>";
+                            $("#tab2").append(html);
+                        })
+                        $.toast('加载完成', 500)
+                    }
+                });
+                loading = false;
+            }, 1000);   //模拟延迟
+        });
+    })
+</script>
+</body>
+</html>

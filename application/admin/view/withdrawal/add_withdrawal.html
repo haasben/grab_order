@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="__ADMIN__css/shop.css" type="text/css" rel="stylesheet"/>
+    <link href="__ADMIN__css/Sellerber.css" type="text/css" rel="stylesheet"/>
+    <link href="__ADMIN__css/bkg_ui.css" type="text/css" rel="stylesheet"/>
+    <link href="__ADMIN__font/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <script src="__ADMIN__js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/Sellerber.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/jquery.dataTables.min.js"></script>
+    <script src="__ADMIN__js/jquery.dataTables.bootstrap.js"></script>
+    <script src="__ADMIN__js/layer/layer.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/laydate/laydate.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/hsCheckData.js" type="text/javascript"></script>
+    <!--[if lt IE 9]>
+    <script src="__ADMIN__js/html5shiv.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/respond.min.js"></script>
+    <script src="__ADMIN__js/css3-mediaqueries.js" type="text/javascript"></script>
+    <![endif]-->
+    <title>在线提现</title>
+</head>
+
+<body>
+	   <form action="/admin/Withdrawal/add_withdrawal.html?id={$assets_data.uid}" method="post">
+{:token()}
+<input name="uid" value="{$assets_data.uid}" type="hidden"> 
+<div class="margin inside_pages clearfix">
+    <div class="add_style clearfix relative">
+        <ul>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-2">支付方式：</label>
+                <div style="width:270px" class="Add_content col-xs-10">
+                    <select name="pay_type" class="margin-right l_f select_style" style="width:100%;">
+                        <option value="0">请选择</option>
+						{volist name="user_fee_data" id="vo"}
+				            <option value ="{$vo.taid}">{$vo.show_name}-{$vo.money/100}元</option>
+						{/volist}
+                    </select>
+                </div>
+            </li>
+            <li style="width:470px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">提现账户：</label>
+                <div style="width:370px" class="Add_content col-xs-11">
+                    <select name="user_account_id" class="margin-right l_f select_style" style="width: 270px;">
+                        <option value="0">请选择</option>
+                        {volist name="user_account_data" id="vo"}
+						            <option value ="{$vo.id}">{$vo.user_name}</option>
+						{/volist}
+                    </select>
+                    <em style="width:100px" class="Prompt"> <a href="add_user_account.html" style="text-decoration: blue;">添加提现账户</a></em>
+                </div>
+            </li>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">收款人姓名：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="text" name="name" disabled="disabled" class="col-xs-12"/></div>
+            </li>
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">银行卡号：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="text" name="id_num" disabled="disabled" class="col-xs-12"/></div>
+            </li>
+            <li style="width:700px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">提现金额：</label>
+                <div style="width:600px" class="Add_content col-xs-11"><input style="width:270px" type="text" name="w_amount" placeholder="请输入您要提现的金额" class="col-xs-12"/><span style="margin-left:10px">余额 <span style="color: red;">{$assets_data.money/100}</span> 元</span></div>
+            </li>
+           <!-- <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">谷歌码：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="password" name="gangsta_code" placeholder="请输入谷歌安全码"  class="col-xs-12"/></div>
+            </li>-->
+            <li style="width:370px" class="clearfix"><label style="width:100px" class="label_name col-xs-1">交易密码：</label>
+                <div style="width:270px" class="Add_content col-xs-11"><input type="password" name="trading_pass" placeholder="请输入交易密码" class="col-xs-12"/></div>
+            </li>
+        </ul>
+        <div class="margin-left-20">
+            <button class="btn button_btn bg-green" type="submit">提交</button>
+            <button class="btn button_btn bg-yellow" type="reset">重置</button>
+        </div>
+    </div>
+         </form>
+</div>
+</body>
+</html>
+<!--复文本编辑框-->
+<script type="text/javascript" charset="utf-8" src="__ADMIN__js/utf8-jsp/ueditor.config.js"></script>
+<script type="text/javascript">
+	$(function(){
+
+  $('select[name="user_account_id"]').change(function(){
+    var id = $(this).val();
+    if (id>0) {
+      $.ajax({
+              url:'/admin/Withdrawal/get_user_account.html',
+              data:{
+                  id:id
+              },
+              dataType:'json',
+              success:function(data){
+
+                $('input[name="name"]').val(data.user_name);
+                //$('input[name="withdrawal_type"]').val(data.withdrawal_type);
+                $('input[name="id_num"]').val(data.id_num);
+
+                //$('input[name="phone_num"]').val(data.phone_num);
+                //$('input[name="name_id"]').val(data.name_id);
+                //$('input[name="address"]').val(data.address);
+                //$('input[name="bank_no"]').val(data.bank_no);
+
+              }
+          })
+    }
+  })
+
+  $('form').submit(function(){
+    var msg = "确定提交吗？"; 
+    if (confirm(msg)!=true){
+      return false;
+    }
+  })
+})
+
+
+</script>

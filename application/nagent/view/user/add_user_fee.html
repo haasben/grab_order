@@ -1,0 +1,62 @@
+{include file="common/head"}
+<form class="layui-form layui-form-pane">
+  <div style="width: 50%;margin:30px 0 0 40px ">
+
+
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">选择通道</label>
+    <div class="layui-input-block">
+      {volist name="$channel_type" id="v"}
+      <input  type="checkbox" name="{$key}" value='{$v.id}' title="{$v.channel_name}"><br>
+
+      {/volist}
+    </div>
+  </div>
+
+    <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">设置费率</label>
+    <div class="layui-input-block">
+      <textarea name="desc" lay-verify="required" placeholder="0.001表示千分之一,多条通道用|分开 如0.002|0.002" class="layui-textarea"></textarea>
+    </div>
+  </div>
+
+</div>
+
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="submit">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<script type="text/javascript" src="/static/layui/layui.js"></script> 
+<script>
+//Demo
+layui.use(['form','layer'], function(){
+  var form = layui.form,layer=layui.layer;
+    //监听提交
+  form.on('submit(submit)', function (data) {
+                // 提交到方法 默认为本身
+
+                var data = data.field;
+                var uid = {$uid};
+
+                $.post('{:url("user/add_user_fee")}',{data:data,uid:uid} ,function (res) {
+
+                    if (res.code  == '0000') {
+                        layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+                            window.history.back(-1);
+                        });
+                    } else {
+                        layer.msg(res.msg, {time: 1800, icon: 5});
+                    }
+                });
+                return false;
+          });
+
+
+});
+</script>

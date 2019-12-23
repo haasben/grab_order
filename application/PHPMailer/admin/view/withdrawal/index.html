@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>个人信息</title>
+		<link rel="stylesheet" href="__SADMIN__css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="__ADMIN__common/layui/css/layui.css" media="all">
+		<link rel="stylesheet" type="text/css" href="__ADMIN__common/global.css" media="all">
+		<link rel="stylesheet" type="text/css" href="__ADMIN__css/personal.css" media="all">
+		<script type="text/javascript" src="__SADMIN__js/jQuery1.9.1.js" ></script>
+	</head>
+
+	<body>
+		<section class="layui-larry-box">
+			<div class="larry-personal">
+				<div class="layui-tab">
+<form action="/admin/Withdrawal/index.html">
+
+					<blockquote class="layui-elem-quote news_search">
+						<a>提现单号：</a>
+						<div class="layui-inline">
+							<div class="layui-input-inline">
+								<input name="id" value="{:input('get.id')}" value="" placeholder="请输入提现单号" class="layui-input search_input" type="text">
+							</div>
+
+						</div>
+						<div class="layui-inline">
+							<a>开始时间：</a>
+							<div class="layui-input-inline">
+								<input name="start_time" type="text" class="layui-input start-two" id="beginDatetime" placeholder="年-月-日 时 : 分 : 秒" >
+							</div>
+
+						</div>
+						<div class="layui-inline">
+							<a>结束时间：</a>
+							<div class="layui-input-inline">
+								<input name="end_time" type="text" class="layui-input" id="endDatetime" placeholder="年-月-日 时 : 分 : 秒" >
+							</div>
+
+						</div>
+
+						<div class="layui-inline">
+							<a>订单状态：</a>
+							<select name="status" lay-verify="" style="width: 120px;height: 36px;border: 1px solid #e6e6e6;">
+  		<option value="0">全部</option>
+		<option value="1">已完成</option>
+		<option value="2">已提交</option>
+		<option value="3">已作废</option>
+</select>
+						</div>
+
+						<!-- <div class="layui-inline">
+							<a>充值金额：</a>
+							<span style="color: red;font-size: 20px;">30.52元</span>
+						</div> -->
+						<div class="layui-inline">
+
+							<button class="layui-btn search_btn" lay-submit lay-filter="formDemo">查询</button>
+						</div>
+						<div class="layui-inline">
+							<a href="/admin/Withdrawal/index.html?{$get_srt}excel=1">
+							<button type="button" class="layui-btn layui-btn-danger" lay-submit lay-filter="formDemo">导出数据</button>
+							</a>
+						</div>
+
+					</blockquote>
+</form>
+					<!-- 操作日志 -->
+					<div class="layui-form news_list">
+						<table class="layui-table">
+							<thead>
+								<tr>
+									<th>商户编号</th>
+									<th>提现订单号</th>
+									<th>收款人姓名</th>
+									<th>出金账户</th>
+									<th>收款账户号</th>
+									<th>提交时间</th>
+									<th>代付金额</th>
+									<th>手续费</th>
+									<th>余额</th>
+									<th>备注</th>
+									<th>状态</th>
+								</tr>
+							</thead>
+							<tbody class="news_content">
+
+{volist name="order_data" id="vo"}
+		<tr>
+		<td>{$vo.merchant_cname}_{$vo.uid}</td>
+		<td>{$vo.id}</td>
+		<td>{$vo.name}</td>
+		<td>{$vo.show_name}{$vo.withdrawal_type}</td>
+		<td>{$vo.id_num}</td>
+		<td>{:date('Y-m-d H:i:s',$vo.add_time)}</td>
+		<td>{$vo.w_amount/100}</td>
+		<td>{$vo.fee/100}</td>
+		<td>{$vo.this_money/100}</td>
+		<td>{$vo.ext}</td>
+		<td>
+<?php
+if($vo['status']==2){
+	echo "已提交";
+}elseif($vo['status']==1){
+	echo "已完成";
+}elseif($vo['status']==3){
+	echo "已作废";
+}else{
+	echo $vo['status'];
+}
+?>
+		</td>
+		
+		</tr>
+{/volist}
+
+								
+<script type="text/javascript">
+$(function(){
+	$('input[name="start_time"]').val("{:input('get.start_time')}");
+    $('input[name="end_time"]').val("{:input('get.end_time')}");
+    $('[name=status]').find("[value={:input('get.status')}]").attr('selected','selected');
+})
+</script>
+							</tbody>
+						</table>
+						<div class="larry-table-page clearfix">
+							<div style="float: left;">
+								{$order_data->render()}
+							</div>
+							
+						</div>
+					</div>
+					<!-- 登录日志 -->
+				
+				</div>
+			</div>
+
+		</section>
+		<script type="text/javascript" src="__ADMIN__common/laydate/laydate.js" ></script>
+		<script>
+			laydate.render({
+				elem:'#beginDatetime',
+				type:'datetime',
+				
+			})
+			laydate.render({
+				elem:'#endDatetime',
+				type:'datetime',
+				
+			})
+		</script>
+		
+		
+	</body>
+
+</html>

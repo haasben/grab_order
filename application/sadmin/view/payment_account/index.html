@@ -1,0 +1,545 @@
+{include file="common/head"}
+<body class="body">
+
+<form class="layui-form layui-form-pane" action="/sadmin/Payment_account/index.html">
+    
+    <div class="layui-form-item">
+      <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="name" class="layui-input" placeholder="账户名称或设备号">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="start_time" id="date1" autocomplete="off" class="layui-input" placeholder="开始时间">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="end_time" id="date" autocomplete="off" class="layui-input" placeholder="结束时间">
+            </div>
+        </div>
+        <div class="layui-inline">
+          <div class="layui-input-inline">
+            <select name="type" >
+               <option value="">请选择通道类型</option>
+        {volist name="$channel" id="cv"}
+              <option value="{$cv.id}">{$cv.channel_name}_{$cv.code}</option>
+        {/volist}
+
+            </select>
+          </div>
+        </div>
+        <div class="layui-inline">
+          <div class="layui-input-inline">
+            <select name="group_id" >
+              <option value="">全部账户</option>
+              {volist name="$group_name" id="g"}
+              <option value="{$g.id}">{$g.group_name}</option>
+              {/volist}
+            </select>
+          </div>
+        </div>
+
+
+
+        <div class="layui-inline">
+          <div class="layui-input-inline">
+            <select name="account_type" >
+              <option value="">选择账户类型</option>
+              <option value="1">平台账号</option>
+              <option value="2">合伙人账号</option>
+            </select>
+          </div>
+        </div>
+      <div class="layui-inline">
+          <div class="layui-input-inline">
+            <select name="quotient" >
+              <option value="">所属码商</option>
+              {volist name="$quotient" id="q"}
+              	<option value="{$q.id}">{$q.name}</option>
+              {/volist}
+            </select>
+          </div>
+        </div>
+      <div class="layui-inline">
+          <div class="layui-input-inline">
+            <select name="agent_id" >
+              <option value="">所属个码代理商</option>
+              {volist name="$agent" id="a"}
+              	<option value="{$a.id}">{$a.name}</option>
+              {/volist}
+            </select>
+          </div>
+        </div>
+
+      
+      <div class="layui-inline">
+          <div class="">
+        	<button  class="layui-btn layui-btn-small layui-btn-normal" lay-submit="" lay-filter="demo2">确定</button>
+          </div>
+      </div>
+      
+      <div class="layui-inline">
+          <div class="">
+        	<?php if(in_array($login_user['state'],[100,99,90])){ ?><a  href="/sadmin/payment_account/add_code" class="layui-btn  layui-btn-small">添加收款账户</a><?php };?>
+          </div>
+      </div>
+  </div>
+  <div class="layui-form-item">
+       <div class="layui-inline">
+            <a class="layui-btn open layui-btn-small" href="javascript:;">开启账号</a>
+      </div>
+       <div class="layui-inline">
+            <a class="layui-btn close layui-btn-small" href="javascript:;">关闭账号</a>
+      </div>
+       <div class="layui-inline">
+             <a class="layui-btn  management layui-btn-small" href="javascript:;">分组管理</a>
+      </div>
+       <div class="layui-inline">
+            <a href="javascript:;" onclick="get_money(1)" class="layui-btn layui-btn-small">今日收款</a>
+      </div>
+       <div class="layui-inline">
+            <a href="javascript:;" class="layui-btn layui-btn-small" onclick="get_money(2)">昨日收款</a>
+      </div>
+    
+    </div>
+</form>
+  
+<style type="text/css">
+  .Fruit{
+
+      width: 20px;
+      height: 20px;
+
+
+  }
+  .all_Fruit{
+    width: 20px;
+    height: 20px;
+
+  }
+
+</style>
+
+<fieldset class="layui-elem-field layui-field-title" style="display: block;">
+  <legend>合计： <span style="color:#ff6600;font-size:30px;font-weight:bold;">{$sum_money/100}</span> 元</legend>
+</fieldset>
+<style type="text/css">
+  th{
+  	border:1px solid #ccc !important;
+    text-align: left !important;
+    padding-left:10px !important;
+    font-weight:bold !important;
+  }
+    td{
+        text-align: left;
+        padding-left:10px !important;
+      	border:1px solid #ccc !important;
+      color:#4d4d4d !important;
+    }
+
+
+</style>
+<table class="layui-table" style="border-collapse:collapse !important;border:1px solid #ccc;">
+    <colgroup>
+        <col width="50">
+        <col width="70">
+        <col width="180">
+        <col>
+    </colgroup>
+    <thead>
+    <tr style="background-color:red !important;">
+        <th><input name="Fruit" id="Fruit" class="all_Fruit" onclick="checkOrCancelAll();" type="checkbox" value="" /></th>
+        <th>序号</th>
+      	<th>所属用户</th>
+        <th>收款号名称</th>
+        <th>账号类型</th>
+        <th>总收款</th>
+        <th>今日总收款</th>
+        <th>累计手续费</th>
+        <th>累计提现</th>
+        <th>当前余额</th>
+      	<th>成功率</th>
+      	<th>收单率</th>
+        <th>收款人</th>
+        <th>设备号</th>
+      	<th>最后在线时间</th>
+      	<th>子集数量</th>
+      
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+     <?php $arr_id = '';?>
+      
+      
+    {volist name="secret_key_data" id="vo"}
+      
+     {if condition="$vo.app_id != ''"}
+      	
+      	<?php $arr_id .= '"'.$vo['app_id'].'"'.','; ?>
+      
+      
+     {/if}
+      
+
+    <tr class="receivables_data">
+        
+         <td><input name="Fruit" class="Fruit" type="checkbox" value="{$vo.id}" /></td>
+        <td>{$i}</td>
+      	<td>{$vo.merchant_cname}_{$vo.uid}</td>
+        <td>{$vo.name}</td>
+        <td>{$vo.code}</td>
+        <td>{$vo.recharge_sum/100}</td>
+        <td>{$vo.sum_amount/100}</td>
+        <td>{$vo.fee_sum/100}</td>
+        <td>{$vo.withdrawal_sum/100}</td>
+        <td>{$vo.money/100}</td>
+      	<td >{if condition="$vo.count == 0"}100{else}
+   
+          {if condition="$vo.succ_count/$vo.count*100 >= 50"}<span>
+          
+          {else}<span style="color:red"><span>
+          {/if}
+          {:round($vo.succ_count/$vo.count,4)*100}
+          
+          {/if}%</td>
+         <td>{$vo.succ_count}/{$vo.count}</td>
+        <td>{:explode('|',$vo.receive_account)[0]}</td>
+        <td>{:substr($vo['app_id'],20,8)}</td>
+
+          <td>
+         <?php  if($vo['is_platform'] == 1){
+            $time = time() - cache('DeviceNo'.$vo['app_id']);
+
+            if($time < 5 ){
+                 $msg = '<sapn style="color:green;">'.$time.' 秒前在线 ●';
+            }elseif($time>5 && $time<180){
+                 $msg = '<span style="color:red;font-weight:bold;">设备已掉线 <b style="color:#000;">'.($time-5).'</b> 秒</span>';
+
+            }else{
+                $msg = '<sapn style="color:#999;">设备离线</span>';
+            }
+			$app_id = $vo['app_id'];
+			echo '<span class="'.$app_id.'">'.$msg.'</span>';
+
+		
+        };?>
+          
+          </td>
+          <td>{$vo.count_img}</td>
+
+        <td>
+<?php if(in_array($login_user['state'],[99,100,90])){ ?>
+<?php if($vo['status']==1){ ?>
+
+
+    <button value="{$vo.id}" status="{$vo.status}" class="operation layui-btn layui-btn-small" lay-submit="" lay-filter="demo2" style="background-color:#339966;color:#fff;">运行中…关闭？</button>
+
+<?php }else{?>
+	
+         <button value="{$vo.id}" status="{$vo.status}" class="operation layui-btn layui-btn-small" lay-submit="" lay-filter="demo2" style="background-color:#ff6600;color:#fff;">已停用，开启？</button>
+<?php };?>
+          <?php if(in_array($vo['type'],[2,3,4,5,1022,1023])){?>
+          <a href="/sadmin/payment_account/add_qrcode?id={$vo.id}"  class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter=""> 加码</a>
+          <?php };?>
+           <button value="{$vo.id}" class="layui-btn layui-btn-normal del_account layui-btn-small" lay-submit="" lay-filter=""> 删除</button>
+          <a value="{$vo.id}" class="layui-btn debit layui-btn-small">下账</a>
+          
+<?php };?>           
+          
+        </td>
+      
+    </tr>
+    {/volist}
+
+    </tbody>
+</table>
+
+{$secret_key_data->render()}
+
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+  		
+  var arr_id = new Array({$arr_id});
+ 
+      // setInterval(function () {
+         	
+       //  if (arr_id.length != 0) {
+
+          // 	$.post('{:url("sadmin/payment_account/get_cache")}',{data:arr_id},function(data){
+            	
+              //	if(data.code == '0000'){
+                	
+                  //	 $.each(data.data,function(i,item){
+						
+                     //  	$('.'+i).html(item);
+              		//});
+             //   }
+          //  })
+       // }
+
+     // }, 6000);
+
+  	
+  
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate;
+
+        //日期
+        laydate.render({
+            elem: '#date'
+            ,type: 'datetime'
+        });
+        laydate.render({
+            elem: '#date1'
+          ,type: 'datetime'
+        });
+
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            });
+            return false;
+        });
+
+
+
+
+//iframe窗
+$('.management').click(function(){
+
+
+      layer.open({
+        type: 2,
+        title: '分组管理',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['1000px', '800px'],
+        content: '{:url("sadmin/paymentAccount/group_management")}'
+      });
+
+
+
+})
+
+
+$('.open').click(function(){
+
+
+  var id = document.getElementsByName('Fruit');
+            var value = new Array();
+            for(var i = 0; i < id.length; i++){
+             if(id[i].checked)
+     
+              if(id[i].value != ""){
+                value.push(id[i].value);
+              }
+             
+            }
+      if(value == ''){
+
+        layer.msg('请至少选择一个需要开启的账户', {icon: 5,time:1500});
+      }else{
+
+        $.post('{:url("sadmin/paymentAccount/open_account")}',{value},function(data){
+
+            if(data.code == '0000'){
+
+              layer.msg(data.msg, {icon: 1,time:1000},function(){
+
+                  location.reload();
+
+              });
+            }else{
+              layer.msg(data.msg, {icon: 5,time:1000});
+            }
+
+
+
+        })
+
+
+      }
+
+
+})
+$('.close').click(function(){
+
+
+  var id = document.getElementsByName('Fruit');
+            var value = new Array();
+            for(var i = 0; i < id.length; i++){
+             if(id[i].checked)
+     
+              if(id[i].value != ""){
+                value.push(id[i].value);
+              }
+             
+            }
+      if(value == ''){
+
+        layer.msg('请至少选择一个需要关闭的账户', {icon: 5,time:1500});
+      }else{
+
+        $.post('{:url("sadmin/paymentAccount/close_account")}',{value},function(data){
+
+            if(data.code == '0000'){
+              layer.msg(data.msg, {icon: 1,time:1000},function(){
+                  location.reload();
+
+              });
+            }else{
+              layer.msg(data.msg, {icon: 5,time:1000});
+            }
+        })
+      }
+})
+
+
+
+
+
+
+
+
+    });
+
+  function checkOrCancelAll(){
+    //1.获取checkbo的元素对象
+      var chElt=document.getElementById("Fruit");
+      //2.获取选中状态
+      var checkedElt=chElt.checked;
+      //3.若checked=true,将所有的复选框选中,checked=false,将所有的复选框取消
+      var allCheck=document.getElementsByName("Fruit");
+
+    if(checkedElt){
+    //全选
+    for(var i=0;i<allCheck.length;i++){
+    //设置复选框的选中状态
+      allCheck[i].checked=true;
+      }
+
+    }else{
+    //取消全选
+    for(var i=0;i<allCheck.length;i++){
+      allCheck[i].checked=false;
+      }
+
+      }
+    }
+    function get_money(type){
+
+    $.post('{:url("sadmin/payment_account/get_money")}',{dayType:type},function(data){
+      if(data.code == '0000'){
+        $('.account_money').text(data.data);
+      }
+
+
+    })
+
+}
+</script>
+<script type="text/javascript">
+  
+  $('.operation').click(function(){
+        var status = $(this).attr('status');
+        var id = $(this).attr('value');
+        if (status==1) {
+            var msg = "确定禁用";
+    
+        }else{
+          var msg = '确认开启';
+
+        }
+         layer.confirm(msg+'此账号？？', {
+              btn: ['确定','取消'] //按钮
+            }, function(){
+              $.ajax({
+                  url:'/sadmin/Payment_account/update_status.html',
+                  data:{
+                      status:status,
+                      id:id,
+                  },
+                  type:'get',
+                  dataType:'json',
+                  success:function(data){
+                    
+                    layer.msg(data.hint, {icon: 1,time:1000},function(){
+                      location.reload();
+                    
+                    });
+                      
+                  }
+              })
+         });
+          
+
+    })
+  
+//删除收款账号
+      $('.del_account').click(function(){
+          
+      var var_this = $(this);
+          var id = $(this).attr('value');
+          layer.confirm('删除不可恢复,确定删除吗？？', {
+              btn: ['确定','取消'] //按钮
+            }, function(){
+              
+              $.ajax({
+                  url:'/sadmin/Payment_account/del_account.html',
+                  data:{
+                      id:id,
+                  },
+                  type:'get',
+                  dataType:'json',
+                  success:function(data){
+                    if(data.success == 1){
+                      var_this.parents('tr').remove();
+                      layer.msg(data.hint, {icon: 1,time:1000});
+                    }else{
+                      layer.msg(data.hint, {icon: 5,time:1000});
+                    }
+                    
+                  }
+              })
+          })
+  });
+
+  //下账
+      $('.debit').click(function(){
+      var id = $(this).attr('value');
+        
+            layer.prompt({title: '输入下账口令，并确认', formType: 1}, function(pass, index){
+              layer.close(index);
+              layer.prompt({title: '请输入下账的金额，单位元', formType: 4}, function(text, index){
+
+                    $.post('{:url("sadmin/payment_account/debit_money")}',{pass:pass,money:text,id:id},function(data){
+
+                        if(data.code == '0000'){
+
+                            layer.close(index);
+                            layer.msg(data.msg,{icon: 1,time:2000},function(){
+                                    location.reload();
+                                });
+                        }else{
+
+                            layer.msg(data.msg);
+
+                        }
+
+                    })
+              });
+            });
+
+        })
+</script>
+</body>
+</html>

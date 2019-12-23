@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>文章列表--layui后台管理模板</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="__PARTNER__layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="//at.alicdn.com/t/font_tnyc012u2rlwstt9.css" media="all" />
+	<link rel="stylesheet" href="__PARTNER__css/news.css" media="all" />
+</head>
+<body class="childrenBody">
+
+
+		   <form action="/partner/bill/order_list.html">
+					<blockquote class="layui-elem-quote news_search">
+						
+<!-- 						<div class="layui-inline">
+							<a>商户单号：</a>
+							<div class="layui-input-inline">
+								<input value="" placeholder="请输入商户单号" class="layui-input search_input" type="text" name="order_num">
+							</div>
+						</div> -->
+
+						<div class="layui-inline">
+							<a>平台单号：</a>
+							<div class="layui-input-inline">
+								<input value="" placeholder="请输入平台单号" class="layui-input search_input" type="text" name="id">
+							</div>
+						</div>
+
+<!-- 						<div class="layui-inline">
+							<a>开始时间：</a>
+							<div class="layui-input-inline">
+								<input name="start_time" type="text"  class="layui-input start-two" id="beginDatetime" placeholder="年-月-日 时 : 分 : 秒" lay-key="1">
+							</div>
+
+						</div>
+						<div class="layui-inline">
+							<a>结束时间：</a>
+							<div class="layui-input-inline">
+								<input name="end_time" type="text" class="layui-input" id="endDatetime" onclick="layui.laydate({elem:this})" placeholder="年-月-日 时 : 分 : 秒" lay-key="2">
+							</div>
+
+						</div> -->
+
+						<div class="layui-inline">
+							<a>订单状态：</a>
+							<select name="pay_status" lay-verify="" style="width: 120px;height: 36px;border: 1px solid #e6e6e6;">
+  <option value="1">已完成</option>
+  <option value="2">未完成</option>
+  <option value="0" selected="selected">全部</option>
+</select>
+						</div>
+
+						<div class="layui-inline">
+							<a>出入金：</a>
+							<select name="order_type" lay-verify="" style="width: 120px;height: 36px;border: 1px solid #e6e6e6;">
+  <option value="1">入金</option>
+  <option value="2">出金</option>
+  <option value="0" selected="selected">全部</option>
+</select>
+						</div>
+
+						<div class="layui-inline">
+							<a>回调状态：</a>
+							<select name="notify_url_info" lay-verify="" style="width: 120px;height: 36px;border: 1px solid #e6e6e6;">
+		<option>全部</option>
+		<option value="0">未触发</option>
+		<option value="1">success</option>
+		<option value="2">fail</option>
+		<option value="3">参数错误</option>
+</select>
+						</div>
+						<div class="layui-inline">
+							<a>总金额：</a>
+							<span style="color: red;font-size: 20px;">{$sum_amount/100}元</span>
+						</div>
+
+	<?php
+$jr_start_time = date('Y-m-d 00:00:00');
+$jr_end_time = date('Y-m-d 23:59:59');
+
+$zr_start_time = date('Y-m-d 00:00:00',strtotime("-1 day"));
+$zr_end_time = date('Y-m-d 23:59:59',strtotime("-1 day"));
+?>
+						<div class="layui-inline">
+							
+							<button class="layui-btn search_btn" lay-submit="" lay-filter="formDemo">查询</button>
+
+						</div>
+						<div class="layui-inline">
+							<a href="/partner/bill/order_list?pay_status=0&amp;order_type=0&amp;excel=1">
+							<button type="button" class="layui-btn layui-btn-danger" lay-submit="" lay-filter="formDemo">导出数据</button>
+							</a>
+						</div>
+						<div class="layui-inline">
+							<a href="/partner/bill/order_list?start_time={$jr_start_time}&end_time={$jr_end_time}&order_type=0">
+							<button type="button" class="layui-btn search_btn" lay-submit="" lay-filter="formDemo">今日订单</button>
+							</a>
+						</div>
+
+						<div class="layui-inline">
+							<a href="/partner/bill/order_list?start_time={$zr_start_time}&end_time={$zr_end_time}&order_type=0">
+							<button type="button" class="layui-btn layui-btn-danger" lay-submit="" lay-filter="formDemo">昨日订单</button>
+							</a>
+						</div>
+
+					</blockquote>
+</form>
+
+
+
+	<div class="layui-form news_list">
+	  	<table class="layui-table">
+		    <colgroup>
+				<col width="50">
+			
+				<col >
+				<col >
+				<col >
+				<col >
+				<col >
+				<col >
+	<!-- 			<col > -->
+		    </colgroup>
+		    <thead>
+				<tr class="table-tr">
+					<th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"></th>
+					<th>平台订单号</th>
+					<th>金额（元）</th>
+					<th>充值/提现</th>
+					<th>状态</th>
+					<th>创建时间</th>
+					<th>完成时间</th>
+					<th>商户回调状态</th>
+<!-- 					<th>发布时间</th> -->
+					<th>操作</th>
+				</tr> 
+		    </thead>
+		    <tbody class="news_content">
+
+		    	{volist name="$order_data" id="v"}
+		    	<tr>
+<?php
+if($v['order_type']==1){
+  $v['pay_status'] = $v['pay_status']==1?"支付成功":"未支付";
+}else{
+  $v['pay_status'] = $v['pay_time']==0?"已提交":"交易完成";
+}
+
+if($v['notify_url_info']==1){
+  $v['notify_url_info'] = "success";
+}elseif($v['notify_url_info']==2){
+  $v['notify_url_info'] = "fail";
+}elseif($v['notify_url_info']==3){
+  $v['notify_url_info'] = "返回参数错误";
+}elseif($v['notify_url_info']==0){
+  $v['notify_url_info'] = "未触发";
+}
+$v['pay_amount'] = $v['order_type']==1||$v['note_ext']=='退款'?$v['pay_amount']:-$v['pay_amount'];
+
+
+$v['ext'] = $v['ext']==null?'&nbsp;':$v['ext'];
+?>
+		    		<td>
+		    			<input type="checkbox" name="checked" lay-skin="primary" lay-filter="choose">
+		    			<div class="layui-unselect layui-form-checkbox" lay-skin="primary">
+		    				<i class="layui-icon"></i>
+		    			</div>
+		    		</td>
+		    			<td>{$v.id}</td>
+		    			<td >{$v.pay_amount/100}</td>
+		    			<td>{switch name="$v.order_type" }
+    {case value="1"}充值{/case}
+    {case value="2"}提现{/case}
+    {default /}充值
+{/switch}</td>
+		    			<td>{$v.pay_status}</td>
+		    			<td>{:date('Y-m-d H:i:s',$v.accept_time)}</td>
+		    			<td>
+		    				{if condition="($v.pay_time == 0)"} 未支付
+
+				{else /} {:date('Y-m-d H:i:s',$v.pay_time)}
+				{/if}
+		    			</td>
+		    			<td>{$v.notify_url_info}</td>
+<!-- 		    			<td><input type="checkbox" name="show" lay-skin="switch" lay-text="是|否" lay-filter="isShow" undefined="">
+		    				<div class="layui-unselect layui-form-switch" lay-skin="_switch"><em>否</em><i></i></div></td>
+		    			<td>undefined</td> -->
+		    			<td>
+<!-- 		    				<a class="layui-btn layui-btn-mini news_edit"><i class="iconfont icon-edit"></i> 编辑</a> -->
+<!-- 					 <a class="layui-btn layui-btn-normal layui-btn-mini news_collect"><i class="layui-icon">&#xe600;</i> 收藏</a> -->
+<!-- 					 <a class="layui-btn layui-btn-danger layui-btn-mini news_del" data-id="'+data[i].newsId+'"><i class="layui-icon">&#xe640;</i> 删除</a> -->
+{if condition="($v.order_type == 1)"}
+{if condition="($v.pay_time == 0)"} <a class="layui-btn layui-btn-warm layui-btn-mini not_notified" data-id="{$v.id}"><i class="layui-icon">&#xe609;</i>补发收款未通知订单</a>
+
+				{else /} <!-- <a class="layui-btn layui-btn-primary layui-btn-mini reissue" data-id="{$v.id}"><i class="layui-icon">&#xe609;</i>补发通知</a> -->
+				{/if}
+				{if condition="($v.is_confirm == 0)"}	  
+				<a class="layui-btn layui-btn-danger layui-btn-mini is_confirm" data-id="{$v.id}"><i class="layui-icon">&#xe609;</i>确认完成该订单</a>
+				{/if}
+{/if}
+		    			</td>
+		    	</tr>
+		    	{/volist}
+
+		    </tbody>
+		</table>
+    <style type="text/css">
+    .pagination{
+
+        display: inline-block;
+        padding-left: 0;
+        margin: 20px 0;
+        border-radius: 4px;
+
+    }
+    .pagination > li{
+
+        display: inline-block;
+
+    }
+
+    .pagination>li>a, .pagination>li>span{
+
+           position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    }
+    
+
+
+
+
+</style>
+		{$order_data->render()}
+	</div>
+	<div id="page"></div>
+<!-- 	<script src="__ADMIN__js/layer/layer.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/laydate/laydate.js" type="text/javascript"></script> -->
+	<script type="text/javascript" src="__PARTNER__layui/layui.js"></script>
+	<script type="text/javascript">
+		layui.config({
+	base : "js/"
+}).use(['form','layer','jquery','laypage','laydate'],function(){
+	var form = layui.form(),
+		layer = parent.layer === undefined ? layui.layer : parent.layer,
+		laypage = layui.laypage,
+		$ = layui.jquery;
+
+	//加载页面数据
+	var newsData = '';
+
+	//通过判断文章是否全部选中来确定全选按钮是否选中
+	form.on("checkbox(choose)",function(data){
+		var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]:not([name="show"])');
+		var childChecked = $(data.elem).parents('table').find('tbody input[type="checkbox"]:not([name="show"]):checked')
+		if(childChecked.length == child.length){
+			$(data.elem).parents('table').find('thead input#allChoose').get(0).checked = true;
+		}else{
+			$(data.elem).parents('table').find('thead input#allChoose').get(0).checked = false;
+		}
+		form.render('checkbox');
+	})
+
+	//是否展示
+	form.on('switch(isShow)', function(data){
+		var index = layer.msg('修改中，请稍候',{icon: 16,time:false,shade:0.8});
+        setTimeout(function(){
+            layer.close(index);
+			layer.msg("展示状态修改成功！");
+        },2000);
+	})
+ 
+	//操作
+	$("body").on("click",".news_edit",function(){  //编辑
+		layer.alert('您点击了文章编辑按钮，由于是纯静态页面，所以暂时不存在编辑内容，后期会添加，敬请谅解。。。',{icon:6, title:'文章编辑'});
+	})
+
+	$("body").on("click",".news_collect",function(){  //收藏.
+		if($(this).text().indexOf("已收藏") > 0){
+			layer.msg("取消收藏成功！");
+			$(this).html("<i class='layui-icon'>&#xe600;</i> 收藏");
+		}else{
+			layer.msg("收藏成功！");
+			$(this).html("<i class='iconfont icon-star'></i> 已收藏");
+		}
+	})
+
+	$("body").on("click",".news_del",function(){  //删除
+		var _this = $(this);
+		layer.confirm('确定删除此信息？',{icon:3, title:'提示信息'},function(index){
+			//_this.parents("tr").remove();
+			for(var i=0;i<newsData.length;i++){
+				if(newsData[i].newsId == _this.attr("data-id")){
+					newsData.splice(i,1);
+					newsList(newsData);
+				}
+			}
+			layer.close(index);
+		});
+	})
+	$("body").on("click",".reissue",function(){  //删除
+		var _this = $(this);
+		var id = _this.attr('data-id');
+		// alert(id);return false;
+		layer.confirm('确定要补发通知吗？',{icon:3, title:'提示信息'},function(index){
+
+			layer.close(index);
+			$.post('{:url("api/Notify/repeat_notify_url")}',{id:id},function(res){
+				
+				layer.msg('商户返回：'+res,{icon:1,time:2000},function(){
+
+					location.reload();
+				});
+
+			})
+			//_this.parents("tr").remove();
+			// for(var i=0;i<newsData.length;i++){
+			// 	if(newsData[i].newsId == _this.attr("data-id")){
+			// 		newsData.splice(i,1);
+			// 		newsList(newsData);
+			// 	}
+			// }
+			
+		});
+	})
+
+		$("body").on("click",".is_confirm",function(){  //删除
+		var _this = $(this);
+		var id = _this.attr('data-id');
+		// alert(id);return false;
+		layer.confirm('确定该订单已经是当前付款状态并完成订单吗？',{icon:3, title:'提示信息'},function(index){
+
+			layer.close(index);
+			$.post('{:url("partner/bill/is_confirm")}',{id:id},function(res){
+					
+				if(res.code == '0000'){
+					layer.msg(res.msg,{icon:1,time:2000},function(){
+					location.reload();
+				});
+				}else{
+					layer.msg(res.msg,{icon:5,time:2000});
+				}
+				
+
+			})
+			//_this.parents("tr").remove();
+			// for(var i=0;i<newsData.length;i++){
+			// 	if(newsData[i].newsId == _this.attr("data-id")){
+			// 		newsData.splice(i,1);
+			// 		newsList(newsData);
+			// 	}
+			// }
+			
+		});
+	})
+
+
+
+	$("body").on("click",".not_notified",function(){  //删除
+		var _this = $(this);
+		var id = _this.attr('data-id');
+		// alert(id);return false;
+		layer.confirm('确定已收到该笔充值金额并补发通知吗？',{icon:3, title:'提示信息'},function(index){
+
+			layer.close(index);
+			$.post('{:url("api/Notify/edit_order")}',{id:id},function(res){
+				
+				layer.msg('商户返回：'+res,{icon:1,time:2000},function(){
+
+					location.reload();
+				});
+
+			})
+			//_this.parents("tr").remove();
+			// for(var i=0;i<newsData.length;i++){
+			// 	if(newsData[i].newsId == _this.attr("data-id")){
+			// 		newsData.splice(i,1);
+			// 		newsList(newsData);
+			// 	}
+			// }
+			
+		});
+	})
+
+
+
+
+	
+
+})
+	</script>
+</body>
+</html>

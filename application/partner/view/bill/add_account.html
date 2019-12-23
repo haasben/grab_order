@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>添加收款账号</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/static/layui/css/layui.css">
+</head>
+<body class="childrenBody">
+	<form class="layui-form" style="width:80%;">
+
+
+  <div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">账户实名姓名</label>
+         <div class="layui-input-block">
+          <input type="text" name="receive_account" required  lay-verify="required" placeholder="请输入账户实名姓名"  autocomplete="off"  class="layui-input">
+      </div>
+    </div>
+  </div>
+
+    <div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">账户昵称</label>
+         <div class="layui-input-block">
+          <input type="text" name="name" required  lay-verify="required" placeholder="请输入账户昵称"  autocomplete="off"  class="layui-input">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">账户类型</label>
+    <div class="layui-input-block">
+      <select name="type" lay-verify="required" id="type" lay-filter="type">
+        <option value=""></option>
+        <option value="1">微信</option>
+        <option value="2">支付宝</option>
+        
+      </select>
+    </div>
+  </div>
+
+<div id="userid">
+	
+
+</div>
+
+    
+
+
+      <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+    </div>
+    
+
+    
+</form>
+
+	<script type="text/javascript" src="/static/layui/layui.js"></script>
+	<script type="text/javascript">
+		//注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+		layui.use(['form'], function(){
+		  var form = layui.form,layer=layui.layer,$=layui.jquery;
+
+		//提交表单
+
+		  form.on('submit(formDemo)', function(data){
+
+		      var data = data.field;
+		      
+		      $.post('{:url("partner/bill/add_account")}',data,function(res){
+		        if(res.code == '0000'){
+		        	var html = '<option value=""></option><option value="1">微信</option><option value="2">支付宝</option>';
+		     
+		        	$("#type").html(html);
+		        	$("input[name='receive_account']").val('');
+		        	$("input[name='name']").val('');
+		        	$('#userid').html('');
+		        	form.render();
+
+		            layer.msg(res.msg,{icon:1,time:1000});
+		            
+
+		        }else{
+
+		            layer.msg(res.msg,{icon:5,time:2000});
+		        }
+		            
+
+		      })
+
+		      return false;
+		  });
+
+		 form.on('select(type)',function(data){
+
+		 	if(data.value == 2){
+
+		 		var html = '<div><div class="layui-form-item"><label class="layui-form-label">收款账户ID</label><div class="layui-input-block"><input type="text" name="mch_id" required   lay-verify="required|number" placeholder="支付宝扫描下方二维码获取2088开头账户ID"  autocomplete="off"  class="layui-input"></div><div style="padding-left: 20%"><img src="/static/userid.png" style="width: 150px;"></div></div></div>';
+
+
+		 		$('#userid').html(html);
+		 		
+		 	}else{
+
+		 		$('#userid').html('');
+		 	}
+
+
+
+		 })
+
+		     
+
+		});
+
+
+
+	</script>
+<!-- 	<script type="text/javascript" src="linksAdd.js"></script> -->
+</body>
+</html>

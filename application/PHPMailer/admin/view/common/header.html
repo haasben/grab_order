@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>红云支付线上管理系统</title>
+		<script type="text/javascript" src="__ADMIN__js/jQuery1.9.1.js" ></script>
+		<link rel="stylesheet" href="__ADMIN__css/bootstrap.min.css" />
+		<link rel="stylesheet" href="__ADMIN__css/header.css" />
+		<script type="text/javascript" src="__ADMIN__js/bootstrap.min.js" ></script>
+	</head>
+	
+	<body>
+<?php
+if($login_user['login_time']==0){
+	$login_user['login_time'] = "未登陆";
+}else{
+	$login_user['login_time'] = date('Y-m-d H:i:s',$login_user['login_time']);
+}
+if($login_user['login_ip']==0){
+	$login_user['login_time'] = "未登陆";
+}
+?>
+	<div class="box">
+		<header>
+		<div class="header_left">
+		<img src="__ADMIN__img/logo.PNG"><p style="margin-top:10px ;">红云支付线上管理系统</p></div>
+		<div class="header_right">
+		<p>欢迎 :<span> {$login_user.company}丨</span></p>
+		<p>上次登录时间 :<span>{$login_user.login_time}丨</span></p>
+	<p>上次登录 IP :<span>{$login_user.login_ip}丨</span></p>
+		<p data-toggle="modal" data-target="#myModal"><a href="#">修改密码</a>丨</p>
+		<p><a href="exit_login.html">安全退出</a></p>
+		</div>
+		</header>
+	
+	</body>
+</html>

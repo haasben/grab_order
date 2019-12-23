@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修改密码</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <!--顶部轮播-->
+    <div class="weui_left float-left" onclick="javascript:history.go(-1);"><img src="/static/magent/img/left.png"/>
+    </div>
+    <div class="title">修改密码</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <!-- 登录 -->
+    <form action="" method="">
+        <div class="weui-form-preview m-t-20">
+            <div class="weui-form-preview__hd">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">修改密码</label>
+            </div>
+            <div class="weui_border"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">旧 密 码</div>
+                <div class="float-left"><input type="password" id="old_pass" class="info-input" placeholder="****"/>
+                </div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">新 密 码</div>
+                <div class="float-left"><input type="password" id="new_pass" class="info-input" placeholder="****"/>
+                </div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">确认密码</div>
+                <div class="float-left"><input type="password" id="ok_pass" class="info-input" placeholder="****"/>
+                </div>
+            </div>
+            <div class="weui_border_info"></div>
+        </div>
+        <div class="preview m-t-20">
+            <div class=" clearfix">
+                <button type="button" class="weui-btn btn weui-btn-reissue" onclick="loginBtn()">提 交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--底部导航-->
+{include file="public/footer" /}
+
+<script type="text/javascript" src="/static/layer-v3.1.0/layer/layer.js"></script>
+<script>
+    function loginBtn() {
+        var user = {};
+        user.old_pass = $("#old_pass").val();
+        user.new_pass = $("#new_pass").val();
+        user.ok_pass = $('#ok_pass').val();
+        console.log(user);
+
+        //发送登录请求
+        $.post('{:url("magent/user/edit_pwd")}', user, function (data) {
+            //验证信息
+            if (data.success == 1) {
+                layer.msg(data.hint, {icon: 1, time: 1200});
+                setTimeout(function () {
+                    window.location.href = data.url;
+                }, 1500);
+            }else{
+                layer.msg(data.hint, {icon: 1, time: 1200});
+            }
+        });
+    };
+</script>
+</body>
+</html>

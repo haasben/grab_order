@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/static/layui/css/layui.css" media="all" />
+</head>
+<style type="text/css">
+	.layui-icon{
+		font-size: 26px;
+		color:#1AA094;
+	}
+	.content{
+		padding-top: 20px
+	}
+	.content p{
+		text-indent:20px;
+		font-size: 20px;
+		color: #23262E;
+		margin: 10px 0;
+
+	}
+	.content p span{
+		
+		color: #3c3c3c;
+		font-size: 16px
+	}
+	.beizhu{
+		font-weight: 500 !important;
+		color:#1AA094 !important;
+	}
+	.title{
+		font-size: 30px;
+		color: #FF5722;
+		margin: 10px 0;
+	}
+
+</style>
+<body class="childrenBody">
+<form class="layui-form" action="">
+<div class="layui-container">  
+  <div class="layui-row" style="padding-top: 30px">
+  	<div class="title">收款软件下载：</div>
+  	<div class="layui-col-sm3">
+      <a href="{$Think.THIS_URL}/apk/xposed.apk"><i class="layui-icon layui-icon-download-circle">xposed</i></a>  
+    </div>
+
+    <div class="layui-col-sm3">
+      <a href="{$Think.THIS_URL}/apk/hook.apk"><i class="layui-icon layui-icon-download-circle">配置软件</i></a>  
+    </div>
+
+    <div class="layui-col-sm3">
+      <a href="{$Think.THIS_URL}/apk/alipay.apk"><i class="layui-icon layui-icon-download-circle">原版支付宝</i></a>  
+    </div>
+    <div class="layui-col-sm3">
+      <a href="{$Think.THIS_URL}/apk/wechat.apk"><i class="layui-icon layui-icon-download-circle">原版微信</i></a>  
+    </div>
+
+  </div>
+
+  	<div class="layui-row">
+    <div class="layui-col-md12 content">
+      <div class="title">平台使用说明：</div>
+      <p>1.<span>请合伙人先联系客服充值保证金，然后到账单->管理收款账号页面添加自己的收款账号到平台。</span></p>
+      <p>2.<span>依次下载平台提供的xposed、平台配置软件、原版支付宝、原版微信到安卓手机，注：（后三个软件选择安装到xposed软件中,具体配置方法点此查看 <a href="{:url('partner/download/des')}" style="color: #1AA094">图文说明</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/partner/images/deploy.mp4" style="color: #1AA094">视频教程</a>）。</span></p>
+      <p>3.<span>保证软件开启后，到 抢单页面 选择配置好的 收款账号 点击匹配按钮，系统自动匹配订单<a href="/static/partner/images/graborder.mp4" style="color: #1AA094">抢单视频</a>。</span></p>
+      <p>4.<span>匹配到订单号，注意收款账号是否有收到收款备注为该页面提示的订单号和金额相匹配的订单<font class="beizhu">（如：【收款备注：12345678，则该订单号为12345678】）</font>，有收到该笔金额，一定要到收单列表点击 查询按钮 刷新收单列表 确认该笔操作该笔订单 <font class="beizhu">注：（如果收款账户有收到该笔金额，但是平台显示订单状态为未付款则还要点击一次补发收款未回调按钮，并确认该笔订单操作，方可进行下次抢单，如果没有收到钱千万不要点补发收款为回调按钮，误点后果自负！！！）</font>，在收到钱后但是五分钟内没有及时确认收款，系统将禁止抢单至少30分钟，第二次禁止一天，第三次发现禁止15天，超过三次而且态度不端正者，直接解封合作关系！</span></p>
+
+      <p>5.<span>由于二维码是静态码，很有可能付款方会保存之前都二维码重复扫码付款，你会多收一笔甚至多笔，这时付款方会来找我们，请你积极配合客服的核查工作</span></p>
+
+
+    </div>
+   
+  </div>
+
+
+</div>
+</form>
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form;
+  
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    layer.msg(JSON.stringify(data.field));
+    return false;
+  });
+});
+</script>
+</body>
+</html>

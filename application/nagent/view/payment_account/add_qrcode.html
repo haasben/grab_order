@@ -1,0 +1,123 @@
+<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+
+<div style="margin-top:20px;width: 60% ">
+
+<form class="layui-form" action="" id="myform">
+
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">收款码类型</label>
+    <div class="layui-input-block">
+      <select name="pay_type" id="pay_type" lay-verify="required" disabled="disabled" lay-filter='pay_type'>
+<!--         <option value=""></option>
+        <option value="0">支付宝</option> -->
+          {volist name="$channel" id="v"}   
+            {if condition="$v.code == $account_assets.type"}
+             <option value="{$v.code}" checked="checked">{$v.show_name}</option>
+            {/if}
+         {/volist}
+      </select>
+    </div>
+
+  </div>
+
+
+
+<input type="hidden" name="id" value="{$account_assets.id}">
+
+
+<div id="old_data">
+  <div class="layui-form-item">
+    <label class="layui-form-label">账户名</label>
+    <div class="layui-input-block">
+      <input type="text" name="name" disabled="disabled" value="{$account_assets.name}"  required  lay-verify="required" placeholder="请输入真实收款账户名" autocomplete="off" class="layui-input real_name">
+    </div>
+  </div>
+   <div class="layui-form-item">
+    <label class="layui-form-label">金额</label>
+    <div class="layui-input-block">
+      <input type="text" name="amount"    required  lay-verify="required" placeholder="请输入二维码对应金额(元)任意金额金额输入1即可" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+
+  <div class="layui-form-item test1"><label class="layui-form-label">聚合码图片</label><div class="layui-input-block"><input type="hidden" name="img" class="img" value="" lay-verify="required"><button type="button" class="layui-btn test2"><i class="layui-icon">&#xe67c;</i>上传图片</button><div class="img_src"></div></div>
+
+</div>
+
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+<!--       <a class="layui-btn return" >返回</a> -->
+
+
+    </div>
+  </div>
+</form>
+<div class="wenzhi" style="width: 400px;margin:auto;color: red;font-size: 20px"></div>
+</div>
+
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+ <script type="text/javascript" src="/static/jq/jQuery1.9.1.js"></script>
+<script>
+//Demo
+layui.use(['form','upload'], function(){
+  var form = layui.form,upload = layui.upload;
+
+
+  //执行实例
+  var uploadInst = upload.render({
+    elem: '.test2' //绑定元素
+    ,url: '{:url("nagent/upfiles/upload")}' //上传接口
+    ,done: function(res){
+      //上传完毕回调
+      $('.img_src').html('<img style="width:200px;heigth:200px" src="'+res.src+'">');
+      $('.img').val(res.src)
+    }
+    ,error: function(){
+      //请求异常回调
+      alert();
+    }
+  });
+  
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    var json = data.field;
+
+    $.post('{:url("nagent/payment_account/add_qrcode")}',json,function(data){
+      if(data.code == '0000'){
+        
+    　　 layer.msg(data.msg,{icon:1,time:2000},function(){
+       		
+         	window.location.href="{:url('nagent/payment_account/index')}";
+       	
+       	});
+
+      }else{
+        layer.msg(data.msg,{icon:5,time:2000});
+      }
+
+      
+
+
+    })
+
+
+      
+
+    return false;
+  });
+
+
+
+
+
+});
+
+
+
+
+
+</script>

@@ -1,0 +1,72 @@
+{include file="common/head"}
+<div class="content">
+    <div class="buttons-tab">
+        <a href="{:url('mobile/index/index')}" class="button">首页</a>
+        <a href="{:url('mobile/Acount/account_list')}" class="tab-link active button">账户总览</a>
+        <a href="{:url('mobile/order/order_list')}" class=" button">订单查询</a>
+        <a href="{:url('Mobile/cash/cash_list')}" class=" button">提现查询</a>
+        <a href="{:url('Mobile/receive/index')}" class=" button">收款账户</a>
+    </div>
+    <div class="tabs">
+        <div id="tab2" class="tab active">
+            <form action="{:url('mobile/Acount/account_list')}" method="post">
+                <div class="clearfix search-wrap">
+                    <div class="fl">
+                        <select class="search-input" name="state" style="width: 180px;">
+                            <option value="">请选择商户级别</option>
+                            <option value="88">代理商级别</option>
+                            <option value="1">正常商户</option>
+                            <option value="3">受限制商户</option>
+                            <option value="99">管理员</option>
+                            <option value="100">超级管理员</option>
+                        </select>
+                    </div>
+                    <div class="fr">
+                        <button type="submit" class="search-btn">查询</button>
+                    </div>
+                </div>
+            </form>
+            {volist name="$user_data" id="v"}
+            <div class="card box-shadow">
+                <div class="card-header green_text">{$v.company}-{$v.merchant_cname}</div>
+                <div class="list-block media-list">
+                    <ul>
+                        <li>
+                            <a href="{:url('mobile/Acount/account_des',['id'=>$v['uid']])}" class="item-link item-content">
+                                <div class="item-inner">
+                                    <div class="item-title-row">
+                                        <div class="item-title">代理商名称：{$v.name}</div>
+                                    </div>
+                                    <div class="item-subtitle">充值总金额: {$v.recharge_sum/100} </div>
+                                    <div class="item-subtitle">手续费合计:{$v.fee_sum/100}</div>
+                                    <div class="item-subtitle">已结算金额:{$v.withdrawal_sum/100}</div>
+                                    <div class="item-subtitle">剩余金额:{$v.money/100}</div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <span class=""></span>
+                    <span class="green_text"><a href="{:url('mobile/Acount/account_des',['id'=>$v['uid']])}">查看详情</a></span>
+                </div>
+            </div>
+            {/volist}
+
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+<script type="text/javascript">
+    var time = new Date();
+    $(".start_time").calendar({
+        value: [time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()]
+    });
+    $(".end_time").calendar({
+        value: [time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()]
+    });
+</script>
+</body>
+</html>

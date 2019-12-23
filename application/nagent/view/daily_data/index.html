@@ -1,0 +1,139 @@
+{include file="common/head"}
+<style type="text/css">
+  
+  td{
+    text-align: center;
+  }
+
+</style>
+
+<form class="layui-form" action="/nagent/daily_data/index.html">
+    <div class="layui-form-item">
+<!--         <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="uid"  value="" autocomplete="off" class="layui-input" placeholder="商户编号">
+            </div>
+        </div> -->
+
+      
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <select name="code" lay-search="">
+                    <option value="">通道类型</option>
+                    {volist name="$channel" id="c"}
+                    <option value="{$c.code}">{$c.channel_name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+      
+
+      <div class="layui-inline">
+            <div class="layui-input-inline">
+                 <button type="submit" class="layui-btn">查询</button>
+
+            </div>
+        </div>
+  </div>
+</form>
+<table class="layui-table" style="border-collapse:collapse !important;">
+  <colgroup>
+    <col width="150">
+    <col width="200">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+
+      <th>日期</th>
+      <th>通道类型</th>
+      <th>订单总笔数</th>
+      
+      <th>成功总笔数</th>
+      <th>派单金额</th>
+      <th>成功金额</th>
+      <th>成功率</th>
+      <th>个人收款账户当日数据</th>
+
+    </tr> 
+  </thead>
+  <tbody>
+    {volist name="$daily_data" id="v"}
+    <tr>
+
+      <td>{$v.date}</td>
+      <td>{$v.channel_name}</td>
+      <td>{$v.order_sum}</td>
+      
+      <td>{$v.succ_sum}</td>
+      <td>{$v.money_sum/100}</td>
+      <td>{$v.succ_money_sum/100}</td>
+      <td>{if condition="$v.order_sum==0"}100{else}{:round($v.succ_sum/$v.order_sum,4)*100}{/if}%</td>
+      <td><a href="{:url('daily_data/get_excel',['id'=>$v['id']])}">点击下载</a></td>
+
+
+       
+<!--       <td> <a href="{:url('nagent/user/edit_group')}?id={$v.id}" class="layui-btn  edit layui-btn-small" >编辑</a></td> -->
+    </tr>
+    {/volist}
+  </tbody>
+
+</table>
+
+  {$daily_data->render()}
+  <style>
+    .pagination li{
+        display:inline-block;
+    }
+  
+  </style>
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+//注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+layui.use(['form'], function(){
+  var form = layui.form,layer=layui.layer;
+  
+//提交表单
+  $('.status_update').click(function(){
+
+    var status = $(this).attr('status');
+    var id = $(this).attr('value');
+    if(status == 1){
+
+      var text = '关闭';
+    }else{
+      var text = '开启';
+    }
+
+     layer.confirm('确认要 '+text+' 此分组账户吗？？', {
+              btn: ['确定','取消'] //按钮
+            }, function(){
+              
+
+              $.post('{:url("nagent/Payment_account/status_update")}',{status:status,id:id},function(data){
+
+                if(data.code == '0000'){
+                     
+                      layer.msg(data.msg, {icon: 1,time:1000},function(){
+
+                        location.reload();
+
+                      });
+                    }else{
+                      layer.msg(data.msg, {icon: 5,time:1000});
+                    }
+
+              })
+             
+          })
+
+
+  })
+
+
+
+
+
+
+});
+  </script>

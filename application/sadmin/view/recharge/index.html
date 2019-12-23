@@ -1,0 +1,374 @@
+{include file="common/head"}
+<body class="body">
+
+<form class="layui-form" action="/sadmin/Recharge/index.html">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="uid"  value="{:input('get.uid')}" autocomplete="off" class="layui-input" placeholder="商户编号">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="order_num" value="{:input('get.order_num')}"  autocomplete="off" class="layui-input" placeholder="商户单号">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="id" value="{:input('get.id')}"  autocomplete="off" class="layui-input" placeholder="机构单号">
+            </div>
+        </div>
+        <!--<div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="trade_no" value="{:input('get.trade_no')}"  autocomplete="off" class="layui-input"  placeholder="流水号">
+            </div>
+        </div>-->
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <select name="pay_status" lay-search="">
+                    <option value="">订单状态</option> -->
+                    <option value="0">全部</option>
+                    <option value="1">已支付</option>
+                    <option value="2">未支付</option>
+                   
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <select name="notify_url_info" lay-search="">
+                    <option value="">回调状态</option>
+                    <option value="全部">全部</option>
+                    <option value="0">未触发</option>
+                    <option value="1">success</option>
+                    <option value="2">fail</option>
+                    <option value="3">参数错误</option>
+                </select>
+            </div>
+        </div>
+      	<div class="layui-inline">
+            <div class="layui-input-inline">
+                <select name="channel_id"  lay-search="">
+                  <option value="">所属通道</option>
+
+                  {volist name="$channel_data" id="vo"}
+                  <option value="{$vo.code}">{$vo.channel_name}</option>
+                  {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <select name="pay_type"  lay-search="">
+                  <option value="">收款账户</option>
+                  <option value="0">全部</option>
+                  {volist name="top_account_assets" id="vo"}
+                  <option value="{$vo.id}">{$vo.name}</option>
+                  {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="start_time" id="date" lay-verify="date" placeholder="开始日期" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+      <div class="layui-inline">
+        <div class="layui-input-inline">
+          <input type="text" name="end_time" id="date1" lay-verify="date" placeholder="结束日期" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <div class="layui-input-inline">
+          <button type="submit" class="layui-btn layui-btn-small">查询</button>
+          <button type="reset" class="layui-btn layui-btn-warm layui-btn-small" >取消</button>
+        </div>
+      </div>
+    </div>
+    
+</form>
+
+
+<style type="text/css">
+  th{
+  	border:1px solid #ccc !important;
+    text-align: left !important;
+    padding-left:10px !important;
+    font-weight:bold !important;
+  }
+    td{
+        text-align: left;
+        padding-left:10px !important;
+      	border:1px solid #ccc !important;
+      color:#666 !important;
+      font-size:10px !important;
+    }
+
+
+</style>
+<table class="layui-table" style="border-collapse:collapse !important;border:1px solid #ccc">
+    <thead>
+    <tr>
+        <th>商户编号</th>
+        <th>订单号</th>
+        <th>交易时间</th>
+        <th>订单状态</th>
+        <th>支付信息</th>
+        <th>上级到账</th>
+        <th>下级到账</th>
+        <th>利润</th>
+        <th>回调状态</th>
+        <th>通知次数</th>
+        <th>订单备注</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {volist name="order_data" id="vo"}
+<?php
+
+if($vo['notify_url_info']==1){
+    $vo['notify_url_info'] = "<font color=#339933><b>success</b></font>";
+}elseif($vo['notify_url_info']==2){
+    $vo['notify_url_info'] = "fail";
+}elseif($vo['notify_url_info']==3){
+    $vo['notify_url_info'] = "返回参数错误";
+}elseif($vo['notify_url_info']==0){
+    $vo['notify_url_info'] = "<font color=#ff5050>未触发</font>";
+}
+
+$vo['ext'] = $vo['ext']==null?'&nbsp;':$vo['ext'];
+?>  
+    <tr>
+        <td>{$vo.merchant_cname}_{$vo.uid}</td>
+        <td><ul>
+            <li>平台单号&nbsp;:&nbsp;{$vo.merchant_cname}_{$vo.id}</li>
+            <li>下级单号&nbsp;:&nbsp;{$vo.order_num}</li>
+            <li>流水号&nbsp;:&nbsp;{$vo.trade_no}</li>
+        </ul></td>
+        <td> <ul style="">
+            <li>生成时间&nbsp;:&nbsp;{:date('m-d H:i:s',$vo.accept_time)}</li>
+            <li>支付时间&nbsp;:&nbsp;
+                <?php
+                    if($vo['pay_time']==0){
+                        echo "未支付";
+                    }else{
+                        echo date('m-d H:i:s',$vo['pay_time']);
+                    }
+                    ?></li>
+        </ul></td>
+        <td><?php
+                if($vo['pay_status']==1){
+                    echo "<font color=#339933><b>支付成功</b></font>";
+                }elseif($vo['pay_status']==3){
+                    echo "支付失败";
+                }else{
+                    echo "<font color=#ff5050>未支付</font>";
+                }
+                ?></td>
+        <td><ul style="">
+            <li>金额&nbsp;:&nbsp;&#165;{$vo.pay_amount/100}</li>
+            <li>通道&nbsp;:&nbsp;{$vo.channel_name}</li>
+            <li>收款账户&nbsp;:&nbsp;{$vo.proxy_id}_{$vo.name}</li>
+            
+        </ul></td>
+        <td><ul>
+            <!-- <li>到账时间&nbsp;:&nbsp;&#165;2018.10.09&nbsp;16:40</li> -->
+
+            <li>到账金额&nbsp;:&nbsp;&#165;
+                <?php   
+
+if($vo['order_type']==1){
+    if($vo['pay_time']==0){
+        echo "未支付";
+    }else{
+        echo ($vo['pay_amount']-$vo['this_channel_fee'])/100;
+    }
+
+}else{
+    echo -$vo['pay_amount']/100;
+}
+
+?></li>
+            <li>账户余额&nbsp;:&nbsp;&#165;{$vo.this_received_money/100}</li>
+            <li>手续费&nbsp;:&nbsp;&#165;{$vo.this_channel_fee/100}</li>
+        </ul></td>
+        <td><ul>
+            <li>到账时间&nbsp;:&nbsp;
+                <?php
+                if($vo['pay_time']==0){
+                    echo "未支付";
+                }else{
+                    echo date('Y.m.d H:i',$vo['pay_time']);
+                }
+                ?></li>
+            <li>到账金额&nbsp;:&nbsp;&#165;
+
+               <?php 
+if($vo['pay_time']==0){
+    echo "未支付";
+}else{
+    if($vo['order_type']==1){
+        echo ($vo['pay_amount']-$vo['this_fee'])/100;
+    }else{
+        echo -($vo['pay_amount']-$vo['this_fee'])/100;
+    }
+    
+}
+
+?>
+            </li>
+            <li>账户余额&nbsp;:&nbsp;&#165;{$vo.this_money/100}</li>
+<!--             <li>手续费&nbsp;:&nbsp;&#165;12</li> -->
+        </ul></td>
+        <td> <ul>
+            <li>&#165;&nbsp;{$vo.this_fee/100-$vo.this_channel_fee/100}</li>
+        </ul></td>
+        <td><ul>
+            <li>{$vo.notify_url_info}</li>
+            <!-- <li>支付H5</li> -->
+        </ul></td>
+        <td> <ul>
+            <li>{$vo.notice_num}</li>
+        </ul></td>
+        <td><ul>
+            <li>{$vo.ext}</li>
+            <!--                <li>备注信息</li>
+                            <li>备注信息</li>
+                            <li>备注信息</li> -->
+        </ul></td>
+        <td>
+            <ul>
+                <li>
+                <?php if($login_user['state'] !=88){?>
+                <?php
+                    if($vo['order_type']==1){
+                ?>  
+                    <?php
+                    if($vo['pay_status']==2){ ?>
+
+                            <button value="{$vo.id}" class="reissue-notice layui-btn layui-btn-danger repeat_no_adjusted layui-btn-small" style="font-size: 50%;line-height: 30px;height: 30px;">补发未回调订单</button>
+                  		<?php }elseif($vo['pay_status']==3){ ?>
+                  			
+                        <?php }else{ ?>
+                            
+                                 <button value="{$vo.id}" class="reissue-notice layui-btn repeat_notify_url layui-btn-small" style="font-size: 50%;line-height: 30px;height: 30px;">补发通知</button>
+
+                        <?php };?>
+                   
+                <?php
+                };?>
+            <?php };?>
+                    <!--        <a href="##"><u>提现</u></a>&nbsp;&nbsp;<a href="###"><u>冻结</u></a></li>
+<li><a href="##"><u>口令</u></a>&nbsp;&nbsp;<a href="###"><u>关闭支付</u></a></li>
+<li><a href="##"><u>秘钥</u></a>&nbsp;&nbsp;<a href="###"><u>商户后台</u></a> -->
+                </li>
+            </ul>
+        </td>
+    </tr>
+{/volist}
+    </tbody>
+    
+</table>
+{$order_data->render()}
+  <style>
+    .pagination li{
+        display:inline-block;
+    }
+  
+  </style>
+<script type="text/javascript">
+$(function(){
+    
+    $('.repeat_no_adjusted').click(function(){
+    
+         var msg = "确定已收到款并给下级回调？";
+          if (confirm(msg)==true){
+              var id = $(this).attr('value');
+              $.ajax({
+                  url:'/api/Notify/edit_order.html',
+                  data:{
+                      id:id,
+                      uid:1
+                  },
+                  type:'get',
+                  dataType:'html',
+                  success:function(data){
+
+                      alert('确认付款成功，商户返回：'+data);
+
+                      location.reload();
+                  }
+              })
+          }
+    
+    
+    })
+  
+  
+
+    $('.repeat_notify_url').click(function(){
+        if ($(this).parents('tr').find('.order_num').text()=="提现"||$(this).parents('tr').find('.order_num').text()=="提现单作废") {
+            alert('提现订单，无补发地址');
+            return false;
+        }
+        
+        if ($(this).parents('tr').find('.pay_time').text()=="未支付") {
+            alert('订单未付款，无法补发');
+            return false;
+        }
+
+
+        var msg = "确定补发通知？";
+        if (confirm(msg)==true){
+            var id = $(this).attr('value');
+            $.ajax({
+                url:'/api/Notify/repeat_notify_url.html',
+                data:{
+                    id:id
+                },
+                type:'get',
+                dataType:'html',
+                success:function(data){
+
+                    alert('补发成功，商户返回：'+data);
+
+                    location.reload();
+                }
+            })
+        }
+    })
+})
+</script>
+<script type="text/javascript" src="/static/sadmin/frame/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate;
+
+        //日期
+        laydate.render({
+            elem: '#date'
+          ,type: 'datetime'
+        });
+        laydate.render({
+            elem: '#date1'
+          ,type: 'datetime'
+        });
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            });
+            return false;
+        });
+
+
+    });
+</script>
+</body>
+</html>

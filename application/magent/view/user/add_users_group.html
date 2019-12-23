@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>添加下级代理</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+
+<header class="nav-bar-header bg-white">
+    <div class="weui_left float-left" onclick="javascript:history.go(-1);"><img src="/static/magent/img/left.png"/>
+    </div>
+    <div class="title">添加下级代理</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <!-- 登录 -->
+    <form action="" method="">
+  
+        <div class="weui-form-preview m-t-20">
+<!--             <div class="weui-form-preview__hd">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">添加下级代理</label>
+            </div> -->
+            <div class="weui_border"></div>
+
+  
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">代理名称</div>
+                <div class="float-left"><input class="info-input" type="text" name="name" value="" required
+                                               placeholder="请输入代理名称"></div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">邮箱账号</div>
+                <div class="float-left"><input class="info-input" type="text" name="email" value="" placeholder="请输入邮箱账号"></div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">手机号码</div>
+                <div class="float-left"><input class="info-input" type="text" name="phone_num" value="" required placeholder="请输入手机号码"></div>
+            </div>
+
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">登录密码</div>
+                <div class="float-left"><input class="info-input" type="password" name="pass" value="" required placeholder="请输入登录密码"></div>
+            </div>
+
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">交易密码</div>
+                <div class="float-left"><input class="info-input" type="password" name="trading_pass" value="" required placeholder="请输入交易密码"></div>
+            </div>
+            
+
+            
+        </div>
+        <div class="preview m-t-20">
+            <div class=" clearfix">
+                <button type="button" class="weui-btn btn weui-btn-reissue" id="tijiao">提 交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--底部导航-->
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+{include file="public/footer" /}
+
+<script>
+  
+ $(document).ready(function(){
+
+    $("#tijiao").click(function () {
+
+        var name = $("[name='name']").val();
+        var email = $("[name='email']").val();
+        var phone_num = $("[name='phone_num']").val();
+        var pass = $("[name='pass']").val();
+        var trading_pass = $("[name='trading_pass']").val();
+        $.ajax({
+            url: "/magent/user/add_users_group",
+            type: "post",
+            data: {name, email, phone_num, pass, trading_pass},
+            success: function (data) {
+                $.toast(data.msg);
+                if(data.code == '0000'){
+
+                    setTimeout(function(){
+                      window.location.href="{:url('magent/index/agent')}";
+                  },600)
+
+                }
+                
+            }
+        })
+    })
+  });
+</script>
+</body>
+</html>

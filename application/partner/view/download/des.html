@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>文章列表--layui后台管理模板</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/static/layui/css/layui.css" media="all" />
+</head>
+<style type="text/css">
+/*	.layui-container{
+		width: 100%;
+		margin:auto;
+
+
+	}*/
+	.layui-icon{
+		font-size: 26px;
+		color:#1AA094;
+	}
+	.content{
+		padding-top: 20px
+	}
+	.content p{
+		text-indent:20px;
+		font-size: 20px;
+		color: #23262E;
+		margin: 10px 0;
+
+	}
+	.content p span{
+		
+		color: #3c3c3c;
+		font-size: 16px
+	}
+	.beizhu{
+		font-weight: 500 !important;
+		color:#1AA094 !important;
+	}
+	.title{
+		font-size: 30px;
+		color: #FF5722;
+		margin: 10px 0;
+	}
+	img{
+		width: 100%;
+
+	}
+
+</style>
+<body class="childrenBody">
+<form class="layui-form" action="">
+<div class="layui-container">  
+
+
+  	<div class="layui-row">
+    <div class="layui-col-md12 content">
+      <div class="title">软件使用说明：</div>
+
+       <p>1.<span>首先到手机系统设置开启xposed软件通知栏使用权限，并开启系统使用权，手机开启永不熄屏模式</span>
+       	<img src="/static/partner/images/screenshot5.png">
+       </p>
+
+      <p>2.<span>依次安装好软件后截图如下</span><br>
+      	<img src="/static/partner/images/screenshot1.png">
+      </p>
+      <p>3.<span>打开xposed设置->模块管理，勾选平台提供的配置软件，然后到设置最低部点击重启软件</span><br>
+      	<img src="/static/partner/images/screenshot2.png"><br>
+      	<img src="/static/partner/images/screenshot3.png">
+
+      </p>
+      <p>4.<span>登录需要收款的支付宝或微信收款账号</span></p>
+      <p>5.<span>打开平台提供的配置软件，填写好平台提供的服务器地址，token值，设备编号，检测间隔填写如图所示，最好是填写1000，然后确认配置并启动，根据登录的微信或支付宝账号，点击测试微信/支付宝按钮，软件自动跳转到对应微信或支付宝APP内，并闪烁一下，表示软件配置完成。
+      	<br>
+      	<p>配置软件参考配置如图</p>
+      </span>
+      	<img src="/static/partner/images/screenshot4.png"><br>
+
+      </p>
+
+      <p>备注：<span><font class="beizhu">软件配置服务器地址、token值平台提供，设备编号添加收款账号后自动展示，开启抢单模式请务必打开软件，否则无法收款</font></span></p>
+
+     
+
+
+    </div>
+   
+  </div>
+
+
+</div>
+</form>
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form;
+  
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    layer.msg(JSON.stringify(data.field));
+    return false;
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>云易支付线上管理系统</title>
+	<link rel="stylesheet" type="text/css" href="__ADMIN__common/layui/css/layui.css" media="all">
+	<link rel="stylesheet" type="text/css" href="__ADMIN__common/global.css" media="all">
+	<link rel="stylesheet" type="text/css" href="__ADMIN__css/adminstyle.css" media="all">
+	
+	
+</head>
+<body>
+<div class="layui-layout layui-layout-admin" id="layui_layout">
+	<!-- 顶部区域 -->
+	
+	
+	
+	
+	<div class="layui-header header header-demo" style="min-width: 1390px;">
+		<div class="layui-main">
+		    <!-- logo区域 -->
+			<div class="admin-logo-box">
+				<a class="logo" title="logo">云易商户后台</a>
+				<div class="larry-side-menu">
+					<i class="fa fa-bars" aria-hidden="true"></i>
+				</div>
+			</div>
+            <!-- 顶级菜单区域 -->
+            
+            <!-- 右侧导航 -->
+            <ul class="layui-nav larry-header-item">
+            		<li class="layui-nav-item">
+            			欢迎：{$login_user.name}
+            		</li>
+            		<li class="layui-nav-item first">
+						<a href="javascript:;">			
+							<cite>上次登录时间：<span>
+<?php
+if($login_user['login_time']==0){
+	$login_user['login_time'] = "未登陆";
+}else{
+	$login_user['login_time'] = date('Y-m-d H:i:s',$login_user['login_time']);
+}
+?>{$login_user.login_time}
+							</span></cite>
+							
+						</a>
+						
+					</li>
+					<li class="layui-nav-item">
+						<a href="javascript:;" id="lock">
+                        <i class="iconfont icon-diannao1"></i>
+						锁屏</a>
+					</li>
+					<li class="layui-nav-item">
+						<a href="exit_login.html">
+                        <i class="iconfont icon-exit"></i>
+						退出</a>
+					</li>
+            </ul>
+		</div>
+	</div>
+	<!-- 左侧侧边导航开始 -->
+	<div class="layui-side layui-side-bg layui-larry-side" id="larry-side">
+        <div class="layui-side-scroll" id="larry-nav-side" lay-filter="side">
+		
+		<!-- 左侧菜单 -->
+		<ul class="layui-nav layui-nav-tree">
+			<!-- <li class="layui-nav-item layui-this">
+				<a href="javascript:;" data-url="/admin/User/main.html">
+				    <i class="iconfont icon-home1" data-icon='icon-home1'></i>
+					<span>后台首页</span>
+				</a>
+			</li> -->
+			<!-- 个人信息 -->
+			<li class="layui-nav-item layui-nav-itemed">
+				<a href="javascript:;">
+					<i class="iconfont icon-jiaoseguanli" ></i>
+					<span>商户中心</span>
+					<em class="layui-nav-more"></em>
+				</a>
+				<dl class="layui-nav-child">
+
+					<dd class="layui-this">
+                        <a href="javascript:;" data-url="/admin/User/main.html">
+                            <i class="iconfont icon-geren1" data-icon='icon-geren1'></i>
+                            <span>资产总览</span>
+                        </a>
+                    </dd>
+
+                    <dd>
+                        <a href="javascript:;" data-url="/admin/User/personinfo.html">
+                            <i class="iconfont icon-geren1" data-icon='icon-geren1'></i>
+                            <span>商户信息</span>
+                        </a>
+                    </dd>
+                    
+                    
+                </dl>
+			</li>
+			<!-- 用户管理 -->
+			<li class="layui-nav-item">
+					<a href="javascript:;">
+					   <i class="iconfont icon-iconwendang" ></i>
+					   <span>订单管理</span>
+					   <em class="layui-nav-more"></em>
+					</a>
+					    <dl class="layui-nav-child">
+					    	<dd>
+					    		<a href="javascript:;" data-url="/admin/Recharge/index.html">
+					    		   <i class="iconfont icon-zhifu" data-icon='icon-yonghu1'></i>
+					    		   <span>已支付</span>
+					    		</a>
+					    	</dd>
+					    	<dd>
+					    		<a href="javascript:;"  data-url="/admin/Recharge/index.html?pay_status=2">
+					    		   <i class="iconfont icon-zhifu1" data-icon='icon-jiaoseguanli4'></i>
+					    		   <span>未支付</span>
+					    		</a>
+					    	</dd>
+					    	<dd>
+					    		<a href="javascript:;" data-url="/admin/Recharge/index.html?pay_status=0&order_type=0">
+					    		   <i class="iconfont icon-i" data-icon='icon-quanxian2'></i>
+					    		   <span>全部订单</span>
+					    		</a>
+					    	</dd>
+					    	<dd>
+					    		<a href="javascript:;" data-url="/admin/Recharge/index.html?order_off=1">
+					    		   <i class="iconfont icon-chaxun" data-icon='icon-quanxian2'></i>
+					    		   <span>商户丢单</span>
+					    		</a>
+					    	</dd>
+
+					    	<dd>
+					    		<a href="javascript:;" data-url="/admin/Recharge/index.html?&order_type=0">
+					    		   <i class="iconfont icon-i" data-icon='icon-quanxian2'></i>
+					    		   <span>余额流水</span>
+					    		</a>
+					    	</dd>
+					    	
+					    </dl>
+			    </li>
+
+			
+			<!-- 会员管理
+				<li class="layui-nav-item">
+					<a href="javascript:;">
+					   <i class="iconfont icon-jiaoseguanli2" ></i>
+					   <span>出金详情</span>
+					   <em class="layui-nav-more"></em>
+					</a>
+					<dl class="layui-nav-child">
+                           <dd>
+                           	   <a href="javascript:;" data-url="/admin/Withdrawal/index.html">
+					              <i class="iconfont icon-quanxianwodequanxiangou"  data-icon='icon-zhuti'></i>
+					              <span>代付订单</span>
+					           </a>
+                           </dd>
+
+                           <dd>
+                           	   <a href="javascript:;" data-url="/admin/Withdrawal/add_withdrawal.html">
+					              <i class="iconfont icon-quanxianwodequanxiangou"  data-icon='icon-zhuti'></i>
+					              <span>在线提现</span>
+					           </a>
+                           </dd>
+
+                           <!-- <dd>
+                           	   <a href="javascript:;" data-url="table.html">
+					              <i class="iconfont icon-shengchengbaogao"  data-icon='icon-zhuti'></i>
+					              <span>已提交</span>
+					           </a>
+                           </dd>
+                           <dd>
+                           	   <a href="javascript:;" data-url="table.html">
+					              <i class="iconfont icon-quanxianwodequanxiancha"  data-icon='icon-zhuti'></i>
+					              <span>已作废</span>
+					           	</a>
+                           </dd> -->
+                    </dl>
+				</li>
+
+
+			<!-- 内容管理 -->
+			<li class="layui-nav-item">
+					<a href="javascript:;">
+					   <i class="iconfont icon-guanlijiaose" ></i>
+					   <span>账户管理</span>
+					   <em class="layui-nav-more"></em>
+					</a>
+					   <dl class="layui-nav-child">
+
+				   	<dd>
+						<a href="javascript:;" data-url="update_login_pass.html">
+							<i class="iconfont icon-password" data-icon='icon-wenzhang2'></i>
+						<span>修改登录密码</span>
+						</a>
+					</dd>
+					
+					<dd>
+                        <a href="javascript:;" data-url="update_trading_pass_page.html">
+                            <i class="iconfont icon-iconfuzhi01" data-icon='icon-iconfuzhi01'></i>
+                            <span>修改交易密码</span>
+                        </a>
+                    </dd>
+
+					
+					    	
+					    	
+					   </dl>
+			   </li>
+			
+                
+				
+				
+			
+		</ul>
+	    </div>
+	</div>
+
+	<!-- 左侧侧边导航结束 -->
+	<!-- 右侧主体内容 -->
+	<div class="layui-body" id="larry-body" style="bottom: 0;border-left: solid 2px #2299ee;min-width: 1190px;">
+		<div class="layui-tab layui-tab-card larry-tab-box" id="larry-tab" lay-filter="demo" lay-allowclose="true">
+			<div class="go-left key-press pressKey" id="titleLeft" title="滚动至最右侧"><i class="larry-icon larry-weibiaoti6-copy"></i> </div>
+			<ul class="layui-tab-title">
+				<li class="layui-this" id="admin-home"><em>资产总览</em></li>
+			</ul>
+			<div class="go-right key-press pressKey" id="titleRight" title="滚动至最左侧"><i class="larry-icon larry-right"></i></div> 
+			 <!-- <ul class="layui-nav closeBox">
+				  <li class="layui-nav-item">
+				    <a href="javascript:;"><i class="iconfont icon-caozuo"></i> 页面操作</a>
+				    <dl class="layui-nav-child">
+					  <dd><a href="javascript:;" class="refresh refreshThis"><i class="layui-icon">&#x1002;</i> 刷新当前</a></dd>
+				      <dd><a href="javascript:;" class="closePageOther"><i class="iconfont icon-prohibit"></i> 关闭其他</a></dd>
+				      <dd><a href="javascript:;" class="closePageAll"><i class="iconfont icon-guanbi"></i> 关闭全部</a></dd>
+				    </dl>
+				  </li>
+				</ul>-->
+			<div class="layui-tab-content" style="min-height: 150px; ">
+				<div class="layui-tab-item layui-show">
+					<iframe class="larry-iframe" data-id='0' src="/admin/User/main.html"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 底部区域 -->
+	
+<!-- 加载js文件-->                                                                                                                                                                                           
+	<script type="text/javascript" src="__ADMIN__common/layui/layui.js"></script> 
+
+
+	<script type="text/javascript" src="__ADMIN__js/larry.js"></script>
+
+	<script type="text/javascript" src="__ADMIN__js/index.js"></script>
+<!-- 锁屏 -->
+<div class="lock-screen" style="display: none;">
+	<div id="locker" class="lock-wrapper">
+		<div id="time"></div>
+		<div class="lock-box center">
+			<img src="__ADMIN__images/userimg.jpg" alt="">
+			<h1>admin</h1>
+			<duv class="form-group col-lg-12">
+				<input type="password" placeholder='锁屏状态，请输入密码解锁' id="lock_password" class="form-control lock-input" autofocus name="lock_password">
+				<button id="unlock" class="btn btn-lock">解锁</button>
+			</duv>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

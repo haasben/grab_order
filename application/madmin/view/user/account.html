@@ -1,0 +1,522 @@
+{include file="common/head"}
+<body class="body">
+
+
+<!-- <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>条件搜索</legend>
+</fieldset> -->
+
+<form class="layui-form layui-form-pane" action="/sadmin/User/account.html">
+    <div class="layui-form-item">
+        <label class="layui-form-label">代理商级别</label>
+        <div class="layui-input-inline">
+            <select name="admin_status" lay-verify="required" lay-search="">
+                <option value="0">全部</option>
+                <option value="1">正常商户</option>
+                <option value="19">受限制商户</option>
+                <option value="20">管理员</option>
+                <option value="20">超级管理员</option>
+            </select>
+        </div>
+        <span class="layui-form-label">商户编号：</span>
+        <div class="layui-input-inline">
+            <input type="text" autocomplete="off" placeholder="请输入搜索条件" class="layui-input">
+        </div>
+        <button class="layui-btn " type="submit">确定</button>
+        <button class="layui-btn  add_users" type="button">添加商户</button>
+    </div>
+</form>
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+    <legend>总金额<span class="account_money">{$sum_money/100}</span>元</legend>
+</fieldset>
+
+<table class="layui-table" lay-even="" lay-skin="nob">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>注册时间</th>
+        <th>登陆时间</th>
+        <th><a href="/Userhtml?admin_status=1">状态</a></th>
+        <th>代理商名称</th>
+        <th>申请人</th>
+        <th>费率</th>
+        <th>充值总额</th>
+        <th>手续费合计</th>
+        <th>已结算总额</th>
+        <th>剩余余额</th>
+      	<th>保证金</th>
+      	<th>违规次数</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+{volist name="user_data" id="vo"}
+<?php
+if($vo['state']==1){
+    $vo['state'] = "正常";
+    $text1 = "冻结";
+    $text2 = "关闭支付";
+    $state = 1;
+}elseif($vo['state']==4){
+    $vo['state'] = "未开通支付功能，请联系客服申请";
+    $text1 = "冻结";
+    $text2 = "开通支付";
+    $state = 4;
+}elseif($vo['state']==2){
+    $vo['state'] = "冻结中，无法登陆";
+    $text1 = "启用";
+    $text2 = "开通支付";
+    $state = 2;
+}elseif($vo['state']==3){
+    $vo['state'] = "邮箱未激活";
+    $text1 = "删除账号";
+    $text2 = "直接通过";
+    $state = 3;
+}elseif($vo['state']==99){
+    $vo['state'] = "管理员";
+    $text1 = "冻结";
+    $text2 = "开通支付";
+    $state = 4;
+}elseif($vo['state']==88){
+    $vo['state'] = "代理商";
+    $text1 = "冻结";
+    $text2 = "开通支付";
+    $state = 88;
+}elseif($vo['state']==100){
+    $vo['state'] = "超级管理员";
+    $text1 = "冻结";
+    $text2 = "开通支付";
+    $state = 100;
+}elseif($vo['state']==77){
+    $vo['state'] = "合伙人";
+    $text1 = "冻结";
+    $text2 = "开通支付";
+    $state = 77;
+}elseif($vo['state']==89){
+    $vo['state'] = "合伙人代理商";
+    $text1 = "冻结";
+    $text2 = "开通支付";
+    $state = 89;
+}elseif($vo['state']==90){
+    $vo['state'] = "代理商";
+    $text1 = "冻结";
+    $text2 = "开通支付";
+    $state = 90;
+}
+?>
+
+    <tr class="receivables_data">
+        <td class="auth_number_1">{$vo.merchant_cname}_{$vo.id}</td>
+        <td class="auth_time_1">{:date('Y-m-d H:i:s',$vo.join_time)}</td>
+        <td class="auth_login_1">{:date('Y-m-d H:i:s',$vo.login_time)}</td>
+        <td class="auth_status_1">{$vo.state}</td>
+        <td class="auth_name_1">{$vo.company}</td>
+        <td class="auth_apply_1">{$vo.name}</td>
+        <td class="auth_rate_1 fee_but" value="{$vo.uid}"><a href="javascript:;" >点击查看</a></td>
+        <td class="auth_money_1">{$vo.recharge_sum/100}</td>
+        <td class="auth_account_1">{$vo.fee_sum/100}</td>
+        <td class="auth_settlement_1">{$vo.withdrawal_sum/100}</td>
+        <td class="auth_surplus_1">
+            <!--<ul class="auth_ul">-->
+            <!--<li>支付宝-张三:31元</li>-->
+            <!--<li>支付宝-张三:31元</li>-->
+            <!--<li>支付宝-张三:31元</li>-->
+            <!--<li>合计：31</li>-->
+            <!--</ul>-->
+            <a href="#">{$vo.money/100}</a>
+        </td>
+      <td class="auth_settlement_1">{$vo.margin/100}</td>
+      <td class="auth_settlement_1">{$vo.bans_num}</td>
+      
+<td class="auth_operation_1">
+
+
+        <button value="{$vo.id}" state="{$state}" class="enable layui-btn layui-btn-small">{$text1}</button>
+            <a href="javascript:;" onclick="get_key({$vo.id});" style="color:black;"><button class="layui-btn layui-btn-small">秘钥</button></a>
+            <a href="javascript:;" value="{$vo.id}" class="layui-btn layui-btn-small user_management">用户管理</a>
+
+          <button value="{$vo.id}" state="{$state}" class="open_pay layui-btn layui-btn-small">{$text2}</button>
+          <a href="/madmin/User/go_merchants.html?id={$vo.id}" target="_blank"><button class="layui-btn layui-btn-small" style="margin-top: 5px;">商户后台</button></a>
+
+
+       
+
+
+      </td>
+      
+    </tr>
+
+{/volist}
+
+    </tbody>
+</table>
+  {$user_data->render()}
+  
+<div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-10">
+<!--     <span class="layui-laypage-count">共 100 条</span>
+    <a href="javascript:;" class="layui-laypage-prev layui-disabled" data-page="0">上一页</a>
+    <span class="layui-laypage-curr"><em class="layui-laypage-em"></em><em>1</em></span>
+    <a href="javascript:;" data-page="2">2</a><a href="javascript:;" data-page="3">3</a>
+    <a href="javascript:;" data-page="4">4</a><a href="javascript:;" data-page="5">5</a>
+    <span class="layui-laypage-spr">…</span>
+    <a href="javascript:;" class="layui-laypage-last" title="尾页" data-page="10">10</a>
+    <a href="javascript:;" class="layui-laypage-next" data-page="2">下一页</a>
+    <span class="layui-laypage-limits">
+        <select lay-ignore="">
+            <option value="10" selected="">10 条/页</option>
+            <option value="20">20 条/页</option>
+            <option value="30">30 条/页</option>
+            <option value="40">40 条/页</option>
+            <option value="50">50 条/页</option>
+        </select>
+    </span>
+    <span class="layui-laypage-skip"><input type="text" min="1" value="1" class="layui-input">到第<input type="text" min="1" value="2" class="layui-input">页<button type="button" class="layui-laypage-btn">确定</button>
+    </span> -->
+</div>
+
+<script type="text/javascript" src="/static/sadmin/frame/layui/layui.js"></script>
+<script type="text/javascript">
+$(function(){
+  	
+  	    $('.debit').click(function(){
+            var id = $(this).attr('value');
+            console.log(id)
+            layer.prompt({title: '输入下账口令，并确认', formType: 1}, function(pass, index){
+              layer.close(index);
+              layer.prompt({title: '请输入增加的金额，单位元(-1表示减一元)', formType: 4}, function(text, index){
+
+                    $.post('{:url("madmin/user/debit_money")}',{pass:pass,money:text,id:id},function(data){
+
+                        if(data.code == '0000'){
+
+                            layer.close(index);
+                            layer.msg(data.msg,{icon: 1,time:2000},function(){
+                                    location.reload();
+                                });
+                        }else{
+
+                            layer.msg(data.msg);
+
+                        }
+
+                    })
+              });
+            });
+
+        })
+  
+  
+  
+  
+    $('[name=admin_status]').find('[value={:input('get.admin_status')}]').attr('selected','selected');
+    $('.redirect_key').click(function(){
+        var id = $(this).attr('value');
+        var redirect_key = prompt("请输入口令");
+        if (!redirect_key) {
+            return false;
+        }
+        $.ajax({
+            url:'/madmin/User/redirect_key.html',
+            data:{
+                redirect_key:redirect_key,
+                id:id
+            },
+            type:'post',
+            dataType:'json',
+            success:function(data){
+                // console.log(data);return;
+                if (data.success==1) {
+                    alert(data.hint);
+                }
+                location.reload();
+            }
+        })
+    })
+
+    $('.fee_but').click(function(){
+        var uid = $(this).attr('value');
+
+        var dom = $(this);
+        $.ajax({
+            url:'/madmin/User/fee_list.html',
+            data:{
+                uid:uid,
+            },
+            dataType:'html',
+            success:function(data){
+				{if condition="$login_user['state'] == 90"} dom.html('请联系客服查看');
+
+                {else /} dom.html(data);
+                {/if}
+                
+            }
+        })
+    })
+
+    $('.enable').click(function(){
+        var state = $(this).attr('state');
+        //账户状态
+        
+        if (state==100) {
+            alert('无法对超级管理员进线操作');
+            return false;
+        }
+        var id = $(this).attr('value');
+        if (state==3) {
+            var code = prompt("请输入确认删除代码", "");
+            if (code) {
+                if (code!=3333) {
+                    alert('代码错误');
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }else{
+            var msg = '确定'+$(this).text()+'?';
+            if (confirm(msg)!=true) {
+                return false;
+            }
+        }
+        //用户id
+        $.ajax({
+            url:'/madmin/User/update_enable.html',
+            data:{
+                state:state,
+                id:id
+            },
+            type:'post',
+            dataType:'html',
+            success:function(data){
+                alert(data);
+                location.reload();
+            }
+        })
+    })
+})
+
+$(function(){
+    $('.open_pay').click(function(){
+        var state = $(this).attr('state');
+        //账户状态
+        
+        if (state==100) {
+            alert('无法对超级管理员进线操作');
+            return false;
+        }
+        var id = $(this).attr('value');
+        var msg = '确定'+$(this).text()+'?';
+        if (confirm(msg)!=true) {
+            return false;
+        }
+
+        //用户id
+        $.ajax({
+            url:'/madmin/User/update_open_pay.html',
+            data:{
+                state:state,
+                id:id
+            },
+            type:'post',
+            dataType:'html',
+            success:function(data){
+                alert(data);
+                location.reload();
+            }
+        })
+    })
+
+    $('.fee').click(function(){
+        var id = $(this).attr('value');
+        var fee = prompt("请输入费率（35表示3.5%手续费）",$(this).attr('fee'));
+        if (!fee) {
+            return false;
+        }
+        var re = /^[0-9]+.?[0-9]*$/;
+        if (!re.test(fee)) {
+            alert("请输入数字");
+            return false;
+    　　}
+        
+
+        //用户id
+        $.ajax({
+            url:'/madmin/User/update_fee.html',
+            data:{
+                fee:fee,
+                id:id
+            },
+            type:'post',
+            dataType:'html',
+            success:function(data){
+                alert(data);
+                location.reload();
+            }
+        })
+    })
+
+})
+
+</script>
+
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,layer = layui.layer;
+
+    //iframe窗
+
+
+    $('.my_code').click(function(){
+
+    $.post('{:url("madmin/user/get_code")}',function(data){
+
+        if(data.code == '0000'){
+
+            var content = data.url;
+        }else{
+            var content = data.msg;
+        }
+        layer.open({
+          type: 1,
+          skin: 'layui-layer-demo', //样式类名
+          closeBtn: 0, //不显示关闭按钮
+          anim: 2,
+          shadeClose: true, //开启遮罩关闭
+          content: '<img src="'+content+'">'
+        });
+
+    })
+
+
+
+
+});
+      
+
+$('.set_fee').click(function(){
+
+
+    layer.open({
+      type: 2,
+      title: '全名费率设置',
+      shadeClose: true,
+      shade: false,
+      maxmin: true, //开启最大化最小化按钮
+      area: ['600px', '600px'],
+      content: '{:url("madmin/user/set_fee")}'
+    });
+ 
+
+
+})
+
+    $("body").on("click",".add_bans",function(){  //违禁增加
+        var _this = $(this);
+        var id = _this.attr('value');
+        console.log(id);
+        layer.confirm('确定增加该用户违规次数吗？',{icon:3, title:'提示信息'},function(index){
+
+            $.ajax({
+                    url : "{:url('madmin/user/add_bans')}?id="+id,
+                    type : "get",
+                    dataType : "json",
+                    success : function(data){
+                        if(data.code == '0000'){
+                            layer.close(index);
+                            // _this.parents("tr").remove();
+                            layer.msg(data.msg,{icon:1,time:1500},function(){
+
+                                location.reload();
+                            });
+
+                        }else{
+                            layer.msg(data.msg,{icon:5,time:1500});
+                        }
+
+                    }
+
+            })
+
+
+            
+        });
+    })
+    
+    $('.user_management').click(function(){
+
+        var id = $(this).attr('value');
+        layer.open({
+        type: 2,
+        title: '密钥',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['900px', '800px'],
+        content: '{:url("madmin/user/user_management")}?id='+id
+      });
+
+
+
+    })      
+	$('.add_users').click(function(){
+
+    layer.open({
+      type: 2,
+      title: '添加商户',
+      shadeClose: true,
+      shade: false,
+      maxmin: true, //开启最大化最小化按钮
+      area: ['600px', '600px'],
+      content: '{:url("madmin/user/add_users")}'
+    });
+ 
+
+
+})
+
+        //日期
+        laydate.render({
+            elem: '#date'
+        });
+        laydate.render({
+            elem: '#date1'
+        });
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            });
+            return false;
+        });
+
+
+    });
+
+
+function get_key(id){
+
+      layer.open({
+        type: 2,
+        title: '密钥',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['500px', '300px'],
+        content: '{:url("madmin/user/get_key")}?id='+id
+      });
+
+}
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修改分组</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <a href="/magent/user/clerk_list"><div class="weui_left float-left"><img src="/static/magent/img/left.png"/></div></a>
+    <div class="title">修改分组</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <!-- 登录 -->
+    <form action="" method="">
+        <div class="weui-form-preview m-t-20">
+            <div class="weui-form-preview__hd">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">修改分组</label>
+            </div>
+            <div class="weui_border"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">分组名称</div>
+                <div class="float-left">
+                    <div class="float-left"><input type="text" class="info-input" placeholder="" name="group_name"
+                                                   value="{$info['group_name']}"/></div>
+                </div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">分组备注</div>
+                <div class="float-left"><input type="text" class="info-input" placeholder="" name="remark"
+                                               value="{$info['remark']}"/></div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">分组状态</div>
+                <div class="float-left" style="margin-left: 25px;">
+                    <label for="switchCP" class="weui-switch-cp">
+                        <input id="switchCP" class="weui-switch-cp__input" type="checkbox" name="status" {$info['status']==1?'checked':''}>
+                        <div class="weui-switch-cp__box"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="preview m-t-20">
+            <div class=" clearfix">
+                <input type="hidden" name="id" value="{$info['id']}">
+                <button type="button" class="weui-btn btn weui-btn-reissue" onclick="tijiao()">提 交</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="/static/magent/js/jquery-2.1.4.js"></script>
+<script src="/static/magent/js/jquery-weui.js"></script>
+<script>
+    function tijiao() {
+        var group_name = $("[name='group_name']").val();
+        var remark = $("[name='remark']").val();
+        var id = $("[name='id']").val();
+        var status = $("#switchCP").prop('checked');
+        $.ajax({
+            url: "/magent/user/edit_group",
+            type: "post",
+            data: {group_name, remark, id, status},
+            success: function (data) {
+                $.toast(data.msg);
+                if (data.code == '0000') {
+                    setTimeout(function () {
+                        window.location.href="{:url('magent/user/clerk_list')}";
+                    }, 1000)
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

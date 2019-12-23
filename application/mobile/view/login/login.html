@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>后台管理系统</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+    <link rel="stylesheet" href="__MOBILE__/css/login.css"/>
+</head>
+<body>
+<div class="content">
+    <div class="login_header" style="margin: 9rem auto">
+        <div>
+           <!--  <img src="/static/index/img/hongyun_logo.png"> -->
+        </div>
+
+    </div>
+
+    <p class="login-box-msg" style="display: none">
+        <span id="error-msg" class="error"> </span>
+    </p>
+
+    <form id="fm-login" action="" method="post">
+        <div class="item_group">
+            <div class="item_icon"><img src="__MOBILE__/img/icon1.png"/></div>
+            <input type="text" name="username" id="phone" class="required" placeholder="请输入您的账号"/>
+        </div>
+        <div class="item_group">
+            <div class="item_icon"><img src="__MOBILE__/img/icon2.png"/></div>
+            <input type="password" class="required" name="password" id="password" placeholder="请输入您的密码"/>
+        </div>
+        <div class="yan">
+
+            <input name="captcha" id="code" class="form-control captcha-input y-login required" placeholder="验证码"
+                   data-msg-required="请输入验证码！">
+            <span class="glyphicon glyphicon-bell form-control-feedback"></span>
+            <img src="{:captcha_src()}" alt="点击刷新验证码" onClick="this.src='{:captcha_src()}?seed='+Math.random()" id="captcha"/>
+        </div>
+        <button type="button" class="login_btn" onclick="loginBtn();">登 &nbsp; 录</button>
+    </form>
+<!--     <p><a href="register.html" class="regist">还没有账号？立即注册</a></p> -->
+</div>
+    <script src="/static//jq/jQuery1.9.1.js"></script>
+ <script type="text/javascript" src="/static/layer-v3.1.0/layer/layer.js"></script>
+<script type="text/javascript">
+
+
+
+
+
+    // 注册
+    function loginBtn() {
+        var user = {};
+        user.email = $("#phone").val();
+        user.pass = $("#password").val();
+        user.vercode = $('#code').val();
+        console.log(user);
+
+
+        //发送登录请求
+        $.post('{:url("index/login/login")}', user, function (data) {
+            //验证信息
+            if (data.success==1) {
+                    layer.msg(data.hint,{icon:1,time:1200});
+                    setTimeout(function(){
+                        window.location.href=data.url;
+                    },1500);
+                }else if(data.success==5) {
+                    layer.msg(data.hint,{icon:2,time:1500});
+                }else if(data.success==4){
+                    $("#validation_img").trigger("click");
+                    layer.msg(data.hint,{icon:2,time:1500});
+                }else{
+                    layer.msg(data.hint,{icon:2,time:1500});
+                }
+
+        });
+    };
+</script>
+</body>
+</html>

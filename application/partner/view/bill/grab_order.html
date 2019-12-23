@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>添加收款账号</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/static/layui/css/layui.css">
+</head>
+<body class="childrenBody">
+<style type="text/css">
+	.top_text{
+		width: 95%;
+		text-align: left;
+		padding: 2% 0 1% 2%;
+		font-size: 16px;
+
+	}
+	.top_text p{
+		color: red;
+		margin-top:5px 
+	}
+	.layui-progress{
+		margin: 30px 0;
+
+	}
+	.content{
+		/*height: 400px;*/
+		margin: auto;
+	/*	border: 1px solid red*/
+	}
+  	.content div{
+      	
+  	}
+  	.layui-form-item{
+      	padding-left:0;
+      	font-size: 0;
+  	}
+    .layui-form-item:last-child{
+      	padding-left: 50px;
+    }
+  	.layui-form-item:last-child .layui-input-block{
+      	float: none!important;
+  	}
+  	.layui-form-label{
+      	font-size: 14px;
+      	float: left;
+        width: 100px;
+        padding-right: 50px;
+      	display: inline-block;
+      	vertical-align: top
+  	}
+  	.layui-input-block{
+        float: left;
+      	font-size: 14px;
+      	margin-left:0;
+        text-align: left;
+      	display: inline-block;
+  	}
+	.title{
+     	padding-left: 50px;
+		text-align: left;
+		color:red;
+		font-size: 20px;
+		margin-bottom:10px;
+	}
+/*	.get_order{
+		display: none
+	}*/
+	.order_show{
+		/*text-align: center;*/
+		font-size: 18px;
+		display: none
+		/*color:red;*/
+		/*border: 1px solid red*/
+	}
+	.order_show p{
+
+		padding-top: 5px
+	}
+
+	.red{
+		color: red;
+	}
+  	.layui-form-radio{
+      	white-space: nowrap;
+  	}
+</style>
+<form class="layui-form" action="">
+
+<div class="top_text">
+	<p>1.选择已在手机客户端打开的收款账号</p>
+	<p>2.点击匹配按钮，系统自动匹配订单</p>
+	<p>3.系统派单成功后，到收单列表查看收款备注同平台订单号匹配的订单状态，如果账户已收款订单状态为未支付，则需要点击操作 补发收款未通知按钮</p>
+
+
+
+<div class="layui-progress layui-progress-big" lay-filter="progress" lay-showPercent="yes">
+<div class="layui-progress-bar layui-bg-blue" lay-percent="33%"></div>
+</div>
+</div>
+
+<div class="content">
+	<div class="get_order"> 
+	<div class="title">点击抢单开启智能匹配<span class="times"></span></div>
+
+
+	 <div class="layui-form-item">
+    <label class="layui-form-label">账户类型</label>
+    <div class="layui-input-block">
+    {volist name="$channel" id="v" key="k"}
+
+      <input type="radio"  lay-filter="channel_child" name="type" value="{$v.id}" title="{$v.channel_name}" {if condition="$k == 1 "}checked{/if}><br>
+      {/volist}
+    </div>
+  </div>
+  	<div class="layui-form-item">
+    <label class="layui-form-label">选择账号</label>
+    <div class="layui-input-block account_number">
+    	
+    	<!-- 	<p>请先添加收款账号</p> -->
+
+    </div>
+  </div>
+
+    <div class="layui-form-item grab_order" style="display: none">
+    <div class="layui-input-block">
+      <button class="layui-btn formDemo" lay-submit lay-filter="formDemo">点击抢单</button>
+      <button class="layui-btn layui-btn-danger formcancel" style="display: none" lay-submit lay-filter="formcancel">取消匹配</button>
+  <!--     <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+    </div>
+  </div>
+</div>
+<div class="order_show">
+	<p>平台订单号： <span class="order_num">123</span></p>
+	<p>订单金额:<span class="pay_amount">123</span>元</p>
+	<p class="red">请查看收款账户3分钟内是否收到该笔金额，并在平台确认已操作该订单</p>
+
+</div>
+
+
+</div>
+
+
+</form>
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+//注意进度条依赖 element 模块，否则无法进行正常渲染和功能性操作
+layui.use(['element','form'], function(){
+  var element = layui.element,form = layui.form,$ = layui.jquery,layer=layui.layer;
+
+  	  var id = $('input[name="type"]:checked').val();
+
+  	  get_child(id);
+	   
+
+   form.on('radio(channel_child)', function(data){
+
+   		var id = data.value;
+	  	get_child(id);
+	});  
+
+
+   form.on('submit(formDemo)', function(data){
+
+   		var data = data.field;
+
+   		$.post('{:url("partner/bill/grab_order")}',{type:data.type,id:data.id},function(res){
+
+   			if(res.code == '0000'){
+   				t1=window.setInterval(refreshCount,1000);
+   				t2=window.setInterval(get_order,2000);
+   				$('input[name="type"]').attr('disabled','true');
+   				$('input[name="id"]').attr('disabled','true');
+   				$('.formDemo').css('display','none');
+   				$('.formcancel').css('display','block');
+   				$('.title').html('智能匹配订单中...');
+   				element.progress('progress', '66%');
+
+   				form.render();
+
+   				layer.msg(res.msg,{icon:1,time:1500});
+   			}else{
+   				layer.msg(res.msg,{icon:5,time:1500});
+   			}
+   		})
+
+    	return false;
+  });
+
+      form.on('submit(formcancel)', function(data){
+
+   		var data = data.field;
+   		
+   		$.post('{:url("partner/bill/formcancel")}',{id:data.id},function(res){
+
+   			if(res.code == '0000'){
+   				window.clearInterval(t1);
+   				window.clearInterval(t2);
+   				element.progress('progress', '33%');
+   				layer.msg(res.msg,{icon:1,time:1500},function(){
+   					$('input[name="type"]').removeAttr('disabled');
+	   				$('input[name="id"]').removeAttr('disabled');
+	   				$('.formDemo').css('display','block');
+	   				$('.formcancel').css('display','none');
+	   				$('.title').html('点击抢单开启智能匹配');
+	   				
+	   				form.render();
+   				});
+   			}else{
+   				layer.msg(res.msg,{icon:5,time:1500});
+   			}
+   			
+   			
+   		})
+
+
+    	return false;
+  });
+
+   function refreshCount() {
+   	  var id = $('input[name="id"]:checked').val();
+   	  var type = $('input[name="type"]:checked').val();
+      $.post('{:url("partner/bill/grab_order")}',{id:id,type:type},function(res){
+
+      });
+    }
+
+   function get_order(){
+
+   	$.post('{:url("partner/bill/get_order")}',function(res){
+   			if(res.code == '0000'){
+
+
+   				window.clearInterval(t1);
+   				window.clearInterval(t2);
+   				element.progress('progress', '100%');
+   				$('.order_show').css('display','block');
+   				$('.get_order').css('display','none');
+   				$('.order_num').html(res.data.id);
+   				$('.pay_amount').html(res.data.pay_amount/100);
+   				form.render();
+
+
+   				layer.msg(res.msg,{icon:1,time:1500});
+   			}
+      });
+
+
+   }
+
+//获取收款账号
+   	function get_child(id){
+
+		$.post('{:url("partner/bill/channel_child_data")}',{id:id},function(res){
+		   		if(res.code == '0000'){
+		   			var html = '';
+		   			$.each(res.data,function(index,item){
+		   				if(index == 0){
+		   					var checked = 'checked';
+		   				}else{
+		   					var checked = '';
+		   				}
+                        var account = "";
+                      	console.log(item.name,item.name.length)
+                        if(item.name.length >= 5){
+                           account = item.name.slice(0,2)+".."
+                        }else{
+                           account = item.name
+                        }
+		   				html += '<input type="radio"  name="id" value="'+item.taid+'" title="'+item.receive_account+'-'+account+'(共收款'+item.recharge_sum/100+'元)'+'"'+checked+'><br>';
+		   			})
+		   			$('.account_number').html(html);
+		   			$('.grab_order').css('display','block');
+		   			form.render();
+		   			
+		   		}else{
+		   			$('.account_number').html('');
+		   			$('.grab_order').css('display','none');
+		   			layer.msg(res.msg,{icon:5,time:1500});
+
+
+		   		}
+
+
+		   })
+
+	}
+
+
+
+
+
+
+
+
+});
+
+
+	
+
+
+
+
+
+
+</script>
+</body>
+</html>

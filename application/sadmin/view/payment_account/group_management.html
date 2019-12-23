@@ -1,0 +1,103 @@
+
+{include file="common/head"}
+<style type="text/css">
+  
+  td{
+    text-align: center;
+  }
+
+
+</style>
+<a href='{:url("sadmin/user/add_group")}' class="layui-btn" >添加分组</a>
+<table class="layui-table">
+  <colgroup>
+    <col width="150">
+    <col width="200">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>编号</th>
+      <th>名称</th>
+      <th>设备总数</th>
+      <th>备注</th>
+      <th>状态</th>
+      <th>操作</th>
+    </tr> 
+  </thead>
+  <tbody>
+    {volist name="$group_data" id="v"}
+    <tr>
+      <td>{$key+1}</td>
+      <td>{$v.group_name}</td>
+      <td>{$v.sum}</td>
+      <td>{$v.remark}</td>
+      <td>
+        
+          {if condition="$v['status'] == 1"}<a href="javascript:;" class="layui-btn status_update layui-btn-danger" status="{$v.status}" value="{$v.id}"> 开启中
+          {else /} <a href="javascript:;" class="layui-btn layui-btn-normal status_update" status="{$v.status}" value="{$v.id}">已关闭
+          {/if}</a>
+       </td>
+      <td> <a href="{:url('sadmin/user/edit_group')}?id={$v.id}" class="layui-btn  edit" >编辑</a></td>
+    </tr>
+    {/volist}
+  </tbody>
+
+</table>
+  {$group_data->render()}
+  <style>
+    .pagination li{
+        display:inline-block;
+    }
+  
+  </style>
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+//注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+layui.use(['form'], function(){
+  var form = layui.form,layer=layui.layer;
+  
+//提交表单
+  $('.status_update').click(function(){
+
+    var status = $(this).attr('status');
+    var id = $(this).attr('value');
+    if(status == 1){
+
+      var text = '关闭';
+    }else{
+      var text = '开启';
+    }
+
+     layer.confirm('确认要 '+text+' 此分组账户吗？？', {
+              btn: ['确定','取消'] //按钮
+            }, function(){
+              
+
+              $.post('{:url("sadmin/Payment_account/status_update")}',{status:status,id:id},function(data){
+
+                if(data.code == '0000'){
+                     
+                      layer.msg(data.msg, {icon: 1,time:1000},function(){
+
+                        location.reload();
+
+                      });
+                    }else{
+                      layer.msg(data.msg, {icon: 5,time:1000});
+                    }
+
+              })
+             
+          })
+
+
+  })
+
+
+
+
+
+
+});
+  </script>

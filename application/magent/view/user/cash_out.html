@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>账户下分</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <!--顶部轮播-->
+    <div class="weui_left float-left" onclick="javascript:history.go(-1);"><img src="/static/magent/img/left.png"/>
+    </div>
+    <div class="title">账户下分</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <!-- 订单数据 -->
+    <div class="weui-form-preview m-t-20">
+        <div class="weui-form-preview__hd">
+            <span class="example"></span>
+            <label class="weui-form-preview_label">我的账户->当前可用金额：{$amount}</label>
+        </div>
+        <div class="weui_border"></div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">提现金额</div>
+            <div class="float-left"><input type="text" name="amount" class="info-input" placeholder="请输入提现金额" value=""/></div>
+        </div>
+        <div class="weui_border_info"></div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">开户姓名</div>
+            <div class="float-left"><input type="text" name="name" class="info-input" placeholder="请输入账户姓名" value=""/></div>
+        </div>
+        <div class="weui_border_info"></div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">开户银行</div>
+            <div class="float-left"><input type="text" name="bank_name" class="info-input" placeholder="请输入开户行名称" value=""/></div>
+        </div>
+      <div class="weui_border_info"></div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">银行账号</div>
+            <div class="float-left"><input type="text" name="card_num" class="info-input" placeholder="请输入银行卡号" value=""/></div>
+        </div>
+        <div class="weui_border_info"></div>
+      
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">交易密码</div>
+            <div class="float-left"><input type="password" name="trading_pass" class="info-input" placeholder="请输入交易密码" value=""/></div>
+        </div>
+      <div class="weui_border_info"></div>
+        <div class="weui-wrap clearfix">
+            <div class="float-left info-name">验证码：<input type="text" name="captcha" id="code" class="info-input"
+                                                         placeholder="验证码"
+                                                         data-msg-required="请输入验证码！"></div>
+            <div class="weui_code_img float-right"><img src="{:captcha_src()}" alt="点击刷新验证码"
+                                                        onClick="this.src='{:captcha_src()}?seed='+Math.random()"
+                                                        id="captcha"/></div>
+        </div>
+        <div class="weui_border_botttom"></div>
+    </div>
+    <div class="preview m-t-20">
+        <div class=" clearfix">
+            <input type="hidden" name="uid" value="">
+            <button type="button" class="weui-btn btn weui-btn-reissue" onclick="loginBtn();">确认提交</button>
+        </div>
+    </div>
+
+</div>
+<!--底部导航-->
+{include file="public/footer" /}
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item  weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+<script type="text/javascript" src="/static/layer-v3.1.0/layer/layer.js"></script>
+<script>
+    function loginBtn() {
+      	var uid = $("input[name='uid']").val();
+        var amount = $("input[name='amount']").val();
+        var name = $("input[name='name']").val();
+        var bank_name = $("input[name='bank_name']").val();
+        var card_num = $("input[name='card_num']").val();
+     	var trading_pass = $("input[name='trading_pass']").val();
+        var captcha = $("input[name='captcha']").val();
+        //发送登录请求
+        $.ajax({
+            url: '/magent/user/cash_out',
+            type: 'post',
+            data: {uid,amount,name,bank_name,card_num,trading_pass,captcha},
+            success: function (data) {
+                //验证信息
+                if (data.code == '0000') {
+                    layer.msg(data.info, {icon: 1, time: 1200});
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1500);
+                }else {
+                    layer.msg(data.info, {icon: 2, time: 1500});
+                }
+            }
+        });
+    };
+</script>
+</body>
+</html>

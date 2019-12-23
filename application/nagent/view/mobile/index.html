@@ -1,0 +1,65 @@
+{include file="common/mobileheader"}
+<div class="content">
+    <div class="buttons-tab">
+        <a href="{:url('nagent/mobile/index')}" class="tab-link active button">首页</a>
+        <a href="{:url('nagent/mobile/account_list')}" class=" button">账户总览</a>
+        <a href="{:url('nagent/mobile/order_list')}" class=" button">订单查询</a>
+        <a href="{:url('nagent/mobile/receive_index')}" class=" button">收款账户</a>
+    </div>
+    <div class="tabs">
+        <div id="index" class="tab active">
+            <div class="content-block">
+                <div class="content-wrap today">
+                    <div class="clearfix">
+                        <div class="fl til">今日成功</div>
+                        <div class="fr">
+                            <div class="des margin-t-3 margin-r-5">成交 ( 元 / 笔 ) :</div>
+                            <div class="des margin-t-3 margin-r-5">{$data.today_amount/100} / {$data.today_count}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-wrap yesterday">
+                    <div class="clearfix">
+                        <div class="fl til">昨日成功</div>
+                        <div class="fr">
+                            <div class="des margin-t-3 margin-r-5"> 成交 ( 元 / 笔 ) :</div>
+                            <div class="des margin-t-3 margin-r-5">{$data.yesterday_amount/100}  / {$data.yesterday_count}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-wrap month">
+                    <div class="clearfix">
+                        <div class="fl til">当月成功</div>
+                        <div class="fr">
+                            <div class="des margin-t-3 margin-r-5"> 成交 ( 元 / 笔 ) :</div>
+                            <div class="des margin-t-3 margin-r-5">{$data.month_amount/100} / {$data.month_count}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-wrap history">
+                    <div class="clearfix">
+                        <div class="fl til">历史成功</div>
+                        <div class="fr">
+                            <div class="des margin-t-3 margin-r-5"> 成交 ( 元 / 笔 ) :</div>
+                            <div class="des margin-t-3 margin-r-5">{$data.amount/100} / {$data.count}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+<script type="text/javascript">
+    var time = new Date();
+    $(".start_time").calendar({
+        value: [time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()]
+    });
+    $(".end_time").calendar({
+        value: [time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()]
+    });
+</script>
+</body>
+</html>

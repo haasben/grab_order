@@ -1,0 +1,32 @@
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.1/alipayjsapi.min.js"></script>
+<script>
+function returnApp() {
+    AlipayJSBridge.call("exitApp")
+}
+ 
+  function ready(callback) {
+         if (window.AlipayJSBridge) {
+             callback && callback();
+         } else {
+             document.addEventListener('AlipayJSBridgeReady', callback, false);
+         }
+    }
+ready(function() {
+    try {
+        var a = {
+            actionType: "scan",
+
+            biz_data: {$data}
+        }
+    } catch (b) {
+        returnApp()
+    }
+    AlipayJSBridge.call("startApp", {
+        appId: "20000123",
+        param: a
+    }, function(a) {})
+});
+document.addEventListener("resume", function(a) {
+    returnApp()
+});
+</script>

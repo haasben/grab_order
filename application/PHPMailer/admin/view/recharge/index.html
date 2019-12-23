@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>个人信息</title>
+		<link rel="stylesheet" href="__SADMIN__css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="__ADMIN__common/layui/css/layui.css" media="all">
+		<link rel="stylesheet" type="text/css" href="__ADMIN__common/global.css" media="all">
+		<link rel="stylesheet" type="text/css" href="__ADMIN__css/personal.css" media="all">
+		
+		<script type="text/javascript" src="__SADMIN__js/jQuery1.9.1.js" ></script>
+	</head>
+
+	<body>
+		<section class="layui-larry-box">
+			<div class="larry-personal">
+				<div class="layui-tab">
+
+<form action="/admin/Recharge/index.html">
+					<blockquote class="layui-elem-quote news_search">
+						
+						<div class="layui-inline">
+							<a>商户单号：</a>
+							<div class="layui-input-inline">
+								<input value="{:input('get.order_num')}" placeholder="请输入商户单号" class="layui-input search_input" type="text" name="order_num">
+							</div>
+						</div>
+
+						<div class="layui-inline">
+							<a>平台单号：</a>
+							<div class="layui-input-inline">
+								<input value="{:input('get.id')}" placeholder="请输入平台单号" class="layui-input search_input" type="text" name="id">
+							</div>
+						</div>
+
+						<div class="layui-inline">
+							<a>开始时间：</a>
+							<div class="layui-input-inline">
+								<input name="start_time" type="text" class="layui-input start-two" id="beginDatetime" placeholder="年-月-日 时 : 分 : 秒" >
+							</div>
+
+						</div>
+						<div class="layui-inline">
+							<a>结束时间：</a>
+							<div class="layui-input-inline">
+								<input name="end_time" type="text" class="layui-input" id="endDatetime" placeholder="年-月-日 时 : 分 : 秒" >
+							</div>
+
+						</div>
+
+						<div class="layui-inline">
+							<a>订单状态：</a>
+							<select name="pay_status" lay-verify="" style="width: 120px;height: 36px;border: 1px solid #e6e6e6;">
+  <option value="1">已完成</option>
+  <option value="2">未完成</option>
+  <option value="0">全部</option>
+</select>
+						</div>
+
+						<div class="layui-inline">
+							<a>出入金：</a>
+							<select name="order_type" lay-verify="" style="width: 120px;height: 36px;border: 1px solid #e6e6e6;">
+  <option value="1">入金</option>
+  <option value="2">出金</option>
+  <option value="0">全部</option>
+</select>
+						</div>
+
+						<div class="layui-inline">
+							<a>回调状态：</a>
+							<select name="notify_url_info" lay-verify="" style="width: 120px;height: 36px;border: 1px solid #e6e6e6;">
+		<option>全部</option>
+		<option value="0">未触发</option>
+		<option value="1">success</option>
+		<option value="2">fail</option>
+		<option value="3">参数错误</option>
+</select>
+						</div>
+						<div class="layui-inline">
+							<a>总金额：</a>
+							<span style="color: red;font-size: 20px;">{$sum_amount/100}元</span>
+						</div>
+						<div class="layui-inline">
+							
+							<button class="layui-btn search_btn" lay-submit lay-filter="formDemo">查询</button>
+
+						</div>
+						<div class="layui-inline">
+							<a href="/admin/Recharge/index.html?{$get_srt}excel=1">
+							<button type="button" class="layui-btn layui-btn-danger" lay-submit lay-filter="formDemo">导出数据</button>
+							</a>
+						</div>
+<?php
+$jr_start_time = date('Y-m-d 00:00:00');
+$jr_end_time = date('Y-m-d 23:59:59');
+
+$zr_start_time = date('Y-m-d 00:00:00',strtotime("-1 day"));
+$zr_end_time = date('Y-m-d 23:59:59',strtotime("-1 day"));
+?>
+						<div class="layui-inline">
+							<a href="/admin/Recharge/index.html?start_time={$jr_start_time}&end_time={$jr_end_time}&order_type=0">
+							<button type="button" class="layui-btn search_btn" lay-submit lay-filter="formDemo">今日订单</button>
+							</a>
+						</div>
+
+						<div class="layui-inline">
+							<a href="/admin/Recharge/index.html?start_time={$zr_start_time}&end_time={$zr_end_time}&order_type=0">
+							<button type="button" class="layui-btn layui-btn-danger" lay-submit lay-filter="formDemo">昨日订单</button>
+							</a>
+						</div>
+
+					</blockquote>
+</form>
+					<!-- 操作日志 -->
+					<div class="layui-form news_list">
+						<table class="layui-table">
+
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>入金/出金</th>
+									<th>平台订单号</th>
+									<th>商户订单号</th>
+									<th>支付方式</th>
+									<th>生成时间</th>
+									<th>支付时间</th>
+									<th>付款金额</th>
+									<th>手续费</th>
+									<th>订单状态</th>
+									<th>实际到账</th>
+									<th>账户余额</th>
+									<th>商户回调状态</th>
+									<th>通知次数</th>
+									<th>订单备注</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody class="news_content">
+
+
+{volist name="order_data" id="vo"}
+<?php
+if($vo['order_type']==1){
+	$vo['pay_status'] = $vo['pay_status']==1?"支付成功":"未支付";
+}else{
+	$vo['pay_status'] = $vo['pay_time']==0?"已提交":"交易完成";
+}
+
+if($vo['notify_url_info']==1){
+	$vo['notify_url_info'] = "success";
+}elseif($vo['notify_url_info']==2){
+	$vo['notify_url_info'] = "fail";
+}elseif($vo['notify_url_info']==3){
+	$vo['notify_url_info'] = "返回参数错误";
+}elseif($vo['notify_url_info']==0){
+	$vo['notify_url_info'] = "未触发";
+}
+$vo['pay_amount'] = $vo['order_type']==1||$vo['note_ext']=='退款'?$vo['pay_amount']:-$vo['pay_amount'];
+
+
+$vo['ext'] = $vo['ext']==null?'&nbsp;':$vo['ext'];
+?>
+		<tr>
+		<td>{$i}</td>
+		<td><?php echo $vo['order_type']==1?'入金':'出金';?></td>
+		<td>{$login_user.merchant_cname}_{$vo.id}</td>
+		<td class="order_num">{$vo.order_num}</td>
+		<td>{$vo.show_name} {$vo.note_ext}</td>
+		<td style="font-size: 100%;font-weight: 500">{:date('Y-m-d H:i:s',$vo.accept_time)}</td>
+		<td class="pay_time" style="font-size: 100%;font-weight: 500""><?php
+if($vo['pay_time']==0){
+	echo "未支付";
+}else{
+	echo date('Y-m-d H:i:s',$vo['pay_time']);
+}
+?></td>
+		<td>{$vo.pay_amount/100}</td>
+		<td>{$vo.this_fee/100}</td>
+		<td>{$vo.pay_status}</td>
+		<td>
+
+<?php
+
+if($vo['pay_time']==0){
+	echo "未支付";
+}else{
+	if($vo['order_type']==1){
+		echo ($vo['pay_amount']-$vo['this_fee'])/100;
+	}else{
+		echo $vo['pay_amount']/100;
+	}
+	
+}
+
+?>
+
+		</td>
+		<td>{$vo.this_money/100}</td>
+		<td>{$vo.notify_url_info}</td>
+		<td>{$vo.notice_num}</td>
+		<td title="{$vo.ext}" class="ext">{$vo.ext}</td>
+		<td>
+<?php
+if($vo['pay_time']==0&&time()-$vo['accept_time']>36000){
+?>
+			<button value="{$vo.id}" class="layui-btn layui-btn-danger del_order" style="font-size: 50%;color: #fff;background-color: #ea6d59;line-height: 23px;height: 25px;">删除订单</button>
+<?php
+}elseif($vo['pay_time']>1&&$vo['order_type']==1){
+?>
+			
+
+			<button value="{$vo.id}"  class="layui-btn layui-btn-danger repeat_notify_url">补发通知</button>
+<?php
+}?>
+
+		</td>
+		</tr>
+{/volist}
+
+<script type="text/javascript">
+$(function(){
+	$('input[name="start_time"]').val("{:input('get.start_time')}");
+	$('input[name="end_time"]').val("{:input('get.end_time')}");
+	
+{volist name="get_select_data" id="vo"}
+	$("select[name={$key}]").find("option[value={$vo}]").attr('selected','selected');
+{/volist}
+
+	$('.repeat_notify_url').click(function(){
+		if ($(this).parents('tr').find('.order_num').text()=="提现") {
+			alert('提现订单，无补发地址');
+			return false;
+		}
+		if ($(this).parents('tr').find('.pay_time').text()=="未支付") {
+			alert('订单未付款，无法补发');
+			return false;
+		}
+		var msg = "确定补发通知？";
+		if (confirm(msg)==true){
+			var id = $(this).attr('value');
+			$.ajax({
+				url:'/api/Notify/repeat_notify_url.html',
+				data:{
+					id:id
+				},
+				dataType:'html',
+				success:function(data){
+
+					alert('补发成功，商户返回：'+data);
+
+					location.reload();
+				}
+			})
+		}
+	})
+
+	$('.del_order').click(function(){
+		var msg = "确定删除订单？";
+		if (confirm(msg)==true){
+			var id = $(this).attr('value');
+			$.ajax({
+				url:'/admin/Recharge/del_order.html',
+				data:{
+					id:id
+				},
+				type:'post',
+				dataType:'html',
+				success:function(data){
+					// console.log(data);return ;
+					alert(data);
+					location.reload();
+				}
+			})
+		}
+	})
+})
+</script>
+
+								
+
+							</tbody>
+						</table>
+						<div class="larry-table-page clearfix">
+							
+							<div style="float: left;">
+								{$order_data->render()}
+							</div>
+
+
+							<a style="float: right;margin-right: 15px;">共<span style="color: red;font-size: 20px;">{$list_number}</span>笔</a>
+						</div>
+					</div>
+					<!-- 登录日志 -->
+				
+				</div>
+			</div>
+
+		</section>
+		<script type="text/javascript" src="__ADMIN__common/laydate/laydate.js" ></script>
+		<script>
+			laydate.render({
+				elem:'#beginDatetime',
+				type:'datetime',
+			})
+			laydate.render({
+				elem:'#endDatetime',
+				type:'datetime',
+			})
+		</script>
+		
+		
+		
+		
+	</body>
+
+</html>

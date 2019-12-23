@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>管理中心</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="__SADMIN__/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <style>
+        .layui-form-label {width:110px;padding:4px}
+        .layui-form-item .layui-form-checkbox[lay-skin="primary"]{margin-top:0;}
+        .layui-form-switch {width:54px;margin-top:0px;}
+    </style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated">
+<div class="row">
+    <div class="col-md-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>编辑通道信息</h5>
+            </div>
+            <div class="ibox-content">
+                <!--用户信息-->
+                <form class="layui-form" action="" autocomplete="off" id="profile">
+                    <input type="hidden" name="id" value="{$channel_data.id}">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通道名称：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="channel_name" lay-verify="required" autocomplete="off"
+                                   placeholder="通道名称" class="layui-input" value="{$channel_data.channel_name}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">展示给下游名称：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="show_name" lay-verify="required" placeholder="展示给下游名称" autocomplete="off" class="layui-input" value="{$channel_data.show_name}">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通道成本费率：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="fee" lay-verify="required" placeholder="通道成本费率：" autocomplete="off" class="layui-input" value="{$channel_data.fee}">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="profile">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+     </form>
+                <!--用户信息-->
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="/static/layui/layui.js" charset="utf-8"></script>
+
+<script>
+layui.use(['laydate', 'laypage', 'layer', 'form', 'element'], function() {
+    var laydate = layui.laydate //日期
+        ,layer = layui.layer //弹层
+        ,form = layui.form //弹层
+        , element = layui.element
+        $=layui.jquery; //元素操作
+    //日期
+
+    form.on('submit(profile)', function(data){
+        $.ajax({
+            url:'{:url("sadmin/channel/edit_channel")}',
+            type:"post",
+            data:$('#profile').serialize(),
+            success:function(res){
+                if(res.code == '0000'){
+                    layer.alert(res.msg, {icon: 6},function () {
+                        location.reload();
+                    });
+                }else{
+                    layer.alert(res.msg, {icon: 5});
+                }
+            }
+        });
+        return false;
+    });
+ });
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{include file="common/head"}
+<form class="layui-form layui-form-pane">
+  <div style="width: 40%;margin-top:30px ">
+  <div class="layui-form-item">
+    <label class="layui-form-label">金额</label>
+    <div class="layui-input-block">
+      <input id="pay_money" type="text" name="pay_money" required  lay-verify="required" placeholder="输入金额，单位元" autocomplete="off" class="layui-input">
+
+    </div>
+    
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">收款账户</label>
+    <div class="layui-input-block" >
+      <select name="pay_type" id="taid" lay-verify="required" lay-search>
+        <option value=""></option>
+        {volist name="$channel_list" id="v"}
+            <option value="{$v.id}">{$v.uid}->{$v.name}</option>
+        {/volist}  
+
+
+      </select>
+    </div>
+  </div>
+</div>
+
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="submit">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<script type="text/javascript" src="/static/layui/layui.js"></script> 
+<script>
+//Demo
+layui.use(['form','layer'], function(){
+  var form = layui.form,layer=layui.layer;
+    //监听提交
+  form.on('submit(submit)', function (data) {
+                // 提交到方法 默认为本身
+
+      var pay_money= $('#pay_money').val();
+      var pay_type = $('#taid').val();
+
+      $.post('{:url("sadmin/point_order/order")}', {pay_type:pay_type,pay_money:pay_money} ,function (res) {
+
+          if (res.code  == '0000') {
+              layer.msg(res.msg, {time: 2000, icon: 1}, function () {
+                 // window.history.back(-1);;
+              });
+          } else {
+              layer.msg(res.msg, {time: 1800, icon: 5});
+          }
+      });
+      return false;
+  });
+
+
+});
+</script>

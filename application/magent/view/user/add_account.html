@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>添加收款账户</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+
+<header class="nav-bar-header bg-white">
+    <div class="weui_left float-left" onclick="javascript:history.go(-1);"><img src="/static/magent/img/left.png"/>
+    </div>
+    <div class="title">添加收款账户</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <!-- 登录 -->
+    <form action="" method="">
+  
+        <div class="weui-form-preview m-t-20">
+            <div class="weui-form-preview__hd">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">添加收款（店员）账号</label>
+            </div>
+            <div class="weui_border"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">收款码类型</div>
+                <div class="float-left">
+                    <select class="search-select" name="pay_type" id="pay_type">
+                      
+                      	{volist name="$channel" id="c"}
+                        <option value="{$c.code}">{$c.channel_name}</option>
+                      	{/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">所属分组&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                <div class="float-left">
+                    <select class="search-select" name="group_id" id="group_id">
+                      
+                      	{volist name="$group_name" id="g"}
+                        <option value="{$g.id}">{$g.group_name}</option>
+                      	{/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">真实账户</div>
+                <div class="float-left"><input class="info-input" type="text" name="name" value="" required
+                                               placeholder="请输入真实收款账户名"></div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">账户名称</div>
+                <div class="float-left"><input class="info-input" type="text" name="receive_account"
+                                               value="" placeholder="请输入账户号"></div>
+            </div>
+            <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name">账户昵称</div>
+                <div class="float-left"><input class="info-input" type="text" name="show_name" value=""
+                                               required placeholder="请输入收款账户名昵称"></div>
+            </div>
+            
+          <div class="weui_border_info"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left info-name" style="color:red;">是否设为店员</div>
+                <span class="float-left" style="margin-left:10%">
+                <label for="switchCP" class="weui-switch-cp">
+                    <input id="switchCP" class="weui-switch-cp__input" type="checkbox" name="status">
+                    <div class="weui-switch-cp__box"></div>
+                </label>
+            </span>
+            </div>
+          
+          <div class="weui_border_info"></div>
+           <div class="weui-wrap clearfix">
+                <div class="float-left info-name" style="color:red;">低额收款模式</div>
+                <span class="float-left" style="margin-left:10%">
+                <label for="low_mode" class="weui-switch-cp">
+                    <input id="low_mode" class="weui-switch-cp__input" type="checkbox" name="low_mode">
+                    <div class="weui-switch-cp__box"></div>
+                </label>
+            </span>
+            </div>
+          
+          	
+        </div>
+      		
+           
+          	
+
+      	
+      
+        <div class="preview m-t-20">
+            <div class=" clearfix">
+                <button type="button" class="weui-btn btn weui-btn-reissue" id="tijiao">提 交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--底部导航-->
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+{include file="public/footer" /}
+<script>
+  
+ $(document).ready(function(){
+	$('#pay_type').change(function(){
+      	var type = $(this).val();
+    	$.post('{:url("magent/user/group_list")}',{type:type},function(data){
+        	
+          	if(data !=''){
+              	var html = '';
+            	$.each(data,function(i,item){
+					html+='<option value="'+item.id+'">'+item.group_name+'</option>'
+                  
+                });
+              	$('#group_id').html(html);
+            }else{
+            
+            	$('#group_id').html('');
+            }
+        
+        })	
+      
+    	
+    
+    })
+  
+    $("#tijiao").click(function () {
+
+        var pay_type = $("[name='pay_type']").val();
+        var group_id = $("[name='group_id']").val();
+        var name = $("[name='name']").val();
+        var receive_account = $("[name='receive_account']").val();
+        var show_name = $("[name='show_name']").val();
+      	var status = $("#switchCP").prop("checked");
+      	var low_mode = $("#low_mode").prop("checked");
+      	console.log(status);
+        $.ajax({
+            url: "/magent/user/add_account",
+            type: "post",
+            data: {id, pay_type, group_id, name, receive_account, show_name,status,low_mode},
+            success: function (data) {
+                $.toast(data.msg);
+              	if(data.code == '0000'){
+                  setTimeout(function(){
+                    window.location.href="{:url('magent/user/clerk_list')}";
+                  },600)
+                }
+            }
+        })
+    })
+  });
+</script>
+</body>
+</html>

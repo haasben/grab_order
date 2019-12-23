@@ -1,0 +1,84 @@
+{include file="common/head"}
+<header class="bar bar-nav green_nav">
+    <a href="javascript:history.back(-1)">
+        <span class="icon icon-left"></span>
+    </a>
+    <h1 class="title" style="color: #fff">账户总览</h1>
+</header>
+<div class="content">
+    <div class="student_top"></div>
+    <div class="resume_title">基本信息</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>代理商名称：</span>{$user_data.company}</div>
+                <div class="col-50"><span>商户编号：</span>{$user_data.merchant_cname}_{$user_data.uid}</div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">时间</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>注册时间：{:date('Y-m-d',$user_data.join_time)}</span></div>
+                <div class="col-50"><span>登录时间：{:date('Y-m-d',$user_data.login_time)}</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">金额</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-50"><span>充值金额：</span>{$user_data.recharge_sum/100}
+                    
+                </div>
+                <div class="col-50"><span>手续费合计：</span>{$user_data.fee_sum/100}
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-50"><span>已结算金额：</span>{$user_data.withdrawal_sum/100}
+                    
+                </div>
+                <div class="col-50"><span>剩余金额：</span>{$user_data.money/100}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="resume_title">费率</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                {volist name="$user_fee_data" id="v"}
+                <div class="col-100"><span>费率：</span>{$v.name}->{$v.fee*100}%</div>
+
+                {/volist}
+            </div>
+        </div>
+    </div>
+<!--     <div class="resume_title">状态</div>
+    <div class="resume_box">
+        <div class="resume_container">
+            <div class="row">
+                <div class="col-100"><span>状态：</span>success</div>
+            </div>
+        </div>
+    </div> -->
+<!--     <div class="resume_title">操作</div>
+    <div class="operation-box">
+        <div class="row">
+            <div class="col-20"><a href="cash_operation-des.html" class="button button_success">提现</a></div>
+            <div class="col-20"><a href="#" class="button button_success">冻结</a></div>
+            <div class="col-20"><a href="#" class="button button_success">秘钥</a></div>
+            <div class="col-40"><a href="#" class="button button_success">关闭支付</a></div>
+            <div class="col-20"><a href="#" class="button">修改费率</a></div>
+        </div>
+    </div> -->
+</div>
+
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+</body>
+</html>

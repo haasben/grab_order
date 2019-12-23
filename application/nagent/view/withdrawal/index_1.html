@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>红云支付线上管理系统</title>
+        <link rel="stylesheet" href="__SADMIN__css/index3.css" />
+    </head>
+    <style>
+        tr:nth-child(even){
+            background: #e5f0f3;
+        }
+    </style>
+    <body>
+    <div class="box">
+{include file="common/header" /}
+        <div class="content">
+{include file="common/left" /}
+
+        <div class="content_right">
+        <form action="/sadmin/Withdrawal/index.html">
+        <div class="input_group">
+        商户编号：<input name="uid" value="{:input('get.uid')}" type="text">
+        </div> 
+        <div class="input_group">
+        提现订单号：<input name="id" value="{:input('get.id')}" type="text">
+        </div>
+        <div class="input_group">
+        开始时间：<input type="datetime-local" name="start_time" style="width: 180px;">
+        </div>
+        <div class="input_group">
+        结束时间：<input type="datetime-local" name="end_time" style="width: 180px;">
+        </div>
+        
+        <div class="input_group">
+        订单状态：<select name="status">
+        <option value="0">全部</option>
+        <option value="1">已完成</option>
+        <option value="2">已提交</option>
+        <option value="3">已作废</option>
+        </select>
+        </div>
+
+        <div class="input_group">
+        <button style="color: white;">确定</button>
+        </div>
+        </form><br/>
+        <div class="zong">
+        总金额:<span>{$sum_money/100}</span>元      </div>
+<div style="position: absolute;margin-top: 50px;">
+        
+        <table>
+        <thead>
+        <tr>
+        <th>商户编号</th>
+        <th>提现订单号</th>
+        <th>收款人姓名</th>
+        <th>收款人账户</th>
+        <th>收款账户号</th>
+        <th>提交时间</th>
+        <th>提现金额</th>
+        <th>提现手续费</th>
+        <th>商户余额</th>
+        
+
+        <th>付款账户</th>
+        <th>付款账户余额</th>
+        <th>备注</th>
+        <th>状态</th>
+        <th>操作人</th>
+        <th>操作</th>
+        </tr>
+        
+        
+        </thead>
+        
+        
+{volist name="order_data" id="vo"}
+        <tr>
+        <td>{$vo.merchant_cname}_{$vo.uid}</td>
+        <td>{$vo.id}</td>
+        <td>{$vo.name}</td>
+        <td>{$vo.withdrawal_type}</td>
+        <td>{$vo.id_num}</td>
+        <td>{:date('Y-m-d H:i:s',$vo.add_time)}</td>
+        
+        <td>{$vo.w_amount/100}</td>
+
+        <td>{$vo.fee/100}</td>
+
+        <td>{$vo.this_money/100}</td>
+        
+        
+        <td>{$vo.s_name}（<?php echo($vo['w_amount']+$vo['fee'])/100;?>元）</td>
+        <td>{$vo.this_received_money/100}</td>
+        <td>{$vo.ext}</td>
+        <td>
+<?php
+if($vo['status']==2){
+    echo "已提交";
+}elseif($vo['status']==1){
+    echo "已完成";
+}elseif($vo['status']==3){
+    echo "已作废";
+}else{
+    echo $vo['status'];
+}
+?>
+        </td>
+        <td>{$vo.add_user}</td>
+        <td>
+<?php
+if($vo['status']==2){
+?>
+        <button value="{$vo.id}" class="update_ok">确认</button><button value="{$vo.id}" class="update_del">作废</button>
+<?php
+}?>
+        </td>
+        </tr>
+{/volist}
+        
+        
+        </table>
+        {$order_data->render()}
+</div>
+        </div>
+     
+<script type="text/javascript">
+$(function(){
+    $('input[name="start_time"]').val("{:input('get.start_time')}");
+    $('input[name="end_time"]').val("{:input('get.end_time')}");
+    $('[name=status]').find("[value={:input('get.status')}]").attr('selected','selected');
+    $('.update_ok').click(function(){
+        var id = $(this).attr('value');
+        if (typeof mark!='undefined') {
+            return false;
+        }
+        mark = 1;
+
+        var msg = "确定已转账？\n\n请确认！";
+
+        if (confirm(msg)==true){
+            $.ajax({
+                url:'/sadmin/Withdrawal/confirm_withdrawal.html',
+                data:{
+                    id:id
+                },
+                type:'post',
+                dataType:'html',
+                success:function(data){
+                    alert(data);
+                    location.reload();
+                }
+            })
+        }
+    })
+
+    $('.update_del').click(function(){
+        var id = $(this).attr('value');
+        if (typeof mark!='undefined') {
+            return false;
+        }
+        // mark = 1;
+
+        var msg = "确定作废？\n\n请确认！";
+
+        if (confirm(msg)==true){
+            $.ajax({
+                url:'/sadmin/Withdrawal/del_withdrawal.html',
+                data:{
+                    id:id
+                },
+                type:'get',
+                dataType:'html',
+                success:function(data){
+                    alert(data);
+                    location.reload();
+                }
+            })
+        }
+    })
+})
+</script>
+        </div>
+        </div>
+        
+        
+        
+        
+        
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    修改密码
+                </h4>
+            </div>
+            <div class="modal-body" style="height: 120px;">
+                
+                    <form class="form-horizontal" role="form">
+    <div class="form-group">
+    
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="firstname" 
+                   placeholder="新密码" style="width: 269px;height: 35px">
+        </div>
+    </div>
+    <div class="form-group">
+        
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="lastname" 
+                   placeholder="确认密码" style="width: 269px;height: 34px;">
+        </div>
+    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" style="width: 82px;height: 34px;">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+    </body>
+</html>

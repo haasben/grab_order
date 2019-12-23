@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>我的</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+  <!--  <link rel="stylesheet" href="/static/magent/css/jquery-weui.css"> -->
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <div class="title">MAGO System 系统设置</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+    <div class="clearfix bg-white">
+        <div class="float-left"><img src="/static/magent/img/header_img.png" class="header-img"></div>
+        <div class="con_btn float-left m-l-10 m-t-25">{$info['name']|default="<a href='/magent/login/login'>登录 / 注册</a>"}<br>
+          <span class="weui_agen_name">商户ID：{$info.merchant_cname}_{$info.id}</span>
+       </div>
+    </div>
+    <div class="weui-cells wrapper">
+        <a class="weui-cell weui-cell_access setting-item it-que" href="info.html">
+            <div class="weui-cell__hd"><img src="/static/magent/img/1.png"></div>
+            <div class="weui-cell__bd font-size-14">&nbsp;&nbsp;账户信息</div>
+            <div class="weui-cell__ft"></div>
+        </a>
+        <a class="weui-cell weui-cell_access setting-item it-coupon" href="data.html">
+            <div class="weui-cell__hd"><img src="/static/magent/img/2.png"></div>
+            <div class="weui-cell__bd font-size-14">&nbsp;&nbsp;数据总览</div>
+            <div class="weui-cell__ft"></div>
+        </a>
+        <a class="weui-cell weui-cell_access setting-item it-coin" href="edit_pwd.html">
+            <div class="weui-cell__hd"><img src="/static/magent/img/3.png"></div>
+            <div class="weui-cell__bd font-size-14">&nbsp;&nbsp;修改密码</div>
+            <div class="weui-cell__ft"></div>
+        </a>
+      <a class="weui-cell weui-cell_access setting-item it-coin" href="charge_in.html">
+            <div class="weui-cell__hd"><img src="/static/magent/img/charge.png"></div>
+            <div class="weui-cell__bd font-size-14">&nbsp;&nbsp;线上存款</div>
+            <div class="weui-cell__ft"></div>
+        </a>
+      <a class="weui-cell weui-cell_access setting-item it-coin" href="cash_out.html">
+            <div class="weui-cell__hd"><img src="/static/magent/img/cash_out.png"></div>
+            <div class="weui-cell__bd font-size-14">&nbsp;&nbsp;账户取款</div>
+            <div class="weui-cell__ft"></div>
+        </a>
+        <a class="weui-cell weui-cell_access setting-item it-coin" href="#" id="clearData">
+            <div class="weui-cell__hd"><img src="/static/magent/img/clear.png"></div>
+            <div class="weui-cell__bd font-size-14">&nbsp;&nbsp;清除缓存</div>
+            <div class="weui-cell__ft"></div>
+        </a>
+      <a class="weui-cell weui-cell_access setting-item it-coin showDownloadCode" href="#" >
+            <div class="weui-cell__hd"><img src="/static/magent/img/download.png"></div>
+            <div class="weui-cell__bd font-size-14">&nbsp;&nbsp;软件下载</div>
+            <div class="weui-cell__ft"></div>
+        </a>
+      <a class="weui-cell weui-cell_access setting-item it-coin" href="#" id="">
+            <div class="weui-cell__hd"><img src="/static/magent/img/syatem.png"></div>
+            <div class="weui-cell__bd font-size-14">&nbsp;&nbsp;系统反馈</div>
+            <div class="weui-cell__ft"></div>
+        </a>
+    </div>
+    <div class="weui-cells wrapper">
+        <a class="weui-cell weui-cell_access setting-item it-que" href="login.html">
+            <div class="weui-cell__hd"><img src="/static/magent/img/4.png"></div>
+            <div class="weui-cell__bd font-size-14">&nbsp;&nbsp;退出账号</div>
+            <div class="weui-cell__ft"></div>
+        </a>
+    </div>
+
+  <!--弹出层 软件下载图片 begin-->
+    <div id="download">
+        <div class="js_dialog" id="downloadCode" style="opacity: 1; display: none;">
+            <div class="weui-mask">
+            </div>
+            <div class="weui-dialog">
+                <div class="weui-dialog__bd">
+                    <img src="/static/magent/img/download-code.png" style="width:80%;height:auto;">
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default">关闭</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--弹出层end-->
+  
+</div>
+<!--底部导航-->
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item  weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+{include file="public/footer" /}
+<script>
+    $("#clearData").click(function () {
+        $.get("/magent/index/clearData", function (data) {
+            $.toast(data,600);
+            setTimeout(function(){
+              	$('.weui-toast').remove();
+            },600)
+          	
+        })
+    })
+</script>
+  <script type="text/javascript" class="dialog js_show">
+    $(function(){
+        var $code = $('#downloadCode');
+
+        $('#download').on('click', '.weui-dialog__btn', function(){
+            $(this).parents('.js_dialog').fadeOut(200);
+        });
+        $('.showDownloadCode').on('click', function(){
+            $code.fadeIn(200);
+        });
+    });
+</script>
+</body>
+</html>

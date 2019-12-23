@@ -1,0 +1,116 @@
+<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+<style type="text/css">
+	.layui-input-block{
+
+		width: 60%
+	}
+
+
+</style>
+<div style="margin-top:20px;">
+<div style="width:300px;margin:auto;font-size: 20px;padding:20px 0 20px 10%">添加商户</div>
+<form class="layui-form" action="" id="myform">
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">商户名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="name" value="" required  lay-verify="required" placeholder="输入商户名称" autocomplete="off" class="layui-input">
+
+    </div>
+     </div>
+
+     <div class="layui-form-item">
+    <label class="layui-form-label">公司名称</label>
+    <div class="layui-input-block">
+      <input type="text" name="company" value="" required  lay-verify="required" placeholder="输入公司名称" autocomplete="off" class="layui-input">
+
+    </div>
+     </div>
+
+     
+
+     <div class="layui-form-item">
+    <label class="layui-form-label">邮箱</label>
+    <div class="layui-input-block">
+      <input type="text" name="email" value="" required  lay-verify="required" placeholder="输入邮箱" autocomplete="off" class="layui-input">
+
+    </div>
+    </div>
+      <div class="layui-form-item">
+    <label class="layui-form-label">手机号</label>
+    <div class="layui-input-block">
+      <input type="text" name="phone_num" value="" required  lay-verify="required" placeholder="输入手机号" autocomplete="off" class="layui-input">
+
+    </div>
+     </div>
+      <div class="layui-form-item">
+    <label class="layui-form-label">登录密码</label>
+    <div class="layui-input-block">
+      <input type="password" name="pass" value="" required  lay-verify="required" placeholder="输入登录密码" autocomplete="off" class="layui-input">
+
+    </div>
+     </div>
+      <div class="layui-form-item">
+    <label class="layui-form-label">交易密码</label>
+    <div class="layui-input-block">
+      <input type="password" name="trading_pass" value="" required  lay-verify="required" placeholder="输入交易密码" autocomplete="off" class="layui-input">
+
+    </div>
+     </div>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">上级代理</label>
+    <div class="layui-input-block">
+
+      <select name="superior">
+      	<option value=""> 平台</option>
+      	{volist name="$superior" id="v"}
+        <option value="{$v.id}">{$v.name}-{:substr_replace($v.phone_num, '****', 3, 4)}</option>
+         {/volist}
+      </select>
+    </div>
+
+  </div>
+    
+
+
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<div class="wenzhi" style="width: 400px;margin:auto;color: red;font-size: 20px"></div>
+</div>
+
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+ <script type="text/javascript" src="/static/jq/jQuery1.9.1.js"></script>
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form;
+  
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    var json = data.field;
+
+    $.post('{:url("sadmin/user/add_users")}',json,function(data){
+      if(data.code == '0000'){
+
+    　　 layer.msg(data.msg,{icon:1,time:1500});
+
+      }else{
+        layer.msg(data.msg,{icon:5,time:2000});
+      }
+     
+    })
+
+    return false;
+  });
+
+});
+
+</script>

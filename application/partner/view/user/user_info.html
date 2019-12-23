@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>个人资料--layui后台管理模板</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="__PARTNER__layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="__PARTNER__css/user.css" media="all" />
+</head>
+<body >
+  <div class="layui-fluid">
+
+
+
+			<div class="col-md-12">
+				<div class="ibox float-e-margins">
+				<div class="layui-card">
+                  <blockquote class="layui-elem-quote"> 用户名：{$user_data.name}</blockquote>
+                 <!-- <blockquote class="layui-elem-quote"> 真实姓名：{$user_data.name}</blockquote>-->
+                  <blockquote class="layui-elem-quote"> 手机号码：{$user_data.phone_num}</blockquote>
+                  <blockquote class="layui-elem-quote"> 保证金余额：{$assets.margin/100}</blockquote>
+                   <!-- <blockquote class="layui-elem-quote"> 奖励金额：{$user_data.bonus/100}</blockquote>-->
+                  {volist name='$user_fee_data' id="vo"}
+                  <blockquote class="layui-elem-quote"> {$vo.channel_name}费率：{$vo.fee*100}%</blockquote>
+                  	{/volist}
+   
+                  <blockquote class="layui-elem-quote"> 已收款金额：{$user_data.recharge_sum/100}</blockquote>
+				 <blockquote class="layui-elem-quote"> 服务器地址：{$Think.THIS_URL}/index/index/wechat_receive_msg</blockquote>
+				 <blockquote class="layui-elem-quote"> TOKEN/设备编号：<a id="apikey-query"  data-mobile="bgfbdb" class="layui-btn layui-btn-sm">点击查看</a><span id='apikey' class="hide" style="color:#cc0000d1;font-size:20px"></span></blockquote>
+				<blockquote class="layui-elem-quote"> 谷歌验证密钥：<a id="google_apikey"  data-mobile="bgfbdb" class="layui-btn layui-btn-sm">点击查看</a><span id='google' class="hide" style="color:#cc0000d1;font-size:20px"></span></blockquote>
+				
+                </div>
+				</div>
+
+</div>
+
+  </div>
+	<script type="text/javascript" src="__PARTNER__layui/layui.js"></script>
+	<script type="text/javascript" src="__PARTNER__js/address.js"></script>
+	<script type="text/javascript" src="__PARTNER__js/user.js"></script>
+<style>
+
+  .deploy_css_content{
+  		width:100%;
+    	//height:100px;
+    	padding:10px;
+    	font-size:20px;
+    	line-height: 30px;
+  
+  }      
+</style>
+    <script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer,
+            $ = layui.jquery;
+
+      	$('#apikey-query').click(function(){
+			
+          	layer.prompt({title: '输入登录密码，并确认', formType: 1}, function(pass, index){
+              layer.close(index);
+              
+                    $.post('{:url("partner/user/token_data")}',{pass:pass},function(data){
+
+                        if(data.code == '0000'){
+
+                            layer.close(index);
+                            layer.msg(data.msg,{icon: 1,time:2000});
+                          	$('#apikey').text(data.data);
+                          	$('#apikey-query').hide();
+                        }else{
+
+                            layer.msg(data.msg,{icon:5,time:2000});
+
+                        }
+
+                    })
+           
+            });
+        })
+      
+      $('#google_apikey').click(function(){
+      
+      		  $.post('{:url("partner/user/google_apikey")}',function(data){
+
+                        if(data.code == '0000'){
+                          
+                            
+                            layer.msg(data.msg,{icon: 1,time:2000});
+                          	$('#google').text(data.data);
+                          	$('#google_apikey').hide();
+                        }else{
+
+                            layer.msg(data.msg,{icon:5,time:2000});
+
+                        }
+
+                    })
+        	
+      
+      
+      })
+      	
+      
+      
+      
+      
+      
+      
+
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css">
+
+<div style="margin-top:20px;">
+<div style="width:300px;margin:auto;font-size: 20px;padding:20px 0 20px 10%">说明：0.01表示百分之1</div>
+<form class="layui-form" action="" id="myform">
+
+{volist name="$fee" id="v"}
+  <div class="layui-form-item">
+    <label class="layui-form-label">{$v.channel_name}费率</label>
+    <div class="layui-input-block">
+      <input type="text" name="{$v.code}" value="{$v.fee}" required  lay-verify="required" placeholder="输入费率，并确认(例0.005表示千分之5)" autocomplete="off" class="layui-input">
+
+    </div>
+    
+  </div>
+    <div class="layui-form-item">
+    <label class="layui-form-label">{$v.channel_name}状态</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="{$v.code}_status" lay-skin="switch" lay-text="开启|关闭" {if condition="$v['status'] == 1"}checked=""
+{/if}>
+    </div>
+  </div>
+
+{/volist}
+
+
+
+
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+  </div>
+</form>
+<div class="wenzhi" style="width: 400px;margin:auto;color: red;font-size: 20px"></div>
+</div>
+
+ <script type="text/javascript" src="/static/layui/layui.js"></script>
+ <script type="text/javascript" src="/static/jq/jQuery1.9.1.js"></script>
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form;
+  
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    var json = data.field;
+
+    $.post('{:url("sadmin/user/ajax_set_fee")}',json,function(data){
+      if(data.code == '0000'){
+
+    　　 layer.msg(data.msg,{icon:1,time:2000});
+
+      }else{
+        layer.msg(data.msg,{icon:5,time:2000});
+      }
+
+      
+
+
+    })
+
+
+      
+
+    return false;
+  });
+
+
+
+
+});
+
+
+
+
+
+</script>

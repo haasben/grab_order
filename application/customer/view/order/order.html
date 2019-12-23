@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>订单</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <!--顶部轮播-->
+    <div class="title">订单列表 Order List</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <div class="clearfix">
+        <!--        <div class="float-left"><input type="text" class="search-input" placeholder="商户编号"/></div>-->
+        <div class="float-left float-center"><select class="search-input" id="pay_status">
+            <option selected>订单状态</option>
+            <option value="1" {notempty name="$data[
+            'pay_status']" }{$data[
+            'pay_status']==1?'selected':''}{/notempty}>已支付</option>
+            <option value="2" {notempty name="$data[
+            'pay_status']" }{$data[
+            'pay_status']==2?'selected':''}{/notempty}>未支付</option>
+            <option value="3" {notempty name="$data[
+            'pay_status']" }{$data[
+            'pay_status']==3?'selected':''}{/notempty}>支付失败</option>
+        </select></div>
+        <div class="float-left float-center"><select class="search-input" id="notify_status">
+            <option>回调状态</option>
+            <option value="1" {notempty name="$data[
+            'notify_url_info']" }{$data[
+            'notify_url_info']==1?'selected':''}{/notempty}>回调成功</option>
+            <option value="2" {notempty name="$data[
+            'notify_url_info']" }{$data[
+            'notify_url_info']==2?'selected':''}{/notempty}>回调失败</option>
+            <option value="3" {notempty name="$data[
+            'notify_url_info']" }{$data[
+            'notify_url_info']==3?'selected':''}{/notempty}>参数有误</option>
+        </select></div>
+        <div class="float-left float-center"><select class="search-input" id="type">
+            <option>支付方式</option>
+            {volist name="group" id="vo"}
+            <option value="{$vo['type']}" {notempty name="$data[
+            'type']" }{$data[
+            'type']==$vo['type']?'selected':''}{/notempty}>{$vo['channel_name']}</option>
+            {/volist}
+        </select></div>
+    </div>
+    <!-- 订单数据 -->
+    {volist name="list" id="vo"}
+
+  <div class="weui-form-preview m-t-20" 
+       {if condition="$vo.pay_status ==2"}
+        {if condition="$vo.code == 1032"}
+       		style="background-color:#e6b3ff;" onClick="javascript:window.location='/chat/{$vo.id}.html'"
+       {/if}
+       {/if}
+       >
+    
+        <div class="weui-form-preview__hd clearfix">
+            <span class="example"></span>
+            <label class="weui-form-preview_label">订单号:{$vo['order_num']|default=''}</label>
+            <div class="float-right"><img src="/static/magent/img/up.png" class="up-img" id="up-img"></div>
+        </div>
+        <div id="weui_order_data" class="weui_order_data">
+            <div class="weui_border_botttom"></div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left order-name">生成时间</div>
+                <div class="float-right order-value">{$vo['accept_time']|default=''}</div>
+            </div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left order-name">支付时间</div>
+                <div class="float-right order-value">{$vo['pay_time']|default=''}</div>
+            </div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left order-name">收款账户</div>
+                <div class="float-right order-value">{$vo['pay_type']|default=''}</div>
+            </div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left order-name">通道类型</div>
+                <div class="float-right order-value">{$vo['type']|default=''}</div>
+            </div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left order-name">金额</div>
+                <div class="float-right order-value">{$vo['pay_amount']|default=''}</div>
+            </div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left order-name">订单状态</div>
+                <div class="float-right order-value">
+                    {switch name="$vo['pay_status']" }
+                    {case value="1"}<p style="color: green">已支付</p>{/case}
+                    {case value="2"}<p style="color: red">未支付</p>{/case}
+                    {case value="3"}<p style="color: red">支付失败</p>{/case}
+                    {default /}未支付
+                    {/switch}
+                </div>
+            </div>
+            <div class="weui-wrap clearfix">
+                <div class="float-left order-name">回调状态</div>
+                <div class="float-right order-value">
+                    {switch name="$vo['notify_url_info']"}
+                    {case value="1"}<p style="color:green">回调成功</p>{/case}
+                    {case value="2"}<p style="color:red">回调失败</p>{/case}
+                    {case value="3"}<p style="color:red">参数有误</p>{/case}
+                    {default /}<p style="color:red">尚未触发</p>
+                    {/switch}
+                </div>
+            </div>
+          	
+
+            <div class="weui_border_botttom"></div>
+            <div class="weui-wrap clearfix">
+                {eq name="$vo['order_type']" value="1"}
+              
+                  {if condition="$vo.pay_status == 2"}
+
+                    {if condition="$vo['code']== 1032"}
+                    <div class="float-right">
+                          <button class="weui-btn weui-btn-reissue" onclick="window.location='/chat/{$vo.id}.html';" style="font-size:16px;color:#000;background-color:#ffff33;"><b>立即进入对话模式→</b>
+                          </button>
+                      </div>
+                    {else}
+                      <div class="float-right">
+                          <button class="weui-btn weui-btn-reissue" onclick="repeat_no_adjusted({$vo['id']})" style="font-size:12px;color:#fff;background-color:#ff0000;"><b>确认此订单已收款 ↑↑↑</b>
+                          </button>
+                      </div>
+                    {/if}
+
+                  {elseif condition="$vo.pay_status == 3"}
+						<div class="float-right">
+                      		<button class="weui-btn weui-btn-reissue" style="background-color:#d1e0e0;color:#999999;text-decoration:line-through;">订单已作废</button>
+						</div>
+                  {else}
+                  <div class="float-right">
+                      <button class="weui-btn weui-btn-reissue bg-green" onclick="repeat_notify_url({$vo['id']})">补发通知
+                      </button>
+                  </div>
+                  {/if}
+                {else /}
+                <div class="float-right">
+                    <button class="weui-btn weui-btn-reissue bg-green">支付成功</button>
+                </div>
+                {/eq}
+            </div>
+        </div>
+    </div>
+    {/volist}
+</div>
+<!--底部导航-->
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+{include file="public/footer" /}
+<script>
+    $(document).ready(function (e) {
+        $(".up-img").click(function (e) {
+            $(this).parents('.weui-form-preview__hd').next('.weui_order_data').toggle();
+            if ($(this).attr('src') == "/static/magent/img/up.png") {
+                $(this).attr('src', '/static/magent/img/down.png');
+            } else {
+                $(this).attr('src', '/static/magent/img/up.png');
+            }
+        });
+        $('#pay_status').change(function () {
+            var pay_status = $(this).val();
+            location.href = "/magent/order/index/pay_status/" + pay_status;
+        })
+        $('#notify_status').change(function () {
+            var notify_status = $(this).val();
+            location.href = "/magent/order/index/notify_status/" + notify_status;
+        })
+        $('#type').change(function () {
+            var type = $(this).val();
+            location.href = "/magent/order/index/type/" + type;
+        })
+    });
+
+    function repeat_notify_url(id) {
+
+        $.confirm("确定补发通知？", function () {
+            //点击确认后的回调函数
+            $.ajax({
+                url: '/api/Notify/repeat_notify_url.html',
+                data: {
+                    id: id
+                },
+                type: 'get',
+                dataType: 'html',
+                success: function (data) {
+                    if (data !== 'false') {
+                        console.log(data)
+                        $.alert('补发成功，商户返回：' + data);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 20000);
+                    } else {
+                        $.alert('补发失败，商户返回：' + data);
+                    }
+                }
+            })
+        });
+    }
+
+    function repeat_no_adjusted(id) {
+        $.confirm("<font color=red size=5><b>警告：<br/>确定您已收到 这笔钱 并给下级回调？？？</b></font>", function () {
+            //点击确认后的回调函数
+            $.ajax({
+                url: '/api/Notify/edit_order.html',
+                data: {
+                    id: id
+                },
+                type: 'get',
+                dataType: 'html',
+                success: function (data) {
+                    if (data !== 'FAIL') {
+                        $.alert('确认付款成功，商户返回：' + data);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        $.alert('确认付款失败，商户返回：' + data);
+                    }
+                }
+            })
+        });
+    }
+
+    var page = 2;
+    $(function () {
+        var loading = false;  //状态标记
+        $(".weui-content").infinite().on("infinite", function () {
+            if (loading) return;
+            loading = true;
+            setTimeout(function () {
+                var pay_status = $('#pay_status option:selected').val();
+                var notify_status = $('#type option:selected').val();
+                $.ajax({
+                    type: 'post',
+                    url: '/magent/order/index',
+                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                    data: {page, pay_status, notify_status},
+                    success: function (res) {
+                        page = res.page + 1
+                        $.each(res.list, function (i, e) {
+                            var ps = "<p style=\"color: red\">未支付</p>";
+                            if (e.pay_status == 1) {
+                                ps = "<p style=\"color: green\">已支付</p>";
+                            } else if (e.pay_status == 2) {
+                                ps = "<p style=\"color: red\">未支付</p>";
+                            } else if (e.pay_status == 3) {
+                                ps = "<p style=\"color: red\">支付失败</p>";
+                            }
+                            var nui = "<p style=\"color:red\">尚未触发</p>";
+                            if (e.notify_url_info == 1) {
+                                nui = "<p style=\"color:green\">回调成功</p>";
+                            } else if (e.notify_url_info == 2) {
+                                nui = "<p style=\"color:red\">回调失败</p>";
+                            } else if (e.notify_url_info == 3) {
+                                nui = "<p style=\"color:red\">参数错误</p>";
+                            }
+                          	var kefu = '';
+                            if(e.code == 1032){
+                                if(e.pay_status == 2){
+                                    kefu+='style=\"background-color:#e6b3ff;\" onClick=\"javascript:window.location=\'/chat/+e.id+.html\'\"';
+                                }
+                                
+
+                            }
+                          
+                            var html = "<div class=\"weui-form-preview m-t-20\""+kefu+">\n" +
+                                "        <div class=\"weui-form-preview__hd clearfix\">\n" +
+                                "            <span class=\"example\"></span>\n" +
+                                "            <label class=\"weui-form-preview_label\">订单号:" + e.order_num + "</label>\n" +
+                                "            <div class=\"float-right\"><img src=\"/static/magent/img/up.png\" class=\"up-img\" id=\"up-img\"></div>\n" +
+                                "        </div>\n" +
+                                "        <div id=\"weui_order_data\" class=\"weui_order_data\">\n" +
+                                "            <div class=\"weui_border_botttom\"></div>\n" +
+                                "            <div class=\"weui-wrap clearfix\">\n" +
+                                "                <div class=\"float-left order-name\">生成时间</div>\n" +
+                                "                <div class=\"float-right order-value\">" + e.accept_time + "</div>\n" +
+                                "            </div>\n" +
+                                "            <div class=\"weui-wrap clearfix\">\n" +
+                                "                <div class=\"float-left order-name\">支付时间</div>\n" +
+                                "                <div class=\"float-right order-value\">" + e.pay_time + "</div>\n" +
+                                "            </div>\n" +
+                                "            <div class=\"weui-wrap clearfix\">\n" +
+                                "                <div class=\"float-left order-name\">收款账户</div>\n" +
+                                "                <div class=\"float-right order-value\">" + e.pay_type + "</div>\n" +
+                                "            </div>\n" +
+                                "            <div class=\"weui-wrap clearfix\">\n" +
+                                "                <div class=\"float-left order-name\">通道类型</div>\n" +
+                                "                <div class=\"float-right order-value\">" + e.type + "</div>\n" +
+                                "            </div>\n" +
+                                "            <div class=\"weui-wrap clearfix\">\n" +
+                                "                <div class=\"float-left order-name\">金额</div>\n" +
+                                "                <div class=\"float-right order-value\">" + e.pay_amount + "</div>\n" +
+                                "            </div>\n" +
+                                "            <div class=\"weui-wrap clearfix\">\n" +
+                                "                <div class=\"float-left order-name\">订单状态</div>\n" +
+                                "                <div class=\"float-right order-value\">\n" + ps +
+                                "                </div>\n" +
+                                "            </div>\n" +
+                                "            <div class=\"weui-wrap clearfix\">\n" +
+                                "                <div class=\"float-left order-name\">回调状态</div>\n" +
+                                "                <div class=\"float-right order-value\">" + nui + "</div>\n" +
+                                "            </div>\n" +
+                                "            <div class=\"weui_border_botttom\"></div>\n" +
+                                "            <div class=\"weui-wrap clearfix\">\n";
+                            if (e.order_type == 1) {
+                                if (e.pay_status == 2) {
+                                  	if (e.code == 1032) {
+                                    html += "<div class=\"float-right\">" +
+                                        "<button class=\"weui-btn weui-btn-reissue\" onclick=\"window.location=\'/chat/" + e.id + ".html\'\" style=\"font-size:16px;color:#000;background-color:#ffff33;\"><b>立即进入对话模式→</b>\n" +
+                                        "</button>" +
+                                        "</div>";
+                                    }else{
+                                    html += "<div class=\"float-right\">" +
+                                        "<button class=\"weui-btn weui-btn-reissue\" onclick=\"repeat_no_adjusted(" + e.id + ")\" style=\"font-size:12px;color:#fff;background-color:#ff0000;\"><b>确认此订单已收款 ↑↑↑</b>\n" +
+                                        "</button>" +
+                                        "</div>";
+                                    }
+                                }else if(e.pay_status == 3){
+                                
+                                	html += "                <div class=\"float-right\">\n" +
+                                        "                    <button class=\"weui-btn weui-btn-reissue\" style=\"background-color:#d1e0e0;color:#999999;text-decoration:line-through;\">订单已作废</button>\n" +
+                                        "                </div>\n";
+                                
+                                } else {
+                                    html += "                <div class=\"float-right\">\n" +
+                                        "                    <button class=\"weui-btn weui-btn-reissue bg-green\" onclick=\"repeat_notify_url(" + e.id + ")\">补发通知</button>\n" +
+                                        "                </div>\n";
+                                }
+                            } else {
+                                html += "                <div class=\"float-right\">\n" +
+                                    "                    <button class=\"weui-btn weui-btn-reissue bg-green\">支付成功</button>\n" +
+                                    "                </div>\n";
+                            }
+
+                            html += "            </div>\n" +
+                                "        </div>\n" +
+                                "    </div>";
+                            $(".weui-content").append(html);
+                        })
+                    }
+                });
+                loading = false;
+            }, 1000);   //模拟延迟
+        });
+    })
+</script>
+</body>
+</html>

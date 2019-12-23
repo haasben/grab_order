@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>所有订单</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <!--顶部轮播-->
+    <div class="title">账号管理 Accounts Setup</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+
+    <div class="weui-tab">
+        <div class="weui-navbar">
+            <a class="weui-navbar__item weui-bar__item--on" href="#tab1">
+                所有账号
+            </a>
+            <a class="weui-navbar__item" href="#tab2">
+                分组管理
+            </a>
+        </div>
+        <div class="weui-tab__bd">
+
+            <div id="tab1" class="weui-tab__bd-item weui-tab__bd-item--active">
+              	<div class="">
+                    <div class="weui-navbar_group" style="border:1px solid #3bb300;background-color:#3bb300;margin-top:30px;margin-bottom:30px;">
+                        <a href="{:url('magent/user/add_account')}" class="weui-navbar_item weui-bar__item--on" style="background-color:#3bb300;">
+                           添加收款（店员）账号
+                        </a>
+                    </div>
+                </div>
+                {volist name="list" id="vo"}
+                <div class="weui-form-preview m-t-20" style="{eq name="$vo['is_clerk']" value="1"}background:#c9dbbd;{/eq}">
+                    <a href="{:url('user/clerk_des',['id'=>$vo['id']])}">
+                        <div class="weui-form-preview__hd clearfix">
+                          <a href="{:url('user/clerk_des',['id'=>$vo['id']])}">
+                            <label class="weui-form-preview_label">{$vo['name']}</label>
+                            {neq name="$vo['is_clerk']" value="1"}
+                             </a>
+                          {if condition="$vo.low_mode==1"}
+                          <span class="float-left m-l-5 time" style="margin-left:-8px;"><img src="/static/magent/img/low.png" style="width:12px;height:12px;margin-bottom:-1px;"></span>
+                          {/if}
+                          	<span class="float-left m-l-10 time">今日（{$vo.sum_succ_order}/{$vo.sum_order}）{$vo['today']}</span>
+                            <span class="float-right">
+                                <label for="switchCP_{$vo['id']}" class="weui-switch-cp">
+                                    <input id="switchCP_{$vo['id']}" class="weui-switch-cp__input" type="checkbox"
+                                           name="status"
+                                           data-id="{$vo['id']}" data-type="1" {eq name="$vo['status']" value="1"
+                                           }checked{/eq}>
+                                    <div class="weui-switch-cp__box"></div>
+                                </label>
+                            </span>
+                          	{else /}
+                          	<span class="float-right" style="color:#ff6600;">编号:{$vo['app_id']}</span>
+                            {/neq}
+                        </div>
+                   
+                </div>
+                {/volist}
+            </div>
+            <div id="tab2" class="weui-tab__bd-item group_data">
+
+                <div class="">
+                    <div class="weui-navbar_group" style="margin-top:30px;margin-bottom:30px;">
+                        <a class="weui-navbar_item weui-bar__item--on" href="#tab_1">
+                            微信扫码
+                        </a>
+                        <a class="weui-navbar_item alipay" href="#tab_2">
+                            支付宝扫码
+                        </a>
+                      	<a class="weui-navbar_item alipay" href="#tab_3">
+                            客服模式
+                        </a>
+                    </div>
+                </div>
+              	
+              	<div class="">
+                    <div class="weui-navbar_group" style="border:1px solid #ccc;background-color:#ccc;margin-top:30px;margin-bottom:30px;">
+                        <a href="{:url('magent/user/add_group')}" class="weui-navbar_item weui-bar__item--on" style="background-color:#ccc;color:#000">
+                           添加分组
+                        </a>
+                    </div>
+                </div>
+              
+              
+                <div id="tab_1" class="tab">
+                    {volist name="group" id="vo"}
+                    {eq name="$vo['type']" value="1"}
+                    <div class="weui-form-preview m-t-20">
+                        <a href="{:url('user/edit_group',['id'=>$vo['id']])}">
+                            <div class="weui-form-preview__hd clearfix">
+                                <label class="weui-form-preview_label">{$vo['group_name']}</label>
+                                <span class="float-right">
+                                    <label for="switchCP1_{$vo['id']}" class="weui-switch-cp">
+                                        <input id="switchCP1_{$vo['id']}" class="weui-switch-cp__input Grouping" type="checkbox"
+                                               name="status" data-id="{$vo['id']}" data-type="2" {eq
+                                               name="$vo['status']" value="1" }checked{/eq}>
+                                        <div class="weui-switch-cp__box"></div>
+                                    </label>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    {/eq}
+                    {/volist}
+                </div>
+                <div id="tab_2" class="tab" style="display: none">
+                    {volist name="group" id="vo"}
+                    {eq name="$vo['type']" value="2"}
+                    <div class="weui-form-preview m-t-20">
+                        <a href="{:url('user/edit_group',['id'=>$vo['id']])}">
+                            <div class="weui-form-preview__hd clearfix">
+                                <label class="weui-form-preview_label">{$vo['group_name']}</label>
+                                <span class="float-right">
+                                    <label for="switchCP2_{$vo['id']}" class="weui-switch-cp">
+                                        <input id="switchCP2_{$vo['id']}" class="weui-switch-cp__input Grouping" type="checkbox"
+                                               name="status" data-id="{$vo['id']}" data-type="2" {eq
+                                               name="$vo['status']" value="1" }checked{/eq}>
+                                        <div class="weui-switch-cp__box"></div>
+                                    </label>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    {/eq}
+                    {/volist}
+                </div>
+              	<div id="tab_3" class="tab" style="display: none">
+                    {volist name="group" id="vo"}
+                    {eq name="$vo['type']" value="3"}
+                    <div class="weui-form-preview m-t-20">
+                        <a href="{:url('user/edit_group',['id'=>$vo['id']])}">
+                            <div class="weui-form-preview__hd clearfix">
+                                <label class="weui-form-preview_label">{$vo['group_name']}</label>
+                                <span class="float-right">
+                                    <label for="switchCP2_{$vo['id']}" class="weui-switch-cp">
+                                        <input id="switchCP2_{$vo['id']}" class="weui-switch-cp__input Grouping" type="checkbox"
+                                               name="status" data-id="{$vo['id']}" data-type="2" {eq
+                                               name="$vo['status']" value="1" }checked{/eq}>
+                                        <div class="weui-switch-cp__box"></div>
+                                    </label>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                    {/eq}
+                    {/volist}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--底部导航-->
+
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item ">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item  weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+ {include file="public/footer" /}
+<script>
+    $('.weui-navbar_item').on('click', function () {
+        $(this).addClass('weui-bar__item--on');
+        $(this).removeClass('alipay');
+        $(this).siblings('a').removeClass('weui-bar__item--on');
+        $(this).siblings('a').addClass('alipay');
+        var tab = $(this).attr('href')
+        $(tab).css('display', 'block');
+        $(tab).siblings('.tab').css('display', 'none');
+    });
+  	
+	$(".weui-tab__bd").on('click','.weui-switch-cp__input',function(){
+	// $(".weui-switch-cp__input").click(function(){
+   // $("[name='status']").on('click', function () {
+        var id = $(this).attr('data-id');
+        var type = $(this).attr('data-type');
+        var status = $(this).prop("checked");
+        if (status) {
+            status = 1;
+        } else {
+            status = 2;
+        }
+        $.ajax({
+            url: "/magent/user/edit_status",
+            type: "post",
+            data: {id, type, status},
+            success: function (data) {
+                $.toast(data.msg, 400)
+            }
+        })
+    })
+</script>
+<script>
+    $(function () {
+        var loading = false;  //状态标记
+        var page = 2;
+        $("#tab1").infinite().on("infinite", function () {
+            if (loading) return;
+            loading = true;
+            setTimeout(function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/magent/user/clerk_list',
+                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                    data: {page, type: 1},
+                    success: function (res) {
+                        page = res.page + 1;
+                        if (res.list.length == 0) {
+                            $.toast('数据已全部加载', 500);
+                            return false;
+                        }
+                        $.each(res.list, function (i, e) {
+                          	var bgc = '';
+                          	if(e.is_clerk == 1){
+                              bgc = 'background:#c9dbbd';
+                            }
+                            var html = "<div class=\"weui-form-preview m-t-20\" style=\""+bgc+"\">\n" +
+                                "                    <a href=\"/magent/user/clerk_des/id/" + e.id + "\">\n" +
+                                "                        <div class=\"weui-form-preview__hd clearfix\">\n" +
+                                "                            <label class=\"weui-form-preview_label\">" + e.name + "</label>\n";
+                            if (e.is_clerk != 1) {
+                                var estatus = e.status == 1 ? 'checked' : '';
+                              	if (e.low_mode == 1){
+                                	html += "<span class=\"float-left m-l-5 time\" style=\"margin-left:-8px;\"><img src=\"/static/magent/img/low.png\" style=\"width:12px;height:12px;margin-bottom:-1px;\"></span><span class=\"float-left m-l-10 time\">今日("+e.sum_succ_order+"/"+e.sum_order+")" + e.today + "</span>\n" +
+                              		"	<span class=\"float-right\">\n" +
+                                    "                                <label for=\"switchCP_" + e.id + "\" class=\"weui-switch-cp\">\n" +
+                                    "                                    <input id=\"switchCP_" + e.id + "\" class=\"weui-switch-cp__input\" type=\"checkbox\"\n" +
+                                    "                                           name=\"status\"\n" +
+                                    "                                           data-id=\"" + e.id + "\" data-type=\"1\" " + estatus + ">\n" +
+                                    "                                    <div class=\"weui-switch-cp__box\"></div>\n" +
+                                    "                                </label>\n" +
+                                    "                            </span>\n";
+                                }else{
+                                	html += "<span class=\"float-left m-l-10 time\">今日("+e.sum_succ_order+"/"+e.sum_order+")" + e.today + "</span>\n" +
+                              		"	<span class=\"float-right\">\n" +
+                                    "                                <label for=\"switchCP_" + e.id + "\" class=\"weui-switch-cp\">\n" +
+                                    "                                    <input id=\"switchCP_" + e.id + "\" class=\"weui-switch-cp__input\" type=\"checkbox\"\n" +
+                                    "                                           name=\"status\"\n" +
+                                    "                                           data-id=\"" + e.id + "\" data-type=\"1\" " + estatus + ">\n" +
+                                    "                                    <div class=\"weui-switch-cp__box\"></div>\n" +
+                                    "                                </label>\n" +
+                                    "                            </span>\n";
+                                }
+                                
+                            }else{
+                            	html += "<span class=\"float-right\" style=\"color:#ff6600;\">编号:"+e.app_id+"</span>";
+                            }
+                            html += "                        </div>\n" +
+                                "                    </a>\n" +
+                                "                </div>";
+                            $("#tab1").append(html);
+                        })
+                        $.toast('加载完成', 500)
+                    }
+                });
+                loading = false;
+            }, 1000);   //模拟延迟
+        });
+        $("#tab_1").infinite().on("infinite", function () {
+            if (loading) return;
+            loading = true;
+            setTimeout(function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/magent/user/clerk_list',
+                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                    data: {page, type: 3},
+                    success: function (res) {
+                        page = res.page + 1;
+                        if (res.list.length == 0) {
+                            $.toast('数据已全部加载', 500);
+                            return false;
+                        }
+                        $.each(res.list, function (i, e) {
+                            var estatus = e.status == 1 ? 'checked' : '';
+                            var html = "<div class=\"weui-form-preview m-t-20\">\n" +
+                                "                        <a href=\"/magent/user/edit_group/id/" + e.id + "\">\n" +
+                                "                            <div class=\"weui-form-preview__hd clearfix\">\n" +
+                                "                                <label class=\"weui-form-preview_label\">" + e.group_name + "</label>\n" +
+                                "                                <span class=\"float-right\">\n" +
+                                "                                    <label for=\"switchCP2_" + e.id + "\" class=\"weui-switch-cp\">\n" +
+                                "                                        <input id=\"switchCP2_" + e.id + "\" class=\"weui-switch-cp__input\" type=\"checkbox\"\n" +
+                                "                                               name=\"status\" data-id=\"" + e.id + "\" data-type=\"2\" " + estatus + ">\n" +
+                                "                                        <div class=\"weui-switch-cp__box\"></div>\n" +
+                                "                                    </label>\n" +
+                                "                                </span>\n" +
+                                "                            </div>\n" +
+                                "                        </a>\n" +
+                                "                    </div>";
+                            $("#tab_1").append(html);
+                        })
+                        $.toast('加载完成', 500)
+                    }
+                });
+                loading = false;
+            }, 1000);   //模拟延迟
+        });
+        $("#tab_2").infinite().on("infinite", function () {
+            if (loading) return;
+            loading = true;
+            setTimeout(function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/magent/user/clerk_list',
+                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                    data: {page, type: 4},
+                    success: function (res) {
+                        page = res.page + 1;
+                        if (res.list.length == 0) {
+                            $.toast('数据已全部加载', 500);
+                            return false;
+                        }
+                        $.each(res.list, function (i, e) {
+                            var estatus = e.status == 1 ? 'checked' : '';
+                            var html = "<div class=\"weui-form-preview m-t-20\">\n" +
+                                "                        <a href=\"/magent/user/edit_group/id/" + e.id + "\">\n" +
+                                "                            <div class=\"weui-form-preview__hd clearfix\">\n" +
+                                "                                <label class=\"weui-form-preview_label\">" + e.group_name + "</label>\n" +
+                                "                                <span class=\"float-right\">\n" +
+                                "                                    <label for=\"switchCP2_" + e.id + "\" class=\"weui-switch-cp\">\n" +
+                                "                                        <input id=\"switchCP2_"+e.id+"\" class=\"weui-switch-cp__input\" type=\"checkbox\"\n" +
+                                "                                               name=\"status\" data-id=\"" + e.id + "\" data-type=\"2\" " + estatus + ">\n" +
+                                "                                        <div class=\"weui-switch-cp__box\"></div>\n" +
+                                "                                    </label>\n" +
+                                "                                </span>\n" +
+                                "                            </div>\n" +
+                                "                        </a>\n" +
+                                "                    </div>";
+                            $("#tab_2").append(html);
+                        })
+                        $.toast('加载完成', 500)
+                    }
+                });
+                loading = false;
+            }, 1000);   //模拟延迟
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>管理中心</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="__SADMIN__/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="__SADMIN__/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <style>
+
+    </style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated">
+<form class="layui-form" action="">
+<div class="row">
+    <div class="col-md-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>查看通道列表</h5>
+            </div>
+            <!--条件查询-->
+            <div class="ibox-content">
+
+                <table class="layui-table" >
+                    <thead>
+                    <tr>
+
+                        <th>通道编码</th>
+                        <th>通道名称</th>
+                        <th>展示给下游名称</th>
+                        <th>通道成本费率(千分)</th>
+                        <th>通道状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="channel_data" id="v"}
+                    <tr>    
+
+                            <td>{$v.code}</td>
+                            <td>{$v.channel_name}</td>
+                            <td>{$v.show_name}</td>
+                            <td>{$v.fee*1000}‰</td>
+                            <td><input type="checkbox" name="is_lock" value="{$v.id}" lay-skin="switch" lay-text="已开通|已禁用" lay-filter="is_lock" {if condition="$v.status == 1"}checked{/if}></td>
+                            <td>
+                                <a value="{$v.id}" class="layui-btn edit_channel" lay-submit="" lay-filter=""> 修改</a>
+                            <!--     <a value="{$v.id}" class="layui-btn layui-btn-danger" lay-submit="" lay-filter=""> 删除</a> -->
+
+                            </td>
+                    </tr>  
+                        {/volist}                 
+
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['table','form'], function() {
+        var table = layui.table,form = layui.form, $ = layui.jquery,layer=layui.layer;
+
+            form.on('switch(is_lock)', function(data){
+                var id = data.value;
+                var checked = data.elem.checked;
+
+                $.post('{:url("sadmin/channel/edit_status")}',{id:id,status:checked},function(data){
+
+                        if(data.code == '0000'){
+                            layer.msg(data.msg,{icon:1,time:1000});
+                        }else{
+                            layer.msg(data.msg,{icon:5,time:1000});
+                        }
+
+
+
+                })
+
+            });  
+        $('.edit_channel').click(function(){
+
+            var id = $(this).attr('value');
+
+            layer.open({
+                  type: 2,
+                  title: '修改通道',
+                  shadeClose: true,
+                  shade: false,
+                  maxmin: true, //开启最大化最小化按钮
+                  area: ['893px', '600px'],
+                  content: '{:url("sadmin/channel/edit_channel")}?id='+id
+            });
+        })
+            
+
+
+    });
+
+
+</script>
+</body>
+</html>

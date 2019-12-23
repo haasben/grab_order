@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+ 
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>支付宝支付</title>
+    <link href="/static/pay_icon/pay1.css" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="/static/pay_icon/jq.js"></script>
+</head>
+<style type="text/css">
+  
+
+  .btn-alipay{
+
+    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    background-color: #1E9FFF;
+  }
+  #content{
+    font-size: 16px;color: red;
+  }
+</style>
+<body>
+<div class="body">
+    <h1 class="mod-title">
+        <span class="ico_log ico-1"></span>
+    </h1>
+
+    <div class="mod-ct">
+        <div class="order">
+        </div>
+        
+        <div class="qrcode-img-wrapper" data-role="qrPayImgWrapper">
+            <div data-role="qrPayImg" class="qrcode-img-area">
+                <div class="ui-loading qrcode-loading" data-role="qrPayImgLoading" ></div>
+                <div style="position: relative;display: inline-block;">
+ <!--                  17754241242@qq.com -->
+                </div>
+            </div>
+        </div>
+                
+        <div class="time-item" style = "padding-top: 10px">
+          
+          
+<script type="text/javascript" src="/static/layer-v3.1.0/layer/layer.js"></script>        
+<script type="text/javascript">    
+
+    myTimer = window.setInterval(function () {
+        checkdata();
+    },3000);
+
+    function checkdata() {
+
+        $.post(
+            "{:url('api/query_order/order_status')}",
+            {
+                order_num: "{$order_data.order_num}",
+            },
+             function (data) {
+               
+                 if (data.code  == '0000') {
+                  
+                     window.clearInterval(myTimer);
+                    // $("#show_qrcode").attr("src", "/img/pay_ok.png");
+         
+                     $("#money").text("支付成功");
+                     $("#msg").html("<h1>即将返回商家页</h1>");
+                     $("#msg").html("<h1>即将<a href='"+data.data.return_url+'?order_num='+data.data.order_num+"'>跳转</a>回商家页</h1>");
+                     setTimeout(function () {
+                      
+                         location.replace(data.data.return_url)
+                     }, 3000);
+
+                 }
+             }
+        );
+    }
+    //单纯分钟和秒倒计时
+        function resetTime(time){
+          var timer=null;
+          var t=time;
+          var m=0;
+          var s=0;
+          m=Math.floor(t/60%60);
+          m<10&&(m='0'+m);
+          s=Math.floor(t%60);
+          function countDown(){
+           s--;
+           s<10&&(s='0'+s);
+           if(s.length>=3){
+            s=59;
+            m="0"+(Number(m)-1);
+           }
+           if(m.length>=3){
+            m='00';
+            s='00';
+            clearInterval(timer);
+             clearInterval(myTimer);
+             $('#show_qrcode').attr('src','/static/timeout.png');
+           }
+           $('#Countdown').html("付款倒计时："+m+"分钟"+s+"秒");
+          }
+          timer=setInterval(countDown,1000);
+        }
+  resetTime({$order_data.time});
+
+</script>
+
+<!--手机支付-->
+
+<div class ="payweixinbtn" ><a href="javascript:;" target="_blank"  id="downloadbtn" class="btn btn-primary">1.先复制收款支付宝账号到剪切板</a></div>
+                <div class ="payweixinbtn" style = "padding-top: 10px"><a href="javascript:;" class="btn btn-primary">2.点击跳转到支付宝，粘贴收款账号直接转账</a></div>           
+ <!--手机支付END-->
+
+
+<div class="time-item" ><h1>支付金额：￥<b  class="uuid-code">{$order_data.pay_amount}</b></h1></div>
+
+<div class="time-item" ><h1>收款账号:<b  class="uuid-code" id="content">{$name.receive_account}</b>
+<a class="btn-copy" id="copyBT">复制账号</a></h1></div>
+
+
+<div class="time-item" ><h1>支付宝验证姓：（<span style="color:red">{:mb_substr($name.name,0,1)}</span>）</h1></div>
+
+
+<div class="btn-alipay" >点击前往支付宝</div>
+
+
+
+
+
+
+
+<div class="time-item"><h1 style="color: red">特别提醒：转账输入金额务必与订单金额保持一致，否则系统不会到账！！！！！</h1> </div>
+
+<div class="time-item"><h1>订单号:{$order_data.order_num}</h1> </div>
+  <div class="time-item"><h1 id="Countdown"></h1> </div>
+
+<div class="time-item" ><h1>支付完成后，自动跳转商户页面</h1></div>
+<div class="time-item"><h1 >付款及时到账,未到账请联系客服</h1> </div>
+  <script type="text/javascript">
+    	layer.alert('请务必按照订单金额<b style="color:red;font-size:20px;"> {$order_data.pay_amount} </b>元进行充值，<br>付错金额的损失自己承担！！！', {icon: 6});
+
+    var myTimer = window.setInterval(function () {
+        checkdata();
+    },3000);
+    
+      $('.btn-alipay').click(function(){
+
+        window.location.href="https://ds.alipay.com/?from=mobilecodec&scheme=alipayqr%3A%2F%2Fplatformapi%2Fstartapp%3FappId%3D20000116";
+
+      })
+
+
+            function copyArticle(event) {
+                const range = document.createRange();
+                range.selectNode(document.getElementById('content'));
+
+                const selection = window.getSelection();
+                if(selection.rangeCount > 0) selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                layer.msg("复制成功",{icon:1,time:500});
+            }
+
+            document.getElementById('copyBT').addEventListener('click', copyArticle, false);
+        </script>
+        
+        </div>
+        
+        <div class="tip">
+            <div class="ico-scan"></div>
+            <div class="tip-text">
+                <!--在PC里-->
+                  <p id="showtext">打开支付宝 </p>
+                            </div>
+        </div>
+
+        <div class="tip-text">
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+</html>
+

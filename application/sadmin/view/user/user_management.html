@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>个人资料--layui后台管理模板</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="stylesheet" href="/static/layui/css/layui.css" media="all" />
+
+</head>
+<body >
+<div class="select_box" style="">
+
+</div>
+  <div class="layui-fluid">
+
+
+
+      <div class="col-md-12">
+        <div class="ibox float-e-margins">
+        <div class="layui-card">
+                  <blockquote class="layui-elem-quote"> 用户姓名：{$user_data.name}</blockquote>
+
+                  <blockquote class="layui-elem-quote"> 用户邮箱：{:substr_replace($user_data.email,'****',1,4)}</blockquote>
+                  <blockquote class="layui-elem-quote"> 用户手机号：{:substr_replace($user_data.phone_num,'****',1,4)}</blockquote>
+
+                  <blockquote class="layui-elem-quote"> 用户状态：
+                  {$user_data.level_name}
+                  </blockquote>
+                  <blockquote class="layui-elem-quote"> 保证金：
+                  {$user_data.margin/100}
+                  </blockquote>
+                  <blockquote class="layui-elem-quote"> 冻结金额：
+                  {$user_data.freeze/100}
+                  </blockquote>
+                  
+                  <blockquote class="layui-elem-quote"> 
+					<a href="/sadmin/User/edit_users.html?id={$user_data.id}" class="layui-btn layui-btn-small" value="{$user_data.id}">用户编辑</a>
+                      
+                    <a href="/sadmin/User/add_user_fee.html?id={$user_data.id}" class="layui-btn layui-btn-small" value="{$user_data.id}">增加通道</a>
+
+                    <a href="javascript:;" class="layui-btn layui-btn-small user_level" value="{$user_data.id}">用户调级</a>
+
+                    <a href="/sadmin/User/user_fee.html?id={$user_data.id}" class="layui-btn layui-btn-small edit_fee" value="{$user_data.id}">修改费率</a>
+                    <a value="{$user_data.id}" class="layui-btn layui-btn-small debit">上/下分</a>
+  
+          <!--           <a href="javascript:;" class="layui-btn layui-btn-small add_bans" value="{$user_data.id}">增加违规次数</a> -->
+
+                    {if condition="$user_data['state'] == 90"}
+
+              <!--       <a href="javascript:;" class="layui-btn layui-btn-small del_money_info" value="{$user_data.id}">清除数据</a> -->
+                    
+                    <a href="javascript:;" class="layui-btn layui-btn-small del_freeze" value="{$user_data.id}">解冻额度</a>
+
+                    {/if}
+          
+
+                  </blockquote>
+
+
+        
+                </div>
+        </div>
+
+</div>
+
+  </div>
+<style type="text/css">
+
+
+</style>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'layedit', 'laydate','layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,layer = layui.layer
+            ,$=layui.jquery;
+
+
+        $('.user_level').click(function(){
+
+            var html = '<form class="layui-form" action="/sadmin/user/user_level" method="post"><input type="hidden" name="id" value="{$user_data.id}"><div class="layui-form-item"><label class="layui-form-label">用户级别</label><div class="layui-input-block"><select name="state" lay-verify="required"><option value=""><option value="1">正常商户</option><option value="88">通道代理商</option><option value="99">管理员</option><option value="90">码商代理</option><option value="66">供号码商</option></select></div></div><div class="layui-form-item"><div class="layui-input-block"><button class="layui-btn " lay-submit lay-filter="formDemo">立即提交</button></div></div></form>';
+
+            layer.open({
+              type: 1,
+              skin: 'layui-layer-rim', //加上边框
+              area: ['420px', '400px'], //宽高
+              content: html
+            });
+
+            form.render();
+
+
+        })
+        form.on('submit(formDemo)', function(data){
+        var state = data.field;
+        $.post('{:url("sadmin/user/user_level")}',state,function(data){
+
+            if(data.code == '0000'){
+
+                //layer.close(index);
+                layer.msg(data.msg,{icon: 1,time:2000},function(){
+                        location.reload();
+                    });
+            }else{
+
+                layer.msg(data.msg);
+
+            }
+
+
+        })
+
+
+        return false;
+      });
+
+      
+      $('.del_money_info').click(function(){
+
+          var id = $(this).attr('value');
+
+          layer.confirm('确定要清除当前用户数据吗？（默认清除截止当前所有数据，不可恢复）',{icon:3, title:'提示信息'},function(index){
+              layer.close(index);
+            layer.prompt({title: '输入清除数据口令，并确认', formType: 1}, function(pass, index){
+              
+                    $.post('{:url("sadmin/user/del_money_info")}',{pass:pass,id:id},function(data){
+
+                        if(data.code == '0000'){
+
+                            layer.close(index);
+                            layer.msg(data.msg,{icon: 1,time:2000},function(){
+                                    location.reload();
+                                });
+                        }else{
+
+                            layer.msg(data.msg);
+
+                        }
+
+                    })
+               })
+            });
+
+
+
+      })
+//增加保证金
+        $('.debit').click(function(){
+            var id = $(this).attr('value');
+            console.log(id)
+            layer.prompt({title: '输入保证金口令，并确认', formType: 1}, function(pass, index){
+              layer.close(index);
+              layer.prompt({title: '请输入增加的金额，单位元(-1表示减一元)', formType: 4}, function(text, index){
+
+                  layer.close(index);
+              layer.prompt({title: '请输入操作原因', formType: 4}, function(text1, index){
+
+                    $.post('{:url("sadmin/user/debit_money")}',{pass:pass,money:text,id:id,text1:text1},function(data){
+
+                        if(data.code == '0000'){
+
+                            layer.close(index);
+                            layer.msg(data.msg,{icon: 1,time:2000},function(){
+                                    location.reload();
+                                });
+                        }else{
+
+                            layer.msg(data.msg);
+
+                        }
+
+                    })
+                  })
+              });
+            });
+
+        })
+    //增加保证金
+        $('.del_freeze').click(function(){
+            var id = $(this).attr('value');
+            console.log(id)
+            layer.prompt({title: '输入解冻口令，并确认', formType: 1}, function(pass, index){
+              layer.close(index);
+              layer.prompt({title: '请输入解冻的金额，单位元', formType: 4}, function(text, index){
+
+                    $.post('{:url("sadmin/user/del_freeze")}',{pass:pass,money:text,id:id},function(data){
+
+                        if(data.code == '0000'){
+
+                            layer.close(index);
+                            layer.msg(data.msg,{icon: 1,time:2000},function(){
+                                    location.reload();
+                                });
+                        }else{
+
+                            layer.msg(data.msg);
+
+                        }
+
+                    })
+                 
+              });
+            });
+
+        })
+
+
+
+    $("body").on("click",".add_bans",function(){  //违禁增加
+        var _this = $(this);
+        var id = _this.attr('value');
+        console.log(id);
+        layer.confirm('确定增加该用户违规次数吗？',{icon:3, title:'提示信息'},function(index){
+
+            $.ajax({
+                    url : "{:url('sadmin/user/add_bans')}?id="+id,
+                    type : "get",
+                    dataType : "json",
+                    success : function(data){
+                        if(data.code == '0000'){
+                            layer.close(index);
+                            // _this.parents("tr").remove();
+                            layer.msg(data.msg,{icon:1,time:1500},function(){
+
+                                location.reload();
+                            });
+
+                        }else{
+                            layer.msg(data.msg,{icon:5,time:1500});
+                        }
+
+                    }
+
+            })
+
+
+            
+        });
+    })
+
+
+
+
+})
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

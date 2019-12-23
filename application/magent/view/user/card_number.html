@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>线上存款</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body style="background: #f4f4f4;">
+<!--主体-->
+<!--顶部搜索-->
+<header class="nav-bar-header bg-white">
+    <!--顶部轮播-->
+    <div class="title">线上存款</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+    <div class="swiper-container swiper-banner bg-white" style="height:100%;">
+        <div style="color:#999;margin-left:20px;font-size:14px;margin-top:30px;"><b><font color=red>温馨提示：</font></b></br>请按复制下方卡号，按存款金额转账，以便系统上分！</div>
+        <div class="swiper-wrapper">
+            <div class="swiper-slide clearfix m-b_100">
+                <img src="/static/magent/img/ban1.png" class="banner-img"/>
+                <div class="agent-name">姓名： {$account_data.receive_account} </div>
+                <div class="login-time" style="font-size:14px;color:#fff;margin-top:5px;">&nbsp;{$account_data.private_key}</div>
+                <div class="today-order btn-copy" id="copyBT">收款卡号（点击复制）</div>
+                <div class="today-order-value" id="content">{$account_data.public_key}</div>
+            </div>
+       </div>
+    </div>
+  </div>
+  <!--底部导航-->
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item  weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+{include file="public/footer" /}
+   <script type="text/javascript">
+            function copyArticle(event) {
+                const range = document.createRange();
+                range.selectNode(document.getElementById('content'));
+
+                const selection = window.getSelection();
+                if(selection.rangeCount > 0) selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+              	$.toast('复制成功',1000);
+                //layer.msg("复制成功",{icon:1,time:500});
+            }
+
+            document.getElementById('copyBT').addEventListener('click', copyArticle, false);
+        </script>
+  </body>
+</html>
+

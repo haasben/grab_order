@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="__ADMIN__common/layui/css/layui.css" media="all">
+	<link rel="stylesheet" type="text/css" href="__ADMIN__common/bootstrap/css/bootstrap.css" media="all">
+	<link rel="stylesheet" type="text/css" href="__ADMIN__common/global.css">
+	<link rel="stylesheet" type="text/css" href="__ADMIN__css/main.css" media="all">
+</head>
+<body>
+<section class="larry-wrapper">
+    <!-- overview -->
+	<div class="row state-overview">
+    <div class="col-lg-3 col-sm-6 layui-anim layui-anim-up">
+      <section class="panel">
+        <div class="symbol userblue layui-anim layui-anim-rotate"> <img src="__ADMIN__images/chnegjiao.png" style="width:60px;height: 60px;">
+        </div>
+        <div class="value">
+          <a href="#">
+            <h1 id="count1">{$sum_order_num}</h1>
+          </a>
+          <p>成交总量</p>
+        </div>
+      </section>
+    </div>
+    <div class="col-lg-3 col-sm-6 layui-anim layui-anim-up">
+      <section class="panel">
+        <div class="symbol commred layui-anim layui-anim-rotate"> <img src="__ADMIN__images/dingdan.png" style="width:60px;height: 60px;">
+        </div>
+        <div class="value">
+          <a href="#">
+            <h1 id="count2">{$today_order_num}</h1>
+          </a>
+          <p>今日订单</p>
+        </div>
+      </section>
+    </div>
+    <div class="col-lg-3 col-sm-6 layui-anim layui-anim-up">
+      <section class="panel">
+        <div class="symbol articlegreen layui-anim layui-anim-rotate">
+        <img src="__ADMIN__images/yue.png" style="width:60px;height: 60px;">
+        </div>
+        <div class="value">
+          <a href="#">
+            <h1 id="count3">{$user_data.recharge_sum/100}元</h1>
+          </a>
+          <p>总入金</p>
+        </div>
+      </section>
+    </div>
+    <div class="col-lg-3 col-sm-6 layui-anim layui-anim-up">
+      <section class="panel">
+        <div class="symbol rsswet layui-anim layui-anim-rotate">
+          <img src="__ADMIN__images/zongyue.png" style="width:60px;height: 60px;">
+        </div>
+        <div class="value">
+          <a href="#">
+            <h1 id="count4">{$user_data.money/100}元</h1>
+          </a>
+          <p>当前余额</p>
+        </div>
+      </section>
+    </div>
+  </div>
+	<!-- overview end -->
+	<div class="row">
+		<div class="col-lg-6">
+			<section class="panel">
+				<header class="panel-heading bm0">
+					<span class='span-title'>资产概览</span>
+					<span class="tools pull-right"><a href="javascript:;" class="iconpx-chevron-down"></a></span>
+				</header>
+				<div class="panel-body" >
+					<table class="table table-hover personal-task">
+                         <tbody>
+                         	<tr>
+                         		<td>
+                         			<strong>充值总额</strong>： {$user_data.recharge_sum/100}元
+  
+                         		</td>
+                         		<td>
+
+                         		</td>
+                         	</tr>
+                         	<tr>
+                         		<td>
+                                <strong>提现总额</strong>： {$user_data.withdrawal_sum/100}
+
+                                </td>
+                                <td></td>
+                         	</tr>
+                         	<tr>
+                         		<td>
+                                <strong>手续费总额</strong>：{$user_data.fee_sum/100}
+                                </td>
+                                <td></td>
+                         	</tr>
+                         	<tr>
+                         		<td>
+                                <strong>余额总和</strong>：{$user_data.money/100}
+                                </td>
+                                <td></td>
+                         	</tr>
+                         </tbody>
+					</table>
+				</div>
+			</section>
+      <!-- 网站信息统计｛SEO数据统计｝ -->
+      <section class="panel">
+                  <header class="panel-heading bm0">
+                       <span class='span-title'>历史充值金额/元</span>
+                       <span class="tools pull-right"><a href="javascript:;" class="iconpx-chevron-down"></a></span>
+                  </header>
+                  <div class="panel-body laery-seo-box">
+                        <div class="larry-seo-stats" id="larry-seo-stats"></div>
+                  </div>
+      </section>
+		</div>
+		<div class="col-lg-6">
+		     <!-- 快捷操作 -->
+             <section class="panel">
+                  <header class="panel-heading bm0">
+                        <span class='span-title'>商户手续费率</span>
+                        <span class="tools pull-right"><a href="javascript:;" class="iconpx-chevron-down"></a></span>
+                  </header>
+                  <div class="panel-body">
+                        <table class="table table-hover personal-task shortcut">
+                            <tr>
+                            	<td style="text-align:left;">
+{volist name="user_fee_data" id="vo"}
+                            		<div>
+{$vo.show_name}->{$vo.fee*100}%
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+状态：<?php echo $vo['status']==1?'正常':'关闭';?>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+结算方式：{$vo.settlement_way}
+                                </div>
+{/volist}
+                            	</td>
+                            </tr>
+                        </table>
+                  </div>
+             </section>
+          <!-- 系统公告 -->
+             <section class="panel">
+                 <header class="panel-heading bm0">
+                        <span class='span-title'>余额详情</span>
+                        <span class="tools pull-right"><a href="javascript:;" class="iconpx-chevron-down"></a></span>
+                  </header>
+                  <div class="panel-body">
+                        <table class="table table-hover personal-task shortcut">
+                            <tr>
+                              <td style="text-align:left;">
+<?php
+$sum_money = 0 ;
+?>
+{volist name="user_fee_data" id="vo"}
+<?php
+$sum_money += $vo['money'];
+?>
+                                <div>
+        
+{$vo.show_name}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{$vo.money/100}元
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{$vo.ext}
+                                </div>
+
+{/volist}
+</br>
+总额:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$sum_money/100}元
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+不可结算总额：{$sum_freeze/100}元
+&nbsp;&nbsp;
+可结算总额：<?php echo ($sum_money-$sum_freeze)/100;?>元
+
+<?php
+if($user_data['money']!=$sum_money){
+  //余额异常
+}
+?>
+
+                              </td>
+                            </tr>
+                        </table>
+                  </div>
+             </section>
+
+              <!-- 最新文章 -->
+             <section class="panel">
+                  <header class="panel-heading bm0">
+                        <span class='span-title'>最新订单</span>
+                        <span class="badge" style="background-color:#FF3333;"> new </span>
+                        <span class="tools pull-right"><a href="javascript:;" class="iconpx-chevron-down"></a></span>
+                  </header>
+                  <div class="panel-body">
+                       <table class="table table-hover personal-task">
+                             <tbody>
+{volist name="new_order" id="vo"}
+                              <tr>
+                                <td><?php echo $vo['order_type']==1?'充值':'提现';?></td>
+                                <td>
+                                  <!-- <a href="/admin/Recharge/index.html?order_num={$vo.order_num}" target="_blank"> -->
+{$vo.order_num}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<?php echo $vo['pay_status']==1?'已支付':'待支付';?>
+                                  <!-- </a> -->
+                                </td>
+                                <td class="col-md-5">金额：{$vo.pay_amount/100}元 &nbsp;&nbsp;&nbsp;&nbsp; {:date('Y-m-d H:i:s',$vo['accept_time'])}</td>
+                              </tr>
+{/volist}
+                             </tbody>
+                       </table>
+                  </div>
+             </section>
+		</div>
+	</div>
+
+</section>
+
+<script type="text/javascript" src="__ADMIN__common/layui/layui.js"></script>
+<script type="text/javascript">
+	layui.use(['jquery','layer','element'],function(){
+		window.jQuery = window.$ = layui.jquery;
+		window.layer = layui.layer;
+        window.element = layui.element();
+
+       $('.panel .tools .iconpx-chevron-down').click(function(){
+       	   var el = $(this).parents(".panel").children(".panel-body");
+       	   if($(this).hasClass("iconpx-chevron-down")){
+       	   	   $(this).removeClass("iconpx-chevron-down").addClass("iconpx-chevron-up");
+       	   	   el.slideUp(200);
+       	   }else{
+       	   	   $(this).removeClass("iconpx-chevron-up").addClass("iconpx-chevron-down");
+       	   	   el.slideDown(200);
+       	   }
+       })
+
+	});
+</script>
+<script type="text/javascript" src="__ADMIN__jsplug/echarts.min.js"></script>
+<script type="text/javascript">
+var myChart = echarts.init(document.getElementById('larry-seo-stats'));
+
+option = {
+    color: ['#3398DB'],
+    tooltip : {
+        trigger: 'axis',
+        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+    },
+    grid: {
+        left: '2%',
+        right: '4%',
+        bottom: '1%',
+        containLabel: true
+    },
+    xAxis : [
+        {
+            type : 'category',
+            data : [
+{volist name="weeks_order" id="vo"}
+            '{$key}', 
+{/volist}
+            ],
+            axisTick: {
+                alignWithLabel: true
+            }
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name:'金额',
+            type:'bar',
+            barWidth: '60%',
+            data:[
+{volist name="weeks_order" id="vo"}
+            {$vo.sum_amount}, 
+{/volist}
+            ]
+        },
+
+    ]
+};
+myChart.setOption(option);
+
+</script>
+</body>
+</html>

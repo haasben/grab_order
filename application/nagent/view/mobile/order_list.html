@@ -1,0 +1,134 @@
+{include file="common/mobileheader"}
+<div class="content">
+    <div class="buttons-tab">
+        <a href="{:url('nagent/mobile/index')}" class="button">首页</a>
+        <a href="{:url('nagent/mobile/account_list')}" class=" button">账户总览</a>
+        <a href="{:url('nagent/mobile/order_list')}" class="tab-link active button">订单查询</a>
+        <a href="{:url('nagent/mobile/receive_index')}" class=" button">收款账户</a>
+    </div>
+    <div class="tabs">
+        <div id="tab4" class="tab active">
+            <form action="" method="">
+                <div class="search-wrap">
+<!--                     <div class="clearfix">
+                        <div class="search-item"><input type="text" value="{$data.num}" class="search-input" name="num"
+                                                        placeholder="商户编号"/></div>
+                        <div class="search-item"><input type="text" value="{$data.order_num}" class="search-input" name="order_num"
+                                                        placeholder="订单号"/></div>
+                    </div> -->
+                      <div class="clearfix">
+                        <div class="search-item">
+                            <select class="search-input" name="pay_status" style="width: 90%;">
+                                <option value="">订单状态</option>
+                                <option value="">全部</option>
+                                <option value="1">已支付</option>
+                                <option value="2">未支付</option>
+                            </select>
+                        </div>
+                        <div class="search-item">
+                            <select class="search-input" name="notify_url_info" style="width: 90%;">
+                                <option value="">回调状态</option>
+                                <option value="">全部</option>
+                                <option value="0">未触发</option>
+                                <option value="1">success</option>
+                                <option value="2">fail</option>
+                                <option value="3">参数错误</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="clearfix">
+                        <div class="search-item"><input type="text" value="{$data.begin_time}" class="search-input start_time" name="begin_time"
+                                                        placeholder="开始日期"/></div>
+                        <div class="search-item"><input type="text" value="{$data.end_time}" class="search-input end_time" name="end_time"
+                                                        placeholder="结束日期"/></div>
+                        <div class="">
+                            <button type="submit" class="search-btn">查询</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            {volist name ="$order_data" id="v"}
+            <div class="card box-shadow">
+
+                <div class="list-block media-list">
+                    <ul>
+                        <li>
+                            <a href="{:url('nagent/mobile/order_des',['id'=>$v['id']])}" class="item-link item-content">
+                                <div class="item-inner">
+                                    <div class="item-title-row">
+                                        <div class="item-title">订单号：{$v.order_num}</div>
+                                    </div>
+                                    <div class="item-subtitle">订单金额: {$v.pay_amount/100}元</div>
+                                    <div class="item-subtitle">支付信息:{if condition="$v['pay_status'] == 1"}支付成功
+
+                                            {else /} 未支付
+                                            {/if}</div>
+                                    <div class="item-subtitle">付款方式:{$v.name}</div>
+                                    <div class="item-subtitle">创建时间:{:date('Y-m-d H:i:s',$v.accept_time)}</div>
+                                    <div class="item-subtitle">支付时间:{if condition="$v['pay_time'] != ''"}{:date('Y-m-d H:i:s',$v.pay_time)}
+
+                                    {/if}</div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+  <!--               <div class="card-footer">
+                    <span class=""></span>
+                    <span class="green_text"><a href="{:url('mobile/order/order_des',['id'=>$v['id']])}">查看详情</a></span>
+                </div> -->
+            </div>
+            {/volist}
+        </div>
+    </div>
+<style type="text/css">
+    .pagination{
+
+        display: inline-block;
+        padding-left: 0;
+        margin: 20px 0;
+        border-radius: 4px;
+
+    }
+    .pagination > li{
+
+        display: inline-block;
+
+    }
+
+    .pagination>li>a, .pagination>li>span{
+
+           position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    }
+    
+
+
+
+
+</style>
+
+    {$order_data->render()}
+</div>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+<script type="text/javascript">
+    var time = new Date();
+    $(".start_time").calendar({
+        value: [time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()]
+    });
+    $(".end_time").calendar({
+        value: [time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()]
+    });
+</script>
+</body>
+</html>

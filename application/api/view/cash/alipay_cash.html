@@ -1,0 +1,148 @@
+
+<html style="font-size: 213.333px;">
+<head>
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no, email=no">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.1/alipayjsapi.inc.min.js"></script>
+<script src="http://2036.tonghubf.com/callback/js/jquery.js"></script>
+<script>
+    var docEl = document.documentElement;
+    docEl.style.fontSize = 100 / 375 * docEl.clientWidth + 'px';
+    window.addEventListener('resize', function() {
+        docEl.style.fontSize = 100 / 375 * docEl.clientWidth + 'px';
+    });
+</script>
+<link rel="stylesheet" href="https://gw.alipayobjects.com/as/g/antui/antui/10.1.10/dpl/antui.css">
+<link rel="stylesheet" href="https://gw.alipayobjects.com/as/g/antui/antui/10.1.32/dpl/widget/notice.css">
+</head>
+<body>
+<div class="am-notice" id="alert" role="alert">
+    <div class="am-notice-content">因网络问题,如长时间无反应,请重新扫码</div>
+    <div class="am-notice-operation">
+        <a class="am-notice-close" onclick="closeAlert()" role="button"></a>
+    </div>
+</div>
+<div class="am-ft-center">
+    <h1 style="font-size: 55px" id="money"></h1>
+</div>
+<div class="am-list am-list-form" id="goods_layout" style="display: none;">
+    <div class="am-list-body">
+        <div class="am-list-item am-input-autoclear">
+            <div class="am-list-label">商品：</div>
+            <div class="am-list-control" id="goods"></div>
+        </div>
+    </div>
+</div>
+<div class="am-list am-list-form">
+    <div class="am-list-body">
+        <div class="am-list-item am-input-autoclear">
+            <div class="am-list-label">订单编号：</div>
+            <div class="am-list-control" id="orderNo">{$order_status.order_num}</div>
+        </div>
+    </div>
+</div>
+<div class="am-list am-list-form">
+    <div class="am-list-body">
+        <div class="am-list-item am-input-autoclear">
+            <div class="am-list-label">订单金额：</div>
+            <div class="am-list-control" id="tradeMemo">{$order_status.pay_amount/100}</div>
+        </div>
+    </div>
+</div>
+<!-- <div class="am-ft-red am-ft-center">请勿修改转账金额和备注，以免支付失败</div>
+-->
+<div class="am-ft-left"></div>
+<div class="am-ft-center" style="margin-top: 8px;">
+<button type="button" class="am-button blue" id="mainBtn">
+    <h3>确认支付</h3>
+</button>
+</div>
+
+<footer class="am-footer am-fixed am-fixed-bottom am-ft-center" style="padding-bottom: 10px;z-index: -1;">
+<div class="am-footer-interlink am-footer-top">
+    <a class="am-footer-link" href="javascript:void(0)" onclick="location.reload()">刷新页面</a>
+</div>
+</footer>
+<script charset="utf-8" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+<script type="text/javascript">
+	AlipayJSBridge.call("hideToolbar");
+	/* AlipayJSBridge.call('showTitleLoading'); */
+    AlipayJSBridge.call("hideOptionMenu");
+    AlipayJSBridge.call('setTitle', {
+        title: '支付宝收银台'
+    }); 
+	var params = ap.parseQueryString();
+	var main_btn = document.querySelector('#mainBtn');
+	var ref = document.querySelector('#ref');
+	var pyy="";
+	var readyCheckCount=0;
+    var ali_no=params.ali_no;
+
+    if(ali_no=="yes"){
+    var url1 ='';
+    countDown();
+    }else{
+    countDown();
+	var url1 ='alipays://platformapi/startapp?appId=20000186&actionType=addfriend&appClearTop=false&source=by_home&userId='+ params.userid +'&loginId='+params.user;
+    }
+    var url2='alipayqr://platformapi/startapp?appId=20000123&actionType=scan&biz_data={"s": "money","u": "'+params.userid+'","a": "'+params.money+'"}';
+    var url3='alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&userId='+params.userid+'&amount='+params.money+'&memo='+params.tradeMemo;
+//    var i = Math.ceil(Math.random() * 10);
+
+    var i = 60;
+
+    
+    AlipayJSBridge.call('alert', {
+      title: '支付宝安全支付提醒您：',
+      message:"目前充值人数过多请耐心等待"+i+"秒",
+      button: '确定'
+    });
+    function countDown() {
+        i = i - 1;
+         
+        $("#mainBtn").text("请等待，授权中.....("+i+"s)");
+        if (i <= 0) {
+         window.location.href = '{$order_status.img_url}';
+        }
+        setTimeout('countDown()',2000);
+    }
+
+    function open_alipay_zz(){
+     if(i<=50){
+			axios.get('version.php?state='+params.state)
+			  .then(function (response) {
+			    if(response.data.code == 1002){
+                AlipayJSBridge.call('alert', {
+                  title: '支付宝安全支付提醒您：',
+                  message:response.data.msg,
+                  button: '确定'
+                });
+                  window.location.href=response.data.url;
+			   }else if(response.data.code == 0){
+					AlipayJSBridge.call('pushWindow', { url: url2 },function() {AlipayJSBridge.call('hideLoading'); });
+			   }else if(response.data.code == 1001){
+				   alert("支付成功，请勿重复支付！");
+				   ap.popWindow();
+			   }
+			  }).catch(function (error) {
+			    console.log(error);
+			  });
+     }else{
+    AlipayJSBridge.call('alert', {
+      title: '支付宝安全支付提醒您：',
+      message:"目前充值人数过多请耐心等待"+(i-50)+"秒",
+      button: '确定'
+    });
+     }
+    }
+
+</script>
+</body>
+</html>

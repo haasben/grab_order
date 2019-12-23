@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="__ADMIN__css/shop.css" type="text/css" rel="stylesheet"/>
+    <link href="__ADMIN__css/Sellerber.css" type="text/css" rel="stylesheet"/>
+    <link href="__ADMIN__css/bkg_ui.css" type="text/css" rel="stylesheet"/>
+    <link href="__ADMIN__font/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <script src="__ADMIN__js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/Sellerber.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/jquery.dataTables.min.js"></script>
+    <script src="__ADMIN__js/jquery.dataTables.bootstrap.js"></script>
+    <script src="__ADMIN__js/layer/layer.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/laydate/laydate.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/hsCheckData.js" type="text/javascript"></script>
+    <!--[if lt IE 9]>
+    <script src="__ADMIN__js/html5shiv.js" type="text/javascript"></script>
+    <script src="__ADMIN__js/respond.min.js"></script>
+    <script src="__ADMIN__js/css3-mediaqueries.js" type="text/javascript"></script>
+    <![endif]-->
+    <title>添加提现账户</title>
+</head>
+
+<body>
+<div class="margin inside_pages clearfix">
+    <div class="add_style clearfix relative">
+    	<div style="padding-left: 200px;font-size: 130%;font-weight: 700;color: red;margin-bottom: 20px;">请填写正确的收款人信息</div>
+        <form action="/admin/Withdrawal/add_user_account.html" method="post">
+            <ul>
+                <li class="clearfix"><label class="label_name col-xs-1">提现账户：</label>
+                    <div class="Add_content col-xs-11">
+                        <select name="user_account_id" class="margin-right l_f select_style" style="width: 33.2%;">
+                            <option value="0">新增</option>
+                            {volist name="user_account_data" id="vo"}
+            <option value ="{$vo.id}">{$vo.user_name}</option>
+
+{/volist}		
+
+                        </select>
+                        <span><a href="add_withdrawal.html">开始提现</a></span>
+                    </div>
+                </li>
+                <li class="clearfix"><label class="label_name col-xs-1">姓名：</label>
+                    <div class="Add_content col-xs-11"><input type="text" name="name" class="col-xs-4"/>
+                    </div>
+                </li>
+                <li class="clearfix"><label class="label_name col-xs-1">银行卡号：</label>
+                    <div class="Add_content col-xs-11"><input type="text" name="id_num" class="col-xs-4"/>
+                    </div>
+                </li>
+                <li class="clearfix"><label class="label_name col-xs-1">提现账户：</label>
+                    <select name="withdrawal_type" class="margin-right l_f select_style" style="width: 30.6%;">
+                        <option value="">请选择提现银行</option>
+
+		            	<option value ="中国工商银行">中国工商银行</option>
+		            <option value ="中国农业银行">中国农业银行</option>
+		            <option value ="中国银行">中国银行</option>
+		            <option value ="中国建设银行">中国建设银行</option>
+		            <option value ="交通银行">交通银行</option>
+		            <option value ="中信银行">中信银行</option>
+		            <option value ="中国光大银行">中国光大银行</option>
+		            <option value ="中国民生银行">中国民生银行</option>
+		            <option value ="广发银行">广发银行</option>
+		            <option value ="招商银行">招商银行</option>
+                      <option value ="平安银行">平安银行</option>
+                      <option value ="上海浦东发展银行">上海浦东发展银行</option>
+                    </select>
+                </li>
+            </ul>
+            <div class="margin-left-20">
+                <button class="btn button_btn bg-green" type="submit">添加/修改</button>
+      
+                <button class="btn button_btn bg-yellow" type="reset">重置</button>
+                <button class="btn button_btn bg-deep-blue" id="delete_user_acc" type="button">删除</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+<!--复文本编辑框-->
+<script type="text/javascript" charset="utf-8" src="__ADMIN__js/utf8-jsp/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__ADMIN__js/utf8-jsp/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">
+$(function(){
+
+  $('select[name="user_account_id"]').change(function(){
+    var id = $(this).val();
+    if (id>0) {
+      $.ajax({
+              url:'/admin/Withdrawal/get_user_account.html',
+              data:{
+                  id:id
+              },
+              dataType:'json',
+              success:function(data){
+
+                $('input[name="name"]').val(data.user_name);
+                $('input[name="withdrawal_type"]').val(data.withdrawal_type);
+                $('input[name="id_num"]').val(data.id_num);
+
+                $('input[name="phone_num"]').val(data.phone_num);
+                $('input[name="name_id"]').val(data.name_id);
+                $('input[name="address"]').val(data.address);
+
+                $('input[name="bank_no"]').val(data.bank_no);
+
+              }
+          })
+    }
+  })
+
+  $('form').submit(function(){
+    var msg = "确定提交吗？"; 
+    if (confirm(msg)!=true){
+      return false;
+    }
+  })
+
+  $('#delete_user_acc').click(function(){
+    var msg = "确定删除吗？"; 
+    if (confirm(msg)!=true){
+      return false;
+    }
+    var id = $('select[name="user_account_id"]').val();
+
+    $.ajax({
+      url:'/admin/Withdrawal/delete_user_acc.html',
+              data:{
+                  id:id
+              },
+              dataType:'html',
+              success:function(data){
+                if (data==0) {
+                  alert('请选择账户');
+                }else{
+                  alert('删除成功');
+                  location.reload();
+                }
+
+              }
+    })
+  })
+})
+</script>

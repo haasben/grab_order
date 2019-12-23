@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>`</title>
+</head>
+<body>
+	<input type="button" id="button" value="发送">
+</body>
+</html>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+	$(function(){
+
+		$('#button').click(function(){
+
+				$.ajax({
+				url:'{:url("push/bind/send_message")}',
+				type:'get',
+				dataType:'json',
+				success:function(data){
+					
+					console.log(data.msg);
+					
+					
+				}
+			})
+		})
+
+		
+	})
+
+</script>

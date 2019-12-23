@@ -1,0 +1,57 @@
+{include file="common/head"}
+<form class="layui-form layui-form-pane">
+  <div style="width: 60%;margin:30px auto; ">
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">店员账号</label>
+    <div class="layui-input-block" >
+      <select name="clerk_id" id="taid" lay-verify="required">
+        <option value="">选择店员账号</option>
+        {volist name="$clerk_data" id="v"}
+            <option value="{$v.id}">{$v.name}->{:substr($v.app_id,20,10)}</option>
+        {/volist}  
+
+
+      </select>
+    </div>
+  </div>
+
+
+
+  <div class="layui-form-item" style="margin-top:30px">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit lay-filter="submit">提交绑定</button>
+<!--       <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+    </div>
+  </div>
+</div>
+</form>
+<script type="text/javascript" src="/static/layui/layui.js"></script> 
+<script>
+//Demo
+layui.use(['form','layer'], function(){
+  var form = layui.form,layer=layui.layer;
+    //监听提交
+  form.on('submit(submit)', function (data) {
+                // 提交到方法 默认为本身
+      var id = {$id};
+      var clerk_id = $('#taid').val();
+
+      $.post('{:url("nagent/payment_account/bind_clerk")}', {id:id,clerk_id:clerk_id} ,function (res) {
+
+          if (res.code  == '0000') {
+              layer.close();
+
+              layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+                  location.reload();
+              });
+          } else {
+              layer.msg(res.msg, {time: 1800, icon: 5});
+          }
+      });
+      return false;
+  });
+
+
+});
+</script>

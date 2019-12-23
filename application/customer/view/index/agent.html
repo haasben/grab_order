@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>代理列表</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description"
+          content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+    <link rel="stylesheet" href="/static/magent/css/weui.min.css">
+    <link rel="stylesheet" href="/static/magent/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/magent/css/main.css">
+</head>
+<body>
+<!--主体-->
+<header class="nav-bar-header bg-white">
+    <a href="/magent/index/index">
+        <div class="weui_left float-left"><img src="/static/magent/img/left.png"/>
+        </div>
+    </a>
+    <div class="title">代理列表</div>
+</header>
+<div class='weui-content' style="margin-top: 40px;">
+    <!-- 代理信息 -->
+    <div class="weui-form-preview">
+        <div class="weui-form-preview__hd">
+            <a href="#">
+                <span class="example"></span>
+                <label class="weui-form-preview_label">代理列表</label>
+            </a>
+        </div>
+      	 <div class="weui-navbar_group" style="border:1px solid #3bb300;background-color:#3bb300;margin-top:30px;margin-bottom:30px;">
+        <a href="{:url('magent/user/add_users_group')}" class="weui-navbar_item weui-bar__item--on" style="background-color:#3bb300;">
+           添加下级代理
+        </a>
+    </div>
+        <div class="weui-wrapper">
+            <table cellspacing="0" style="width: 94%;">
+                <tr class="bg-gray">
+                    <td width="30%">下级代理</td>
+                    <td width="30%">收单金额</td>
+                    <td width="20%">收单率</td>
+                    <td width="20%">操作</td>
+                </tr>
+                {volist name="$data" id="vo"}
+                <tr>
+                    <td class="bg-gray">{$vo['name']}</td>
+                    <td class="count">{$vo['price']}</td>
+                    <td class="count">{$vo['rate']}%</td>
+                    <td class="count"><a href="{:url('magent/index/agent_details',['id'=>$vo['id']])}" class="weui-btn edit_btn">详情</a>
+                    </td>
+                </tr>
+                {/volist}
+            </table>
+        </div>
+    </div>
+
+</div>
+<!--底部导航-->
+<div class="weui-tabbar wy-foot-menu">
+    <a href="{:url('index/index')}" class="weui-tabbar__item weui-bar__item--on">
+        <div class="weui-tabbar__icon foot-menu-home"></div>
+        <p class="weui-tabbar__label">首页</p>
+    </a>
+    <a href="{:url('order/index')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-list"></div>
+        <p class="weui-tabbar__label">订单</p>
+    </a>
+    <a href="{:url('user/clerk_list')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-cart"></div>
+        <p class="weui-tabbar__label">账号</p>
+    </a>
+    <a href="{:url('user/mine')}" class="weui-tabbar__item">
+        <div class="weui-tabbar__icon foot-menu-member"></div>
+        <p class="weui-tabbar__label">我的</p>
+    </a>
+</div>
+{include file="public/footer" /}
+<script>
+    var page = 2;
+    $(function () {
+        var loading = false;  //状态标记
+        $(".weui-content").infinite().on("infinite", function () {
+            if (loading) return;
+            loading = true;
+            setTimeout(function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/magent/index/agent',
+                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                    data: {page},
+                    success: function (res) {
+                        page = res.page + 1;
+                        if (res.list.length == 0) {
+                            $.toast('数据已全部加载', 500);
+                            return false;
+                        }
+                        $.each(res.list, function (i, e) {
+                            var html = "<tr>\n" +
+                                "                    <td class=\"bg-gray\">" + e.name + "</td>\n" +
+                                "                    <td class=\"count\">" + e.price + "</td>\n" +
+                                "                    <td class=\"count\">" + e.rate + "%</td>\n" +
+                                "                    <td class=\"count\"><a href=\"/magent/user/info/id/" + e.id + "\" class=\"weui-btn edit_btn\">编辑</a></td>\n" +
+                                "                </tr>";
+                            $(".weui-content table").append(html);
+                        })
+                        $.toast('加载完成', 500)
+                    }
+                });
+                loading = false;
+            }, 1000);   //模拟延迟
+        });
+    })
+</script>
+</body>
+</html>
